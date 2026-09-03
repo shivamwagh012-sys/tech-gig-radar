@@ -2,7 +2,10 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Install dependencies (including dev deps for tsx)
+# Install build dependencies for native modules (better-sqlite3)
+RUN apk add --no-cache python3 make g++ gcc
+
+# Install dependencies
 COPY package*.json ./
 RUN npm install
 
@@ -11,9 +14,6 @@ COPY . .
 
 # Create data directory
 RUN mkdir -p data
-
-# Run database migrations
-RUN npx drizzle-kit generate 2>/dev/null || true
 
 # Expose port
 EXPOSE 3000
