@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: techgig-radar
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm run start:prod
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DATABASE_URL
+        value: file:./data/techgig.db
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_CHANNEL_ID
+        value: "@TechGigRadar"
+      - key: TELEGRAM_ENABLED
+        value: "true"
+      - key: AUTO_PUBLISH_ENABLED
+        value: "true"
+      - key: REQUIRE_HUMAN_APPROVAL
+        value: "false"
+      - key: NEWS_CHECK_INTERVAL_MINUTES
+        value: "15"
+      - key: JOBS_CHECK_INTERVAL_MINUTES
+        value: "30"
