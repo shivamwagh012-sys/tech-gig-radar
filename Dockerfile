@@ -19,8 +19,8 @@ RUN mkdir -p data
 EXPOSE 3000
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1
 
-# Start the server
-CMD ["npx", "tsx", "src/server-with-auto.ts"]
+# Start with memory limits and tsx
+CMD ["node", "--max-old-space-size=400", "--loader", "tsx", "src/server-with-auto.ts"]
