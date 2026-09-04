@@ -20,7 +20,7 @@ async function main() {
     .from(schema.jobs)
     .where(or(eq(schema.jobs.status, 'discovered'), eq(schema.jobs.status, 'pending_review')))
     .orderBy(desc(schema.jobs.priority))
-    .limit(5);
+    .limit(10);
   console.log(`💼 Pending jobs: ${pendingJobs.length}\n`);
 
   // Publish news
