@@ -31,39 +31,51 @@ export function generateTelegramNewsContent(news: News): TelegramNewsContent {
   // Build the message
   let text = '';
   
-  // Header
+  // Header with category badge
   text += `${emoji} <b>${escapeHtml(news.title)}</b>\n\n`;
   
-  // Summary
+  // Category tag
+  text += `🏷 <b>Category:</b> #${categoryLabel}\n\n`;
+  
+  // Full Summary (not truncated)
   if (news.summary) {
-    text += `${escapeHtml(news.summary.slice(0, 400))}${news.summary.length > 400 ? '...' : ''}\n\n`;
+    text += `📋 <b>Summary:</b>\n${escapeHtml(news.summary)}\n\n`;
   }
   
-  // Why it matters (if we have more content)
-  if (news.content && news.content.length > 200) {
-    // Extract key points or use AI-generated summary
-    text += `<b>💡 Why it matters:</b>\n`;
-    text += `This affects developers and tech professionals working with ${news.category} technologies.\n\n`;
+  // Key details from content
+  if (news.content && news.content.length > 100) {
+    const keyPoints = news.content.slice(0, 800).replace(/<[^>]+>/g, '');
+    text += `📝 <b>Details:</b>\n${escapeHtml(keyPoints)}${news.content.length > 800 ? '...' : ''}\n\n`;
   }
+  
+  // Why it matters
+  text += `💡 <b>Why it matters:</b>\n`;
+  text += `This is relevant for developers and tech professionals working with ${news.category} technologies.\n\n`;
   
   // Tags as hashtags
   if (news.tags && news.tags.length > 0) {
     const hashtags = news.tags
-      .slice(0, 5)
+      .slice(0, 8)
       .map((t: string) => `#${t.replace(/[^a-zA-Z0-9]/g, '')}`)
       .join(' ');
-    text += `${hashtags}\n\n`;
+    text += `🔖 ${hashtags}\n\n`;
   }
   
-  // Source attribution
-  text += `📍 <b>Source:</b> ${escapeHtml(news.sourceName || 'Unknown')}\n`;
+  // Source attribution with date
+  text += `━━━━━━━━━━━━━━━━━━\n`;
+  text += `📍 <b>Source:</b> ${escapeHtml(news.sourceName || 'Tech News')}\n`;
+  if (news.originalPublishedAt) {
+    text += `📅 <b>Published:</b> ${formatDate(news.originalPublishedAt)}\n`;
+  }
   
-  // Link
-  text += `🔗 <a href="${escapeHtml(news.sourceUrl)}">Read more</a>\n\n`;
+  // Read more link (important!)
+  text += `\n🔗 <b>Read Full Article:</b>\n`;
+  text += `<a href="${escapeHtml(news.sourceUrl)}">${escapeHtml(news.sourceUrl.slice(0, 50))}...</a>\n\n`;
   
   // Footer
   text += `━━━━━━━━━━━━━━━━━━\n`;
-  text += `🎯 @TechGigRadar | Real Tech News`;
+  text += `⚡ @TechGigRadar\n`;
+  text += `Real Tech News. Real Global Opportunities.`;
   
   return {
     text,
@@ -73,7 +85,7 @@ export function generateTelegramNewsContent(news: News): TelegramNewsContent {
 }
 
 // ================================
-// Telegram Job Content
+// Telegram Job Content - ENHANCED
 // ================================
 export interface TelegramJobContent {
   text: string;
@@ -84,89 +96,156 @@ export interface TelegramJobContent {
 export function generateTelegramJobContent(job: Job): TelegramJobContent {
   let text = '';
   
-  // Header
+  // Header with attention-grabbing emoji
   const remoteEmoji = job.isRemote ? '🌍' : '🏢';
-  text += `💼 <b>New Opportunity</b> ${remoteEmoji}\n\n`;
+  const levelEmoji = job.experienceLevel === 'fresher' || job.experienceLevel === 'junior' ? '🌱' : '💼';
   
-  // Company and Role
+  text += `${levelEmoji} <b>JOB OPENING</b> ${remoteEmoji}\n`;
+  text += `━━━━━━━━━━━━━━━━━━\n\n`;
+  
+  // Company and Role (prominent)
   text += `🏢 <b>Company:</b> ${escapeHtml(job.companyName)}\n`;
-  text += `👔 <b>Role:</b> ${escapeHtml(job.title)}\n`;
+  if (job.companyUrl) {
+    text += `   🔗 ${escapeHtml(job.companyUrl)}\n`;
+  }
+  text += `\n👔 <b>Position:</b> ${escapeHtml(job.title)}\n\n`;
   
-  // Experience Level
+  // Experience Level (highlighted for freshers)
   if (job.experienceLevel) {
     const levelLabels: Record<string, string> = {
-      fresher: '🌱 Entry Level / Fresher',
-      junior: '📗 Junior (0-2 years)',
-      mid: '📘 Mid-Level (2-5 years)',
-      senior: '📕 Senior (5+ years)',
+      fresher: '🌱 FRESHER FRIENDLY / Entry Level',
+      junior: '📗 Junior (0-2 years experience)',
+      mid: '📘 Mid-Level (2-5 years experience)',
+      senior: '📕 Senior (5+ years experience)',
       lead: '⭐ Lead / Principal',
+      any: '✅ All Experience Levels Welcome',
     };
-    text += `📊 <b>Level:</b> ${levelLabels[job.experienceLevel] || job.experienceLevel}\n`;
+    text += `📊 <b>Experience:</b> ${levelLabels[job.experienceLevel] || job.experienceLevel}\n`;
   }
   
-  // Location & Remote
-  text += `📍 <b>Location:</b> ${escapeHtml(job.companyLocation || 'Not specified')}\n`;
-  text += `🏠 <b>Remote:</b> ${job.isRemote ? 'Yes' : 'No'}`;
+  // Location & Remote status
+  text += `📍 <b>Location:</b> ${escapeHtml(job.companyLocation || 'Remote / Flexible')}\n`;
+  text += `🏠 <b>Work Mode:</b> ${job.isRemote ? '✅ Remote Work Available' : '🏢 On-site'}`;
   if (job.acceptsWorldwide) {
-    text += ` (Worldwide)`;
-  } else if (job.locationRestrictions && job.locationRestrictions.length > 0) {
-    text += ` (${job.locationRestrictions.join(', ')})`;
+    text += ` (🌐 Worldwide - India Eligible!)`;
   }
   text += '\n';
   
-  // Job Type
+  // Job Type (Contract/Freelance highlighted)
   if (job.jobType) {
     const typeLabels: Record<string, string> = {
-      'full-time': 'Full-Time',
-      'part-time': 'Part-Time',
-      'contract': 'Contract',
-      'freelance': 'Freelance',
-      'internship': 'Internship',
+      'full-time': '⏰ Full-Time',
+      'part-time': '⏰ Part-Time',
+      'contract': '📄 CONTRACT (Freelance/C2C Welcome)',
+      'freelance': '🆓 FREELANCE',
+      'internship': '🎓 Internship',
     };
     text += `💼 <b>Type:</b> ${typeLabels[job.jobType] || job.jobType}\n`;
   }
   
-  // Salary
+  // Salary (if available)
   if (job.salaryMin || job.salaryMax) {
     const currency = job.salaryCurrency || 'USD';
+    text += `💰 <b>Compensation:</b> `;
     if (job.salaryMin && job.salaryMax) {
-      text += `💰 <b>Salary:</b> ${formatSalary(job.salaryMin)} - ${formatSalary(job.salaryMax)} ${currency}\n`;
+      text += `${formatSalary(job.salaryMin)} - ${formatSalary(job.salaryMax)} ${currency}`;
     } else if (job.salaryMin) {
-      text += `💰 <b>Salary:</b> From ${formatSalary(job.salaryMin)} ${currency}\n`;
+      text += `From ${formatSalary(job.salaryMin)} ${currency}`;
+    } else if (job.salaryMax) {
+      text += `Up to ${formatSalary(job.salaryMax)} ${currency}`;
     }
+    text += '\n';
   }
   
   text += '\n';
   
-  // Skills
+  // Required Skills (detailed)
   if (job.requiredSkills && job.requiredSkills.length > 0) {
-    text += `🛠 <b>Skills:</b>\n`;
-    const skillsList = job.requiredSkills.slice(0, 8).map((s: string) => `• ${escapeHtml(s)}`).join('\n');
+    text += `🛠 <b>Required Skills:</b>\n`;
+    const skillsList = job.requiredSkills.slice(0, 10).map((s: string) => `   • ${escapeHtml(s)}`).join('\n');
     text += skillsList + '\n\n';
   }
   
-  // Brief description
+  // Job Description (more detailed)
   if (job.description) {
-    const shortDesc = job.description.slice(0, 300).replace(/<[^>]+>/g, '');
-    text += `📝 <b>About:</b>\n${escapeHtml(shortDesc)}${job.description.length > 300 ? '...' : ''}\n\n`;
+    const cleanDesc = job.description.replace(/<[^>]+>/g, '').trim();
+    const shortDesc = cleanDesc.slice(0, 500);
+    text += `📝 <b>Job Description:</b>\n${escapeHtml(shortDesc)}${cleanDesc.length > 500 ? '...' : ''}\n\n`;
   }
   
-  // Apply Link
-  text += `✅ <b>Apply:</b>\n`;
-  text += `<a href="${escapeHtml(job.applicationUrl)}">Click here to apply</a>\n\n`;
+  // ===== CONTACT / HOW TO APPLY =====
+  text += `━━━━━━━━━━━━━━━━━━\n`;
+  text += `📬 <b>HOW TO APPLY:</b>\n\n`;
   
-  // Source
-  text += `📍 Source: ${escapeHtml(job.sourceName || 'Job Board')}\n\n`;
+  // Application URL (primary)
+  if (job.applicationUrl) {
+    text += `🔗 <b>Apply Here:</b>\n`;
+    text += `<a href="${escapeHtml(job.applicationUrl)}">${escapeHtml(job.applicationUrl.slice(0, 60))}${job.applicationUrl.length > 60 ? '...' : ''}</a>\n\n`;
+  }
+  
+  // Email (if we can extract it)
+  const emailMatch = (job.description || '').match(/[\w.-]+@[\w.-]+\.\w+/);
+  if (emailMatch) {
+    text += `📧 <b>Send Resume To:</b>\n`;
+    text += `${escapeHtml(emailMatch[0])}\n\n`;
+  }
+  
+  // Source link
+  if (job.sourceUrl && job.sourceUrl !== job.applicationUrl) {
+    text += `📍 <b>Original Posting:</b>\n`;
+    text += `<a href="${escapeHtml(job.sourceUrl)}">${escapeHtml(job.sourceName || 'View on Job Board')}</a>\n\n`;
+  }
+  
+  // Tips for Indian contractors
+  if (job.acceptsWorldwide || job.jobType === 'contract' || job.jobType === 'freelance') {
+    text += `💡 <b>Tip for Indian Developers:</b>\n`;
+    text += `This position accepts international contractors. Mention your timezone flexibility and willingness to overlap with their hours.\n\n`;
+  }
   
   // Footer
   text += `━━━━━━━━━━━━━━━━━━\n`;
-  text += `🎯 @TechGigRadar | Real Global Opportunities`;
+  text += `⚡ @TechGigRadar\n`;
+  text += `Real Tech News. Real Global Opportunities.\n`;
+  text += `🇮🇳 Remote Jobs for Indian Developers`;
   
   return {
     text,
     parseMode: 'HTML',
     generatedAt: new Date().toISOString(),
   };
+}
+
+// ================================
+// Helper Functions
+// ================================
+function escapeHtml(text: string): string {
+  if (!text) return '';
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function formatSalary(amount: number | null): string {
+  if (!amount) return '';
+  if (amount >= 1000) {
+    return `$${(amount / 1000).toFixed(0)}k`;
+  }
+  return `$${amount}`;
+}
+
+function formatDate(dateStr: string): string {
+  try {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    });
+  } catch {
+    return dateStr;
+  }
 }
 
 // ================================
@@ -276,22 +355,4 @@ export function generateInstagramJobCaption(job: Job): InstagramCaption {
     hashtags,
     generatedAt: new Date().toISOString(),
   };
-}
-
-// ================================
-// Utility Functions
-// ================================
-function escapeHtml(text: string): string {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
-
-function formatSalary(amount: number): string {
-  if (amount >= 1000) {
-    return `$${(amount / 1000).toFixed(0)}k`;
-  }
-  return `$${amount}`;
 }
