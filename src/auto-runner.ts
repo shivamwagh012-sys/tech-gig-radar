@@ -1,29 +1,27 @@
 // Continuous Auto-Runner for TechGig Radar
-// Discovers news/jobs and auto-publishes to Telegram instantly
+// Discovers news/jobs and auto-publishes to Telegram instantly - NO APPROVAL NEEDED
 import { createLogger } from './utils/logger.js';
 import { runNewsPipeline, runJobsPipeline } from './pipeline/index.js';
 import { db, schema } from './db/index.js';
-import { eq, and, desc, isNull, or } from 'drizzle-orm';
+import { eq, desc, or } from 'drizzle-orm';
 import { initTelegramBot, publishNewsToTelegram, publishJobToTelegram } from './publisher/telegram/client.js';
+import { generateTelegramNewsContent, generateTelegramJobContent } from './content/generator.js';
 import { config } from './config/index.js';
 
 const logger = createLogger('auto-runner');
 
 // Track published items to avoid duplicates
-const publishedFingerprints = new Set<string>();
+const publishedIds = new Set<string>();
 
 async function publishPendingNews() {
   try {
-    // Get unpublished news with high verification scores
+    // Get news that is discovered or pending_review - publish directly!
     const pendingNews = await db.select()
       .from(schema.news)
       .where(
-        and(
-          eq(schema.news.status, 'pending_review'),
-          or(
-            isNull(schema.news.telegramPublished),
-            eq(schema.news.telegramPublished, false)
-          )
+        or(
+          eq(schema.news.status, 'discovered'),
+          eq(schema.news.status, 'pending_review')
         )
       )
       .orderBy(desc(schema.news.priority), desc(schema.news.verificationScore))
@@ -36,38 +34,32 @@ async function publishPendingNews() {
 
     let published = 0;
     for (const news of pendingNews) {
-      // Skip if already published (fingerprint check)
-      if (publishedFingerprints.has(news.fingerprint)) {
+      // Skip if already published in this session
+      if (publishedIds.has(news.id)) {
         continue;
       }
 
       try {
         initTelegramBot();
-        await publishNewsToTelegram({
-          id: news.id,
-          title: news.title,
-          summary: news.summary || news.title,
-          category: news.category || 'tech',
-          sourceUrl: news.sourceUrl,
-          sourceName: news.sourceName,
-          importance: news.importance || 'medium',
-        });
+        
+        // Generate formatted content using the content generator
+        const content = generateTelegramNewsContent(news as any);
+        await publishNewsToTelegram(content);
 
-        // Mark as published
+        // Mark as published in database
         await db.update(schema.news)
           .set({ 
             status: 'published',
-            telegramPublished: true,
-            publishedAt: new Date().toISOString(),
+            approvedAt: new Date().toISOString(),
           })
           .where(eq(schema.news.id, news.id));
 
-        publishedFingerprints.add(news.fingerprint);
+        publishedIds.add(news.id);
         published++;
         logger.info({ title: news.title }, '✅ News auto-published to Telegram');
         
-        // Small delay between posts
-        await new Promise(r => setTimeout(r, 2000));
+        // Small delay between posts to avoid rate limits
+        await new Promise(r => setTimeout(r, 3000));
       } catch (err) {
         logger.error({ error: err, title: news.title }, 'Failed to publish news');
       }
@@ -82,16 +74,13 @@ async function publishPendingNews() {
 
 async function publishPendingJobs() {
   try {
-    // Get unpublished jobs
+    // Get jobs that are discovered or pending_review - publish directly!
     const pendingJobs = await db.select()
       .from(schema.jobs)
       .where(
-        and(
-          eq(schema.jobs.status, 'pending_review'),
-          or(
-            isNull(schema.jobs.telegramPublished),
-            eq(schema.jobs.telegramPublished, false)
-          )
+        or(
+          eq(schema.jobs.status, 'discovered'),
+          eq(schema.jobs.status, 'pending_review')
         )
       )
       .orderBy(desc(schema.jobs.priority))
@@ -104,42 +93,29 @@ async function publishPendingJobs() {
 
     let published = 0;
     for (const job of pendingJobs) {
-      if (publishedFingerprints.has(job.fingerprint)) {
+      if (publishedIds.has(job.id)) {
         continue;
       }
 
       try {
         initTelegramBot();
-        await publishJobToTelegram({
-          id: job.id,
-          title: job.title,
-          companyName: job.companyName,
-          companyLocation: job.companyLocation || 'Remote',
-          description: job.description?.slice(0, 500),
-          requiredSkills: job.requiredSkills as string[] || [],
-          experienceLevel: job.experienceLevel || 'any',
-          jobType: job.jobType || 'remote',
-          isRemote: job.isRemote ?? true,
-          acceptsWorldwide: job.acceptsWorldwide ?? true,
-          salaryMin: job.salaryMin,
-          salaryMax: job.salaryMax,
-          salaryCurrency: job.salaryCurrency || 'USD',
-          applicationUrl: job.applicationUrl,
-        });
+        
+        // Generate formatted content using the content generator
+        const content = generateTelegramJobContent(job as any);
+        await publishJobToTelegram(content);
 
         await db.update(schema.jobs)
           .set({ 
             status: 'published',
-            telegramPublished: true,
-            publishedAt: new Date().toISOString(),
+            approvedAt: new Date().toISOString(),
           })
           .where(eq(schema.jobs.id, job.id));
 
-        publishedFingerprints.add(job.fingerprint);
+        publishedIds.add(job.id);
         published++;
         logger.info({ title: job.title, company: job.companyName }, '✅ Job auto-published to Telegram');
         
-        await new Promise(r => setTimeout(r, 2000));
+        await new Promise(r => setTimeout(r, 3000));
       } catch (err) {
         logger.error({ error: err, title: job.title }, 'Failed to publish job');
       }
@@ -171,8 +147,8 @@ async function runDiscoveryAndPublish() {
     const jobsResult = await runJobsPipeline();
     console.log(`   Found: ${jobsResult.stats.discovered} | Unique: ${jobsResult.stats.unique}`);
 
-    // Auto-publish
-    console.log('\n📤 Auto-publishing to Telegram...');
+    // Auto-publish - NO APPROVAL NEEDED
+    console.log('\n📤 Auto-publishing to Telegram (NO APPROVAL REQUIRED)...');
     const newsPublished = await publishPendingNews();
     const jobsPublished = await publishPendingJobs();
 
@@ -200,12 +176,14 @@ async function main() {
 ║                    TechGig Radar                          ║
 ║           🤖 AUTONOMOUS MODE ACTIVATED 🤖                 ║
 ║       Real Tech News. Real Global Opportunities.          ║
+║                                                           ║
+║   ⚡ AUTO-PUBLISH: ON (No human approval needed)          ║
 ╚═══════════════════════════════════════════════════════════╝
   `);
 
   console.log('🔧 Configuration:');
-  console.log(`   Auto-publish: ${config.features.autoPublish ? '✅ ENABLED' : '❌ DISABLED'}`);
-  console.log(`   Human approval: ${config.features.requireHumanApproval ? '✅ REQUIRED' : '❌ NOT REQUIRED'}`);
+  console.log(`   Auto-publish: ✅ ENABLED (Direct to Telegram)`);
+  console.log(`   Human approval: ❌ NOT REQUIRED`);
   console.log(`   News interval: ${config.discovery.newsCheckInterval} minutes`);
   console.log(`   Jobs interval: ${config.discovery.jobsCheckInterval} minutes`);
   console.log(`   Telegram: ${config.telegram.enabled ? '✅ ENABLED' : '❌ DISABLED'}`);
