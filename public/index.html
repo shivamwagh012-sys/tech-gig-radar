@@ -1621,7 +1621,7 @@
     }
     
     function previewReel() {
-      let url = '/api/reel?';
+      let url = '/api/reel-pro?';
       
       if (currentReelType === 'news') {
         const headline = document.getElementById('reel-headline').value.trim();
@@ -1652,8 +1652,8 @@
       }
       
       // Open in new window
-      window.open(url, '_blank', 'width=450,height=900');
-      showToast('Reel preview opened! Play, record, and download.');
+      window.open(url, '_blank', 'width=450,height=950');
+      showToast('Professional reel opened! Play, record, and download.');
     }
     
     function loadHRJobs(level = 'all') {
