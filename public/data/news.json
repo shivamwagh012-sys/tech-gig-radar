@@ -1,0 +1,502 @@
+[
+  {
+    "id": "50558a13-c9b2-43d7-8494-76ebb8c15f47",
+    "title": "OpenAI confirms ‘wiki incident,’ says it’s ‘working on a framework’ for more disclosure",
+    "summary": "OpenAI acknowledged its role in a recently reported incident where AI agents took over a German wiki forum.",
+    "source": "TechCrunch",
+    "url": "https://techcrunch.com/2026/09/05/openai-confirms-wiki-incident-says-its-working-on-a-framework-for-more-disclosure",
+    "category": "startup",
+    "publishedAt": "2026-09-05T19:41:15.437Z",
+    "isVerified": true
+  },
+  {
+    "id": "9b42b3a8-6359-4553-b9ef-c88d84463ed9",
+    "title": "Hikers rescued after using Google Gemini for planning",
+    "summary": "The sheriff’s office said the hikers “were advised by Gemini to bring far less food and water than their group required.\"",
+    "source": "TechCrunch",
+    "url": "https://techcrunch.com/2026/09/05/hikers-rescued-after-using-google-gemini-for-planning",
+    "category": "startup",
+    "publishedAt": "2026-09-05T19:41:15.435Z",
+    "isVerified": true
+  },
+  {
+    "id": "97316182-a18c-4e3b-b73d-b91cf0df5693",
+    "title": "How the Tobacco Industry Drove the Rise of Ultra-Processed Foods (2025)",
+    "summary": "How the Tobacco Industry Drove the Rise of Ultra-Processed Foods (2025)",
+    "source": "Hacker News (119 points)",
+    "url": "https://vcresearch.berkeley.edu/news/how-tobacco-industry-drove-rise-ultra-processed-foods",
+    "category": "general",
+    "publishedAt": "2026-09-05T19:41:15.434Z",
+    "isVerified": true
+  },
+  {
+    "id": "19dc926a-181c-449f-8716-ac20ca1b3211",
+    "title": "Wikimedia Foundation Workers Overwhelmingly Vote to Form Union with CWA",
+    "summary": "Wikimedia Foundation Workers Overwhelmingly Vote to Form Union with CWA",
+    "source": "Hacker News (178 points)",
+    "url": "https://wikiworkersunited.org/announcements/2026-09-04-us-wikimedia-foundation-workers-overwhelmingly-vote-to-form-union-with-cwa",
+    "category": "general",
+    "publishedAt": "2026-09-05T19:41:15.432Z",
+    "isVerified": true
+  },
+  {
+    "id": "cd33ec84-80c0-4247-a33e-8bf8e605751f",
+    "title": "The Luxuries in Life",
+    "summary": "The Luxuries in Life",
+    "source": "Hacker News (108 points)",
+    "url": "https://feld.com/archives/2026/09/the-real-luxuries-in-life",
+    "category": "general",
+    "publishedAt": "2026-09-05T19:41:15.430Z",
+    "isVerified": true
+  },
+  {
+    "id": "ed84347e-da21-4e4d-bd80-1a9dbe6281e3",
+    "title": "Oracle Data Redaction: Mask at Read Time, Prove It Isn't Access Control",
+    "summary": "The support rep sees ****-****-****-0001 on their screen and everyone relaxes. The card number is \"masked,\" the demo looks compliant, the box gets ticked. Then someone runs an export, or a report built on the same table, or reads the datafile off disk — and the full number is right there, exactly where it always was, unchanged.\nThat gap between what redaction looks like and what it does is where teams get burned. Data Redaction (the DBMS_REDACT package, part of Advanced Security) is a genuinely ",
+    "source": "Dev.to",
+    "url": "https://dev.to/uptimearchitect/oracle-data-redaction-mask-at-read-time-prove-it-isnt-access-control-6ng",
+    "category": "programming",
+    "publishedAt": "2026-09-05T19:41:15.426Z",
+    "isVerified": true
+  },
+  {
+    "id": "c34c1211-f200-490c-9793-ca8a5e95a41f",
+    "title": "Building \"The Digital Lifeline\": An Off-Grid AI Mesh Platform for Disaster Relief",
+    "summary": "Hey devs & tech community! 👋\nI recently submitted my open-source project The Digital Lifeline (الشريان الرقمي) to the global Hack for Humanity 2026 hackathon on Devpost, and it has officially made it to the final stage!\nAbout the Project & Technical Stack\nAd-Hoc Mesh Simulation: Transmits structured JSON payload packets across field nodes via native Python TCP Sockets without requiring commercial internet.\nOffline NLP Engine: Employs a lightweight scikit-learn classifier to categorize unstructu",
+    "source": "Dev.to",
+    "url": "https://dev.to/algazly_mohamed_e09f92294/building-the-digital-lifeline-an-off-grid-ai-mesh-platform-for-disaster-relief-42a",
+    "category": "programming",
+    "publishedAt": "2026-09-05T19:41:15.425Z",
+    "isVerified": true
+  },
+  {
+    "id": "b85f7443-8ec6-4c49-90e4-bbad288f66d3",
+    "title": "How to find every Shopify store in a list of 10,000 domains",
+    "summary": "You have a list of domains. A conference attendee export, a directory scrape, a spreadsheet from a colleague.\nThe mechanics are not complicated, and it is worth understanding them before you decide whether to build or buy.\nEvery page you request hands over more than the HTML you asked for:\nResponse headers. Server: cloudflare and a cf-ray header are Cloudflare. X-Powered-By: PHP/8.2 is\nself-explanatory. Shopify sends x-shopid.\nCookies. _shopify_y, __utma, wp-settings-* each pin a platform.\nHTML ",
+    "source": "Dev.to",
+    "url": "https://dev.to/clearfetch/how-to-find-every-shopify-store-in-a-list-of-10000-domains-m89",
+    "category": "programming",
+    "publishedAt": "2026-09-05T19:41:15.423Z",
+    "isVerified": true
+  },
+  {
+    "id": "7b5d1e28-f7d1-450d-b658-8d50d50d5790",
+    "title": "Tennis, football and basketball results as clean JSON, without a sports data contract",
+    "summary": "Sports data is one of those areas where the gap between \"public information\" and \"affordable to obtain\" is\nIf you are building a model, a scoreboard or a fantasy tool rather than a betting exchange, there is a middle\nEvery match has a state, and naive scrapers reduce it to three: upcoming, live, finished. Real fixtures are\nI learned this the hard way. My tennis scraper inferred status codes from observed data, and the mapping looked\nThen I found the authoritative list. Codes 17 and 18 are FIRST_",
+    "source": "Dev.to",
+    "url": "https://dev.to/clearfetch/tennis-football-and-basketball-results-as-clean-json-without-a-sports-data-contract-3b19",
+    "category": "programming",
+    "publishedAt": "2026-09-05T19:41:15.421Z",
+    "isVerified": true
+  },
+  {
+    "id": "183d1665-c9e6-4d1d-b2fb-68d7d8e7f413",
+    "title": "From API to GPU, Week 6 (Part 1): A Model That Predicts, and How Wrong It Is",
+    "summary": "Phase 2 of 8: Enough ML to understand inference. Week 6 of 32, part 1 of 2.\nEvery week so far, the model already existed. I ran Phi-4, read Qwen's files, and\nThe goal: the model starts with a random weight and bias, which are just\nThis first post builds the model and answers two questions, nothing more: how does\nThe model is a one-neuron linear model: one output value computed from one weight\nssh spark, because the problem is far too small to need a GPU.\nIf you have never trained a model before,",
+    "source": "Dev.to",
+    "url": "https://dev.to/dramasamy/from-api-to-gpu-week-6-part-1-a-model-that-predicts-and-how-wrong-it-is-3d80",
+    "category": "programming",
+    "publishedAt": "2026-09-05T19:41:15.418Z",
+    "isVerified": true
+  },
+  {
+    "id": "54aab4c7-ba69-49ec-bcf5-72721f0b5d2d",
+    "title": "From API to GPU, Week 6 (Part 2): Watching a Neural Network Learn",
+    "summary": "Phase 2 of 8: Enough ML to understand inference. Week 6 of 32, part 2 of 2.\nPart 1 built a one-neuron model that converts Celsius to Fahrenheit, made it\nTraining is one loop repeated many times, and each pass through it does four\nForward pass: run the inputs through the model to get predictions.\nLoss: score how wrong those predictions are, as a single number.\nGradient: work out which direction to move each parameter to lower the loss.\nOptimizer step: nudge each parameter a small amount in that d",
+    "source": "Dev.to",
+    "url": "https://dev.to/dramasamy/from-api-to-gpu-week-6-part-2-watching-a-neural-network-learn-2pef",
+    "category": "programming",
+    "publishedAt": "2026-09-05T19:41:15.414Z",
+    "isVerified": true
+  },
+  {
+    "id": "732acf2b-85f0-49d1-aaed-dd5d2eb08502",
+    "title": "The Tea on Teamwork: Week One of My i.c.stars Tech Internship",
+    "summary": "I went into my first week at i.c.stars thinking about technology, code, and systems. The week turned out to be about the human layer instead, and the most useful thing I learned was about myself: when a project gets hard and progress feels slow, I take on more work instead of asking for help.\n\nWhile Team Week was very involved and we spent a lot of time learning about our team dynamic and reflecting on it, I feel like I genuinely got to know my teammates and their approaches to teamwork and coll",
+    "source": "Dev.to",
+    "url": "https://dev.to/keenenwilkins/the-tea-on-teamwork-week-one-of-my-icstars-tech-internship-k3o",
+    "category": "programming",
+    "publishedAt": "2026-09-05T19:41:15.412Z",
+    "isVerified": true
+  },
+  {
+    "id": "ffd54000-5370-4ccf-bcbe-b817fd67fda0",
+    "title": "A source map is a claim, and nothing checks whether it is true",
+    "summary": "A source map is a claim about two files: that this position in the built output came from that position in a source file. I had never thought of it as a claim that could be false until a stack trace sent me to a line that had nothing to do with the crash.\nThe build had gained a step. Something small, a licence banner prepended at the end of the pipeline, after the bundler had already written the map. The bundler was right. The banner was right. The map was now a careful description of a file tha",
+    "source": "Dev.to",
+    "url": "https://dev.to/tamerkalla/a-source-map-is-a-claim-and-nothing-checks-whether-it-is-true-9f0",
+    "category": "programming",
+    "publishedAt": "2026-09-05T19:41:15.410Z",
+    "isVerified": true
+  },
+  {
+    "id": "488d6885-2c96-4e51-a406-c740c860e00f",
+    "title": "Agentic AI Is Mostly Marketing. Memory Is the Part That's Real.",
+    "summary": "Open any 'agentic AI' repo trending on GitHub this month and you'll find the same shape: a while loop, a tool-calling wrapper, a retry policy, and a system prompt that says 'you are an autonomous agent.' Strip the prompt out and what's left is a script. A good script, sometimes — but a script. It runs the same way today as it will next month, making the same mistakes in the same places, because nothing about running it changes what it knows.\nThat's not a controversial observation in private, but",
+    "source": "Dev.to",
+    "url": "https://dev.to/mukesh_13/agentic-ai-is-mostly-marketing-memory-is-the-part-thats-real-4b03",
+    "category": "programming",
+    "publishedAt": "2026-09-05T19:41:15.409Z",
+    "isVerified": true
+  },
+  {
+    "id": "bc6c341b-0fbd-4d20-966d-7934c50f2e37",
+    "title": "HookAudit: Building a Supply-Chain Security Scanner Without a Supply Chain",
+    "summary": "What happens when you force a security tool to inspect untrusted code using only standard-library primitives? An engineering postmortem on systems complexity and zero dependencies.\nWe were building a security scanner designed to inspect untrusted repositories before developers open them in their editors.\nOur first instinct was standard Node.js muscle memory:\nnpm install commander chalk fast-glob simple-git js-yaml cytoscape\n\nThen we stopped.\nWe were building a tool whose express purpose was to a",
+    "source": "Dev.to",
+    "url": "https://dev.to/bappadala_rohithkumarna/hookaudit-building-a-supply-chain-security-scanner-without-a-supply-chain-1aec",
+    "category": "programming",
+    "publishedAt": "2026-09-05T19:41:15.407Z",
+    "isVerified": true
+  },
+  {
+    "id": "a0207444-9631-42fd-bb59-09c3ce0a8670",
+    "title": "When Should an AI Suggestion Become a Financial Record?",
+    "summary": "AI can classify an expense, propose a match between a bank transaction and an invoice, or flag an unusual cash-flow pattern. None of those outputs should automatically become accounting truth.\nThat boundary matters more than raw model accuracy.\nA model output is probabilistic. A financial record changes operational state: balances, collections, reporting, tax workflows, and sometimes legally significant documents. Treating both as the same object creates a dangerous failure mode — a plausible pr",
+    "source": "Dev.to",
+    "url": "https://dev.to/hakkiyuvanc/when-should-an-ai-suggestion-become-a-financial-record-3523",
+    "category": "programming",
+    "publishedAt": "2026-09-05T19:41:15.406Z",
+    "isVerified": true
+  },
+  {
+    "id": "a2fe16a2-664a-48a2-b709-4523e8086850",
+    "title": "I let my own 31B model take over development of the thing running it",
+    "summary": "Two things I build:\nFlash, a local coding agent that runs in your terminal.\nFlash Onyx, the model it runs on. Gemma4 with a system prompt and sampling baked in.\nAs of today, I develop both of them from inside Flash, with Onyx driving.\n/model natuworkguy/flash-onyx-2.3:31b-cloudbase\n\nThat tag is 96 KB on disk, because there are no weights in it. It is my prompt and my sampling pointed at a hosted base, so I get the flagship's judgement on its own prompt without 20 GB of weights sitting on my mach",
+    "source": "Dev.to",
+    "url": "https://dev.to/natuworkguy/i-let-my-own-31b-model-take-over-development-of-the-thing-running-it-551b",
+    "category": "programming",
+    "publishedAt": "2026-09-05T19:41:15.404Z",
+    "isVerified": true
+  },
+  {
+    "id": "51f14286-a70c-40ca-bc7f-91f22e503f66",
+    "title": "Critical VMware Workstation and Fusion Flaw Lets VM Admins Execute Host Code",
+    "summary": "Broadcom has released security updates for two security flaws impacting VMware Workstation and Fusion, including one critical bug that could result in arbitrary code execution under certain conditions.\n\nThe vulnerability, tracked as CVE-2026-59346 (CVSS score: 9.3), is an integer-overflow vulnerability that a local attacker with elevated privileges can exploit to run arbitrary code.\n\n\"A",
+    "source": "The Hacker News",
+    "url": "https://thehackernews.com/2026/09/critical-vmware-workstation-and-fusion.html",
+    "category": "security",
+    "publishedAt": "2026-09-05T17:35:59.969Z",
+    "isVerified": true
+  },
+  {
+    "id": "b37aba27-2b37-4d3c-a4d1-f6f7e0699ff1",
+    "title": "Attackers Breached JetBrains Cadence via Unpatched TeamCity, Extracting AWS Credentials",
+    "summary": "JetBrains is urging Cadence users to revoke and rotate all credentials following a security incident last month in which unidentified threat actors exploited a recently disclosed critical vulnerability in TeamCity to breach its own environment.\n\n\"Cadence users should immediately revoke or rotate all credentials and secrets that may have been used to run their Cadence executions,\" JetBrains said.",
+    "source": "The Hacker News",
+    "url": "https://thehackernews.com/2026/09/attackers-breached-jetbrains-cadence.html",
+    "category": "security",
+    "publishedAt": "2026-09-05T17:35:59.968Z",
+    "isVerified": true
+  },
+  {
+    "id": "3237d2f0-8943-465a-87ed-8e4c495fc5a6",
+    "title": "Clucky’s new alarm app wakes you up with a crowing rooster",
+    "summary": "Clucky's new alarm app has an option where users are woken up to the sound of a rooster. They then complete a mission to turn it off.",
+    "source": "TechCrunch",
+    "url": "https://techcrunch.com/2026/09/05/cluckys-new-alarm-app-wakes-you-up-with-a-crowing-rooster",
+    "category": "startup",
+    "publishedAt": "2026-09-05T17:35:59.967Z",
+    "isVerified": true
+  },
+  {
+    "id": "5810d115-9756-478b-a63d-8a04049b9bfa",
+    "title": "How the Disaster of \"Forever Chemicals\" Was Kept Secret",
+    "summary": "How the Disaster of \"Forever Chemicals\" Was Kept Secret",
+    "source": "Hacker News (175 points)",
+    "url": "https://propublica.org/podcast/forever-chemicals-pfas-pfos-3m-secret-kris-hansen",
+    "category": "general",
+    "publishedAt": "2026-09-05T17:35:59.966Z",
+    "isVerified": true
+  },
+  {
+    "id": "85cc17ad-3e90-4dce-a419-c4dd85053813",
+    "title": "The \"$60 Gaming PC\" – AMD BC-250 (2025)",
+    "summary": "The \"$60 Gaming PC\" – AMD BC-250 (2025)",
+    "source": "Hacker News (138 points)",
+    "url": "https://devquasar.com/hardware/the-60-gaming-pc-amd-bc-250",
+    "category": "general",
+    "publishedAt": "2026-09-05T17:35:59.964Z",
+    "isVerified": true
+  },
+  {
+    "id": "912af017-1012-4d84-b0e8-ec0ee28023d2",
+    "title": "Flock used >100 times to track veteran who recorded traffic stop",
+    "summary": "Flock used >100 times to track veteran who recorded traffic stop",
+    "source": "Hacker News (160 points)",
+    "url": "https://reason.com/2026/09/02/wisconsin-cops-used-flock-over-100-times-to-track-a-navy-veteran-after-he-lawfully-recorded-a-traffic-stop",
+    "category": "general",
+    "publishedAt": "2026-09-05T17:35:59.963Z",
+    "isVerified": true
+  },
+  {
+    "id": "6825e0cd-cb5a-49ee-aca2-81d74d50bf2b",
+    "title": "StaSSH: My SSH Client Is Fine. The Rest of My SSH Life Wasn't",
+    "summary": "I have been using SSH for a very long time.\nSSH itself is not the problem.\nOpenSSH is mature, ubiquitous, scriptable, compatible with just about everything, and already knows how to deal with keys, agents, jump hosts, port forwards, certificates, host verification and all the other things accumulated over decades of people administering Unix machines.\nI had no particular desire to replace any of that.\nMy problem was everything around SSH.\nAfter enough years and enough computers, your SSH setup s",
+    "source": "Dev.to",
+    "url": "https://dev.to/arturormk/stassh-my-ssh-client-is-fine-the-rest-of-my-ssh-life-wasnt-1jec",
+    "category": "programming",
+    "publishedAt": "2026-09-05T17:35:59.962Z",
+    "isVerified": true
+  },
+  {
+    "id": "c35d25e8-3632-4937-8422-101d09b1152b",
+    "title": "Beside: generosity can be a little of your time",
+    "summary": "This is a submission for Weekend Challenge: Generosity Edition\n“I’m here for you” is easy to say. Knowing what to offer next can be harder.\nI built Beside to help turn that intention into something small and specific: a listening ear, quiet company, a helping hand, or a gentle hello after some time apart.\nWith September being Suicide Prevention Month, I wanted to explore how generosity could look like everyday connection. Giving someone a little of your time and attention can be an act of genero",
+    "source": "Dev.to",
+    "url": "https://dev.to/mutaician/beside-generosity-can-be-a-little-of-your-time-5d2j",
+    "category": "programming",
+    "publishedAt": "2026-09-05T17:35:59.961Z",
+    "isVerified": true
+  },
+  {
+    "id": "72110371-7c93-4350-9e83-b83cc0fa385b",
+    "title": "That Time Someone Exploited a Git Hook to Root Your Homelab",
+    "summary": "That Time Someone Exploited a Git Hook to Root Your Homelab\n\n\nYou know how it is—you spin up a self-hosted Git instance, maybe Forgejo or Gitea, and you're feeling good about having your own GitHub alternative. Then you forget about it for a while. That's usually when something bad happens.\nSomeone just posted a writeup about waking up to Pushover alerts because their i5-10600K was pinned at 50% CPU for 24 hours straight. The investigation turned into a reverse-engineering rabbit hole that's wor",
+    "source": "Dev.to",
+    "url": "https://dev.to/schiff_heimlich/that-time-someone-exploited-a-git-hook-to-root-your-homelab-h13",
+    "category": "programming",
+    "publishedAt": "2026-09-05T17:35:59.959Z",
+    "isVerified": true
+  },
+  {
+    "id": "b1bf146c-defa-4a8a-82d9-08c5441737e9",
+    "title": "MatrixRainView — A Code-Driven Android Matrix Rain Rendering Library",
+    "summary": "This is a submission for Weekend Challenge: Generosity Edition\nI built MatrixRainView, an open-source Android library that allows developers to easily add a fully customizable Matrix-style digital rain effect to their applications.\nThe goal behind this project was simple: make creative UI effects more accessible to Android developers without requiring pre-rendered GIFs, videos, or heavy animation assets.\nInstead of playing back an animation, MatrixRainView generates the effect in real time using",
+    "source": "Dev.to",
+    "url": "https://dev.to/boyoffi9/matrixrainview-a-code-driven-android-matrix-rain-rendering-library-12ij",
+    "category": "programming",
+    "publishedAt": "2026-09-05T17:35:59.958Z",
+    "isVerified": true
+  },
+  {
+    "id": "cfbec9fa-f02b-4e09-a1e4-52ca26b74576",
+    "title": "We Throw Away 1.3 Billion Tons of Food While Millions Starve. I Built FoodBridge with Snowflake to Stop It",
+    "summary": "This is a submission for Weekend Challenge: Generosity Edition\nThree years ago, I volunteered at a commercial bakery in the city. At 9:30 PM every Saturday, we packed fresh sourdough loaves, baguettes, and croissants that had been baked that very morning. \nI assumed we were bagging them for the local homeless shelter down the block. \nThen the manager pointed to three giant black garbage bins behind the kitchen alley. Into the trash went over eighty pounds of golden, aromatic, perfectly nutritiou",
+    "source": "Dev.to",
+    "url": "https://dev.to/emmasofia/we-throw-away-13-billion-tons-of-food-while-millions-starve-i-built-foodbridge-with-snowflake-to-n8g",
+    "category": "programming",
+    "publishedAt": "2026-09-05T17:35:59.956Z",
+    "isVerified": true
+  },
+  {
+    "id": "ceabe11d-cd49-4499-9a83-0ee533546511",
+    "title": "There Are Only Two Ways to Make Money in Software.",
+    "summary": "my team builds AI infrastructure, so yes, i have a horse in this race. the horse shows up at the end, clearly labeled. the history comes first, and the history is free.\njim barksdale, back when he ran netscape, said the only two ways to make money in software are bundling and unbundling.\npeople quote it like a joke. it's not a joke. it's the whole industry in one sentence, and it explains exactly what happened to your sprint board.\nJim Barksdale TED Talk - The Power of Networks\nthe cycle, in 90 ",
+    "source": "Dev.to",
+    "url": "https://dev.to/jon_at_backboardio/there-are-only-two-ways-to-make-money-in-software-18n6",
+    "category": "programming",
+    "publishedAt": "2026-09-05T17:35:59.954Z",
+    "isVerified": true
+  },
+  {
+    "id": "e4dc4bf7-b258-42d9-8d77-8d1801dcfed5",
+    "title": "IA Proativa e IA Geral (AGI), os próximos passos do uso da IA em Tecnologia",
+    "summary": "Lançado no dia 03/09, o GPT-6 Astra marca segundo a OpenAI, o início da era de IA 'AGI', isto é, de agentes capazes de usar recursos pensados numa hipotética Inteligência Artificial Geral (AGI na sigla em inglês).\n\nEstamos vivendo uma corrida entre os principais fornecedores de agentes de IA para entregar modelos cada vez mais capazes e que atinjam esse patamar, deixando a empresa responsável como líder desta nova etapa do desenvolvimento de IA, mas por outro lado, estamos vivendo uma transforma",
+    "source": "Dev.to",
+    "url": "https://dev.to/rafaelbonilha/ia-proativa-e-ia-geral-agi-os-proximos-passos-do-uso-da-ia-em-tecnologia-2hgj",
+    "category": "programming",
+    "publishedAt": "2026-09-05T17:35:59.953Z",
+    "isVerified": true
+  },
+  {
+    "id": "2365faf8-3290-4568-afb8-b67e1c7c839e",
+    "title": "Harness Score 1.6.4: Safer Scans, Broader CI, and Trustworthy Docs",
+    "summary": "AI coding agents do not work in a vacuum. Their results depend on the context files, rules, skills, hooks, tests, CI pipelines, and safety controls that surround the model. That surrounding system is the harness: the part of an agentic workflow that a team can actually design, version, test, and improve.\nHarness Score turns that idea into a deterministic repository audit. It checks 36 concrete signals across six dimensions, assigns a maturity level from L0 to L4, and shows the next gaps to close",
+    "source": "Dev.to",
+    "url": "https://dev.to/paladini/harness-score-164-safer-scans-broader-ci-and-trustworthy-docs-f1a",
+    "category": "programming",
+    "publishedAt": "2026-09-05T17:35:59.951Z",
+    "isVerified": true
+  },
+  {
+    "id": "001db1a8-ac53-4307-8c35-ad181984ccd1",
+    "title": "How I Used Bitwarden to Securely Share Hashnode Login Credentials",
+    "summary": "As I continue learning and working in the tech field, I have been learning not only how to build websites and applications, but also how to handle account credentials securely.\nRecently, I was introduced to Bitwarden, a password manager that can also be used to securely share sensitive information. In this article, I will share my experience creating a Bitwarden account and using Bitwarden Send to share Hashnode login credentials with a colleague.\nCreating my Bitwarden account\nThe first step is ",
+    "source": "Dev.to",
+    "url": "https://dev.to/zaid_817a4e733a6cc9b9d3dc/how-i-used-bitwarden-to-securely-share-hashnode-login-credentials-47md",
+    "category": "programming",
+    "publishedAt": "2026-09-05T17:35:59.950Z",
+    "isVerified": true
+  },
+  {
+    "id": "fb752793-3d5b-4bc8-825c-52caaf331976",
+    "title": "git commit with a pathspec ignored my index and committed the file as it sat on disk",
+    "summary": "Run this in an empty directory. It takes about fifteen seconds and it is the whole article.\n$ git init -q . && git config user.email t@t && git config user.name t\n$ printf 'v1\\n' > a.txt && git add . && git commit -qm base\n\n$ printf 'v2-staged\\n' > a.txt && git add a.txt     # stage a version\n$ printf 'v3-worktree-only\\n' > a.txt               # then keep typing\n\n$ git show :a.txt\nv2-staged\n$ cat a.txt\nv3-worktree-only\n\n$ git commit -qm 'commit with pathspec' -- a.txt\n$ git show HEAD:a.txt\nv3-wo",
+    "source": "Dev.to",
+    "url": "https://dev.to/mahirhir/git-commit-with-a-pathspec-ignored-my-index-and-committed-the-file-as-it-sat-on-disk-262g",
+    "category": "programming",
+    "publishedAt": "2026-09-05T17:35:59.949Z",
+    "isVerified": true
+  },
+  {
+    "id": "091a2cc6-b789-4597-9d73-7425e59e872b",
+    "title": "An unquoted heredoc halved my backslashes and turned a character class into the letter w",
+    "summary": "Same characters typed into two heredocs. The only difference is a pair of quotes around the delimiter.\n$ cat > unquoted.js <<EOF\nconst re = new RegExp(\"Desktop\\\\/(\\\\w+)\");\nconsole.log(String(re));\nEOF\n\n$ cat > quoted.js <<'EOF'\nconst re = new RegExp(\"Desktop\\\\/(\\\\w+)\");\nconsole.log(String(re));\nEOF\n\n$ diff unquoted.js quoted.js\n1c1\n< const re = new RegExp(\"Desktop\\/(\\w+)\");\n---\n> const re = new RegExp(\"Desktop\\/(\\w+)\");\n\n$ node unquoted.js\n/Desktop\\/(w+)/\n$ node quoted.js\n/Desktop\\/(\\w+)/\n\nThe u",
+    "source": "Dev.to",
+    "url": "https://dev.to/mahirhir/an-unquoted-heredoc-halved-my-backslashes-and-turned-a-character-class-into-the-letter-w-2k96",
+    "category": "programming",
+    "publishedAt": "2026-09-05T17:35:59.947Z",
+    "isVerified": true
+  },
+  {
+    "id": "44e66755-b84c-4dc2-a994-87da89a26c4d",
+    "title": "How I Turned a Research Paper into an AI Skill with NotebookLM",
+    "summary": "I wanted to create a reusable AI skill, but I did not want to write vague instructions based on guesswork. \nI wanted the skill to have a clear foundation.\nSo I started with a research paper and used NotebookLM to understand its main ideas before turning them into a practical skill.md file. \nHere is the process I followed.\nAI instructions often sound useful but fail in practice. They may contain broad advice such as:\n  Write clearly.\n  Be more human.\n  Avoid repetition.\n  Use a professional tone.",
+    "source": "Dev.to",
+    "url": "https://dev.to/rahmanfrr/how-i-turned-a-research-paper-into-an-ai-skill-with-notebooklm-1okp",
+    "category": "programming",
+    "publishedAt": "2026-09-05T17:35:59.945Z",
+    "isVerified": true
+  },
+  {
+    "id": "efd1916d-e38c-42d7-9043-0f1dd8ba8f0d",
+    "title": "Trezor Says ShipMonk Breach Exposed 67,000 U.S. Customers' Data It Said Was Deleted",
+    "summary": "Hardware wallet manufacturer Trezor on Friday disclosed that another 67,000 customers from the U.S. have been impacted in a breach at its shipping provider ShipMonk.\n\nThe exposed information includes customer names, email addresses, phone numbers, shipping addresses, and order numbers between November 2019 and August 2021. The breach does not affect the security of the company's hardware wallets",
+    "source": "The Hacker News",
+    "url": "https://thehackernews.com/2026/09/trezor-says-shipmonk-breach-exposed.html",
+    "category": "security",
+    "publishedAt": "2026-09-05T15:30:23.789Z",
+    "isVerified": true
+  },
+  {
+    "id": "a06bda66-828c-486a-abab-cb76c3236726",
+    "title": "Oura is going public, but these smart ring companies are coming for its crown",
+    "summary": "While Oura has largely dominated the smart ring market for years, a growing number of rivals are now racing to dethrone it by trying all sorts of approaches to get an edge over it.",
+    "source": "TechCrunch",
+    "url": "https://techcrunch.com/2026/09/05/oura-is-going-public-but-these-smart-ring-companies-are-coming-for-its-crown",
+    "category": "startup",
+    "publishedAt": "2026-09-05T15:30:23.788Z",
+    "isVerified": true
+  },
+  {
+    "id": "8fe40077-ff1b-4134-a4f3-91b9ca18b130",
+    "title": "Global warming will exceed 1.5-degree limit, UN says",
+    "summary": "Global warming will exceed 1.5-degree limit, UN says",
+    "source": "Hacker News (153 points)",
+    "url": "https://pbs.org/newshour/science/global-warming-will-exceed-1-5-degree-limit-un-says-in-report-that-maps-path-back-below-danger-zone",
+    "category": "general",
+    "publishedAt": "2026-09-05T15:30:23.787Z",
+    "isVerified": true
+  },
+  {
+    "id": "a8475d65-ae09-4199-9207-ab3314d584df",
+    "title": "Infino: fastest VectorDB at a million, still cheaper at a billion",
+    "summary": "Disclosure: I work on Infino, the engine benchmarked here. This post first appeared on the Infino blog.\nEvery team that adopts vector search eventually hits the same fork. The index that gives you millisecond lookups wants everything in RAM; the moment your corpus outgrows one machine, you're pushed toward a different class of system — distributed, disk- or object-backed, built for size and priced in latency. So you end up running two: a fast store for the data you query hot, a big store for the",
+    "source": "Dev.to",
+    "url": "https://dev.to/muralikpbhat/infino-fastest-vectordb-at-a-million-still-cheaper-at-a-billion-2aaj",
+    "category": "programming",
+    "publishedAt": "2026-09-05T15:30:23.786Z",
+    "isVerified": true
+  },
+  {
+    "id": "49ba5586-6d05-4af7-80b8-c80ab55f7168",
+    "title": "How we made a MIDI controller run our browser radio studio",
+    "summary": "A live radio screen is fine until the host has to do three things at once. The mouse becomes the wrong tool the moment you need to open a mic, pull music down, and hit a jingle without looking away.\nThat is when we decided our browser studio had to understand cheap MIDI controllers.\nThe Broadcast Studio at Tunio already ran in the browser. It had a mixer, pad grid, mic channels, guest links, a master section, recording, and a Go Live button. When nobody was live, the stream played the scheduled ",
+    "source": "Dev.to",
+    "url": "https://dev.to/icevl/how-we-made-a-midi-controller-run-our-browser-radio-studio-3ha0",
+    "category": "programming",
+    "publishedAt": "2026-09-05T15:30:23.785Z",
+    "isVerified": true
+  },
+  {
+    "id": "8fe34fa3-8b2a-4cb0-a778-08330ee0b19c",
+    "title": "How SWSH turned 300 monthly builds into a release pipeline nobody has to babysit",
+    "summary": "\"Expo's ecosystem helped us take human error and effort out of the release process, from a local build to a validated release.\"\n— Nathan Ahn, CTO, SWSH\nYou've shipped a mobile app before, so you know the drill: cut the builds, wrestle with signing credentials, submit to two different app stores, then hope nothing regressed on the way out. Do that by hand often enough and one of those steps eventually bites you.\nSWSH, a social photo-sharing app for shared albums and events, ships across iOS, an i",
+    "source": "Dev.to",
+    "url": "https://dev.to/expo/how-swsh-turned-300-monthly-builds-into-a-release-pipeline-nobody-has-to-babysit-11bl",
+    "category": "programming",
+    "publishedAt": "2026-09-05T15:30:23.785Z",
+    "isVerified": true
+  },
+  {
+    "id": "199545bf-fc07-4857-8334-08103a3a487a",
+    "title": "RAG Solved the Wrong Problem: What Actually Makes AI Applications Reliable?",
+    "summary": "Your team ships an internal AI assistant grounded on company documents. The demo is excellent: ask about the refund policy, and the model answers with confident prose. Then production happens.\nA customer asks about a refund exception that lives in a footnote, an old policy PDF outranks the current one, the retrieved chunk contradicts the billing system, and the assistant answers anyway. Support escalates it. The obvious fix feels mechanical: add more documents, tune the chunk size, add a reranke",
+    "source": "Dev.to",
+    "url": "https://dev.to/hosseinhezami/rag-solved-the-wrong-problem-what-actually-makes-ai-applications-reliable-3l8m",
+    "category": "programming",
+    "publishedAt": "2026-09-05T15:30:23.782Z",
+    "isVerified": true
+  },
+  {
+    "id": "fe5891b5-f2bb-448e-a857-154a67ef65e6",
+    "title": "🚀 Brand new testing approach with Combinatorics Framework",
+    "summary": "Unit tests? \n\n\nPairwise matrices? \n\n\nHow do you test dynamic, stateful scenario spaces in complex systems to be tested?\nCombinatorics Framework.\n\n\n\nIt’s a declarative scenario-space engine:\n🧩 Compose: Higher-order dataflow algebra (permutations, subsets, joins of prior result tables)\n⚡️ Inject: Mid-sequence rules, constraints, and optional interventions before execution\n⚙️ Execute: Real candidate scenarios in sandboxed System-Under-Test environments\n📊 Analyze: Multi-objective outcomes via Pare",
+    "source": "Dev.to",
+    "url": "https://dev.to/yb_combi/brand-new-testing-approach-with-combinatorics-framework-2mk7",
+    "category": "programming",
+    "publishedAt": "2026-09-05T15:30:23.781Z",
+    "isVerified": true
+  },
+  {
+    "id": "f9a793ad-6996-4e07-88ca-4ba376e2c08e",
+    "title": "OAuth 2.1 for MCP servers, done properly",
+    "summary": "Authorization is formally optional in MCP. That wording misleads people. It means you may run an unprotected server; it does not mean you get to half-implement a protected one. The moment you do protect an HTTP transport, the spec fills up with MUSTs, and most teams meet maybe half of them: pull in a library, wire up a login, ship it, leave three or four gaps that a scanner finds in minutes.\nHere is what \"properly\" looks like, with a check for each point. One thing to know if MCP is new to you: ",
+    "source": "Dev.to",
+    "url": "https://dev.to/guybrushulyssesthreepwood/oauth-21-for-mcp-servers-done-properly-41le",
+    "category": "programming",
+    "publishedAt": "2026-09-05T15:30:23.780Z",
+    "isVerified": true
+  },
+  {
+    "id": "d29451a7-edf1-452b-8bf9-396e5359e48a",
+    "title": "The confused deputy, or why \"just forward the token\" breaks your MCP server",
+    "summary": "Here is a failure that does not look like a bug in code review, passes every test you wrote, and quietly hands an attacker your privileges. It is called the confused deputy, and it is the reason \"just forward the token\" is one of the most expensive shortcuts you can take in an MCP server.\nA deputy is a program that acts for other people while holding more authority than they do. A confused deputy is one that can be talked into using that authority for a request it should have refused. Your MCP s",
+    "source": "Dev.to",
+    "url": "https://dev.to/guybrushulyssesthreepwood/the-confused-deputy-or-why-just-forward-the-token-breaks-your-mcp-server-hap",
+    "category": "programming",
+    "publishedAt": "2026-09-05T15:30:23.779Z",
+    "isVerified": true
+  },
+  {
+    "id": "8c8dc53f-6ff0-46d8-beb6-c00f3c80437a",
+    "title": "Seven security mistakes I keep finding in remote MCP servers",
+    "summary": "Remote MCP servers are shipping fast, and a lot of them are generated straight out of an OpenAPI spec or a no-code builder. That is fine for a demo. It stops being fine the moment a real agent, holding real credentials, is allowed to call real tools against real customer data.\nThese are the seven failures I built my scanner around, with the quickest way to check each one by hand.\nOne note before the list, because it trips people up on first contact: MCP protocol revisions are named after dates. ",
+    "source": "Dev.to",
+    "url": "https://dev.to/guybrushulyssesthreepwood/seven-security-mistakes-i-keep-finding-in-remote-mcp-servers-1mnn",
+    "category": "programming",
+    "publishedAt": "2026-09-05T15:30:23.777Z",
+    "isVerified": true
+  },
+  {
+    "id": "c3dcd51d-b3de-4d9a-9101-a8025b6ba661",
+    "title": "Why Most AI Agents Fail Long Before the Model Does",
+    "summary": "The agent did not fail because the model was stupid.\nIt failed because a CRM tool returned a 502, the agent retried, created two support tickets, read a stale knowledge-base article, filled the context window with stack traces, and then told the customer everything was fine. When teams see this, the instinct is often to upgrade the model. But the same failure usually happens again, only with better prose.\nMost AI agent failures are not model failures. They are system failures: unclear objectives",
+    "source": "Dev.to",
+    "url": "https://dev.to/hosseinhezami/why-most-ai-agents-fail-long-before-the-model-does-31j6",
+    "category": "programming",
+    "publishedAt": "2026-09-05T15:30:23.775Z",
+    "isVerified": true
+  },
+  {
+    "id": "6e9b04ba-e790-434a-9a2f-14bc80763397",
+    "title": "From API to AI Agent: Turning a Laravel Backend Into a Tool-Using System",
+    "summary": "Your team decides to add an AI agent to your Laravel application. The initial plan seems straightforward: give the LLM access to your existing REST API, let it figure out the endpoints, and watch it automate customer support. \nThen production happens. \nThe agent calls GET /api/users and pulls 14,000 records into its context window, blowing past the token limit and costing $0.80 for a single turn. It tries to POST to a nested route, guesses the JSON payload wrong, and triggers a validation except",
+    "source": "Dev.to",
+    "url": "https://dev.to/hosseinhezami/from-api-to-ai-agent-turning-a-laravel-backend-into-a-tool-using-system-2bd3",
+    "category": "programming",
+    "publishedAt": "2026-09-05T15:30:23.774Z",
+    "isVerified": true
+  },
+  {
+    "id": "c9fbf84c-1c46-4035-a5d8-b3d7d242506f",
+    "title": "Test post and some ray casting",
+    "summary": "This GIF shows what happens if you slightly stretch the data texture storing the BVH and triangle data. Child nodes storing triangles got misaligned addresses first, while AABB nodes lose them later.",
+    "source": "Dev.to",
+    "url": "https://dev.to/smarchevsky/test-post-and-some-ray-casting-2jo4",
+    "category": "programming",
+    "publishedAt": "2026-09-05T15:30:23.773Z",
+    "isVerified": true
+  },
+  {
+    "id": "eb26e401-a4d8-4c84-abeb-fa490400f6c2",
+    "title": "When an AI Agent Makes a Mistake in Production, Which Layer Should Stop It?",
+    "summary": "A familiar production failure looks like this: an AI support agent reads a ticket, decides the customer deserves compensation, calls the refund tool, and refunds the full annual subscription instead of the $12 add-on. The model did not crash. The API did not throw an exception. The tool worked exactly as designed.\nThe postmortem usually starts with the wrong question: “How do we stop the model from making bad decisions?”\nThe better question is: which layer should have stopped the mistake before ",
+    "source": "Dev.to",
+    "url": "https://dev.to/hosseinhezami/when-an-ai-agent-makes-a-mistake-in-production-which-layer-should-stop-it-4m0b",
+    "category": "programming",
+    "publishedAt": "2026-09-05T15:30:23.771Z",
+    "isVerified": true
+  }
+]
