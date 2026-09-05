@@ -1,232 +1,190 @@
 const crypto = require('crypto');
 
 // ================================
-// Simple JWT Implementation
+// JWT Helpers
 // ================================
-const JWT_SECRET = process.env.JWT_SECRET || 'techgig-radar-secret-key-2026';
+const JWT_SECRET = process.env.JWT_SECRET || 'techgig-radar-secret-2026';
 
-function base64url(str) {
-  return Buffer.from(str).toString('base64')
-    .replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+function b64encode(str) {
+  return Buffer.from(str).toString('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
 }
 
-function base64urlDecode(str) {
+function b64decode(str) {
   str = str.replace(/-/g, '+').replace(/_/g, '/');
   while (str.length % 4) str += '=';
   return Buffer.from(str, 'base64').toString();
 }
 
+function sign(data) {
+  return crypto.createHmac('sha256', JWT_SECRET).update(data).digest('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+}
+
 function createToken(payload) {
-  const header = base64url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
-  const body = base64url(JSON.stringify({ ...payload, exp: Date.now() + 7 * 24 * 60 * 60 * 1000 }));
-  const signature = crypto.createHmac('sha256', JWT_SECRET)
-    .update(`${header}.${body}`).digest('base64')
-    .replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
-  return `${header}.${body}.${signature}`;
+  const h = b64encode(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
+  const p = b64encode(JSON.stringify({ ...payload, exp: Date.now() + 604800000 }));
+  return h + '.' + p + '.' + sign(h + '.' + p);
 }
 
 function verifyToken(token) {
   try {
-    const [header, body, signature] = token.split('.');
-    const expectedSig = crypto.createHmac('sha256', JWT_SECRET)
-      .update(`${header}.${body}`).digest('base64')
-      .replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
-    if (signature !== expectedSig) return null;
-    const payload = JSON.parse(base64urlDecode(body));
+    const parts = token.split('.');
+    if (parts.length !== 3) return null;
+    if (sign(parts[0] + '.' + parts[1]) !== parts[2]) return null;
+    const payload = JSON.parse(b64decode(parts[1]));
     if (payload.exp < Date.now()) return null;
     return payload;
-  } catch (e) {
-    return null;
-  }
+  } catch (e) { return null; }
 }
 
-function hashPassword(password) {
+function hash(password) {
   return crypto.createHash('sha256').update(password + JWT_SECRET).digest('hex');
 }
 
 // ================================
-// In-Memory User Store (Demo)
+// Users Store
 // ================================
-const users = new Map();
-
-// Add demo user
-users.set('demo@techgig.com', {
-  id: 'demo-user-001',
+const users = {};
+users['demo@techgig.com'] = {
+  id: 'demo-001',
   email: 'demo@techgig.com',
-  password: hashPassword('demo123'),
-  name: 'Demo User',
-  role: 'user',
-  createdAt: new Date().toISOString()
-});
-
-// ================================
-// Mock Data
-// ================================
-const mockStats = {
-  news: { total: 1450, published: 45 },
-  jobs: { total: 85, published: 22 }
+  password: hash('demo123'),
+  name: 'Demo User'
 };
 
-const mockFeed = [
-  { id: '1', type: 'news', title: 'OpenAI opens fine-tuning to o-series models', description: 'Reasoning models can now be tuned on domain data.', category: 'AI', score: 94, source: 'OpenAI Blog', timeAgo: '18m ago', status: 'published', views: 214 },
-  { id: '2', type: 'job', title: 'Senior Platform Engineer', description: 'Kubernetes-heavy platform team, async-first.', category: 'REMOTE', source: 'RemoteOK', timeAgo: '42m ago', status: 'scheduled', views: 87 },
-  { id: '3', type: 'news', title: 'CISA flags active exploitation in CI runner', description: 'Self-hosted runners need patching today.', category: 'SECURITY', score: 91, source: 'CISA', timeAgo: '2h ago', status: 'published', views: 96 },
-];
-
-const mockJobs = [
-  { id: '1', title: 'Senior Platform Engineer', companyName: 'Grafana Labs', experienceLevel: 'senior', jobType: 'full-time', isRemote: true, salaryMin: 150000, requiredSkills: ['Kubernetes', 'Go', 'AWS'], applicationUrl: 'https://grafana.com/careers', email: 'careers@grafana.com' },
-  { id: '2', title: 'Data Scientist', companyName: 'Airbnb', experienceLevel: 'senior', jobType: 'full-time', isRemote: true, salaryMin: 180000, requiredSkills: ['Python', 'ML', 'SQL'], applicationUrl: 'https://airbnb.com/careers', email: 'talent@airbnb.com' },
-];
-
 // ================================
-// Serverless Handler
+// Handler
 // ================================
-module.exports = async (req, res) => {
+module.exports = function(req, res) {
   // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   
   if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+    res.statusCode = 200;
+    res.end();
+    return;
   }
 
-  const url = req.url;
-  const method = req.method;
+  var url = req.url || '';
+  var method = req.method || 'GET';
+  var body = req.body || {};
 
-  try {
-    // ===== AUTH ENDPOINTS =====
-    
-    // Register
-    if (url === '/api/auth/register' && method === 'POST') {
-      const { email, password, name } = req.body || {};
-      
-      if (!email || !password || !name) {
-        return res.status(400).json({ success: false, error: 'Email, password, and name are required' });
-      }
-      
-      if (password.length < 6) {
-        return res.status(400).json({ success: false, error: 'Password must be at least 6 characters' });
-      }
-      
-      const normalizedEmail = email.toLowerCase().trim();
-      
-      if (users.has(normalizedEmail)) {
-        return res.status(400).json({ success: false, error: 'Email already registered' });
-      }
-      
-      const user = {
-        id: 'user-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
-        email: normalizedEmail,
-        password: hashPassword(password),
-        name: name.trim(),
-        role: 'user',
-        createdAt: new Date().toISOString()
-      };
-      
-      users.set(normalizedEmail, user);
-      
-      const token = createToken({ id: user.id, email: user.email, name: user.name, role: user.role });
-      
-      return res.json({ 
-        success: true, 
-        user: { id: user.id, email: user.email, name: user.name, role: user.role },
-        token 
-      });
-    }
-    
-    // Login
-    if (url === '/api/auth/login' && method === 'POST') {
-      const { email, password } = req.body || {};
-      
-      if (!email || !password) {
-        return res.status(400).json({ success: false, error: 'Email and password are required' });
-      }
-      
-      const normalizedEmail = email.toLowerCase().trim();
-      const user = users.get(normalizedEmail);
-      
-      if (!user) {
-        return res.status(401).json({ success: false, error: 'Invalid email or password' });
-      }
-      
-      if (user.password !== hashPassword(password)) {
-        return res.status(401).json({ success: false, error: 'Invalid email or password' });
-      }
-      
-      const token = createToken({ id: user.id, email: user.email, name: user.name, role: user.role });
-      
-      return res.json({ 
-        success: true, 
-        user: { id: user.id, email: user.email, name: user.name, role: user.role },
-        token 
-      });
-    }
-    
-    // Verify token
-    if (url === '/api/auth/verify' && method === 'POST') {
-      const { token } = req.body || {};
-      const payload = verifyToken(token);
-      return res.json({ valid: !!payload, user: payload });
-    }
-    
-    // Get current user
-    if (url === '/api/auth/me' && method === 'GET') {
-      const authHeader = req.headers.authorization;
-      if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(401).json({ error: 'Unauthorized' });
-      }
-      const token = authHeader.substring(7);
-      const payload = verifyToken(token);
-      if (!payload) {
-        return res.status(401).json({ error: 'Invalid token' });
-      }
-      return res.json({ user: payload });
-    }
-    
-    // ===== DATA ENDPOINTS =====
-    
-    if (url === '/api/health') {
-      return res.json({ status: 'ok', timestamp: new Date().toISOString() });
-    }
-    
-    if (url === '/api/stats') {
-      return res.json(mockStats);
-    }
-    
-    if (url === '/api/feed') {
-      return res.json({ items: mockFeed });
-    }
-    
-    if (url === '/api/jobs') {
-      return res.json({ jobs: mockJobs });
-    }
-    
-    if (url === '/api/news') {
-      const news = mockFeed.filter(item => item.type === 'news');
-      return res.json({ news });
-    }
-    
-    if (url === '/api/queue') {
-      const queue = mockFeed.filter(item => item.status === 'review' || item.status === 'scheduled');
-      return res.json({ queue });
-    }
-    
-    // API info
-    if (url === '/api' || url === '/api/') {
-      return res.json({
-        name: 'TechGig Radar API',
-        version: '1.0.0',
-        endpoints: ['/api/auth/login', '/api/auth/register', '/api/health', '/api/feed', '/api/jobs'],
-        demo: { email: 'demo@techgig.com', password: 'demo123' }
-      });
-    }
-    
-    // 404
-    return res.status(404).json({ error: 'Not found', url });
-    
-  } catch (error) {
-    console.error('API Error:', error);
-    return res.status(500).json({ error: 'Internal server error', message: error.message });
+  // Health
+  if (url === '/api/health') {
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ status: 'ok', time: new Date().toISOString() }));
+    return;
   }
+
+  // Login
+  if (url === '/api/auth/login' && method === 'POST') {
+    var email = (body.email || '').toLowerCase().trim();
+    var password = body.password || '';
+    
+    if (!email || !password) {
+      res.statusCode = 400;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ success: false, error: 'Email and password required' }));
+      return;
+    }
+    
+    var user = users[email];
+    if (!user || user.password !== hash(password)) {
+      res.statusCode = 401;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ success: false, error: 'Invalid credentials' }));
+      return;
+    }
+    
+    var token = createToken({ id: user.id, email: user.email, name: user.name });
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ 
+      success: true, 
+      user: { id: user.id, email: user.email, name: user.name },
+      token: token
+    }));
+    return;
+  }
+
+  // Register
+  if (url === '/api/auth/register' && method === 'POST') {
+    var email = (body.email || '').toLowerCase().trim();
+    var password = body.password || '';
+    var name = (body.name || '').trim();
+    
+    if (!email || !password || !name) {
+      res.statusCode = 400;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ success: false, error: 'All fields required' }));
+      return;
+    }
+    
+    if (password.length < 6) {
+      res.statusCode = 400;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ success: false, error: 'Password must be 6+ characters' }));
+      return;
+    }
+    
+    if (users[email]) {
+      res.statusCode = 400;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ success: false, error: 'Email already registered' }));
+      return;
+    }
+    
+    var id = 'user-' + Date.now();
+    users[email] = { id: id, email: email, password: hash(password), name: name };
+    
+    var token = createToken({ id: id, email: email, name: name });
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ 
+      success: true, 
+      user: { id: id, email: email, name: name },
+      token: token
+    }));
+    return;
+  }
+
+  // Verify
+  if (url === '/api/auth/verify' && method === 'POST') {
+    var payload = verifyToken(body.token || '');
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ valid: !!payload, user: payload }));
+    return;
+  }
+
+  // Stats
+  if (url === '/api/stats') {
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ news: { total: 1450, published: 45 }, jobs: { total: 85, published: 22 } }));
+    return;
+  }
+
+  // Feed
+  if (url === '/api/feed') {
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ items: [
+      { id: '1', type: 'news', title: 'OpenAI o-series fine-tuning', category: 'AI', timeAgo: '18m ago' },
+      { id: '2', type: 'job', title: 'Senior Platform Engineer', category: 'REMOTE', timeAgo: '42m ago' }
+    ]}));
+    return;
+  }
+
+  // Jobs
+  if (url === '/api/jobs') {
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ jobs: [
+      { id: '1', title: 'Senior Platform Engineer', companyName: 'Grafana Labs', salaryMin: 150000 }
+    ]}));
+    return;
+  }
+
+  // Default
+  res.setHeader('Content-Type', 'application/json');
+  res.end(JSON.stringify({ 
+    name: 'TechGig Radar API',
+    demo: { email: 'demo@techgig.com', password: 'demo123' }
+  }));
 };
