@@ -6,9 +6,6 @@ on:
     - cron: '0 */4 * * *'
   workflow_dispatch: # Allow manual trigger
 
-env:
-  PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
-
 jobs:
   generate-reels:
     runs-on: ubuntu-latest
@@ -32,29 +29,36 @@ jobs:
           # Install edge-tts for voice generation
           pip install edge-tts
           
-          # Install Node dependencies
-          npm install
+          # Verify installations
+          which edge-tts || echo "edge-tts not in PATH, using python -m edge_tts"
+          ffmpeg -version | head -1
           
-          # FFmpeg is pre-installed on GitHub Actions runners
-          ffmpeg -version
+          # Create output directories
+          mkdir -p output/reels temp
       
       - name: Generate video reels
         run: |
           node scripts/generate-reels.js
         env:
-          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
       
+      - name: List generated files
+        run: |
+          echo "Generated files:"
+          ls -la output/reels/ || echo "No reels generated"
+      
       - name: Upload generated videos
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: video-reels-${{ github.run_number }}
-          path: output/reels/*.mp4
+          path: output/reels/
           retention-days: 7
+          if-no-files-found: warn
       
       - name: Post to Telegram
-        if: success()
+        if: success() && hashFiles('output/reels/manifest.json') != ''
         run: |
           node scripts/post-reels-telegram.js
         env:
