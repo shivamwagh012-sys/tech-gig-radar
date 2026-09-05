@@ -710,12 +710,12 @@
     ];
     
     const jobsData = [
-      { id: 1, title: "Senior Platform Engineer", company: "Grafana Labs", location: "Remote (India OK)", level: "senior", type: "Full-time", salary: "$150K-$180K", skills: ["Kubernetes", "Go", "AWS", "Terraform"], url: "https://grafana.com/careers", logo: "G" },
-      { id: 2, title: "Data Scientist", company: "Airbnb", location: "Remote", level: "senior", type: "Full-time", salary: "$180K-$220K", skills: ["Python", "ML", "SQL", "TensorFlow"], url: "https://airbnb.com/careers", logo: "A" },
-      { id: 3, title: "Frontend Engineer", company: "Fintech Startup", location: "India", level: "mid", type: "Contract", salary: "$80K-$120K", skills: ["React", "TypeScript", "GraphQL"], url: "#", logo: "F" },
-      { id: 4, title: "Associate Data Engineer", company: "Data Startup", location: "Remote", level: "fresher", type: "Full-time", salary: "$60K-$80K", skills: ["Python", "SQL", "dbt", "AWS"], url: "#", logo: "D" },
-      { id: 5, title: "Junior Full Stack Dev", company: "Tech Startup", location: "India", level: "junior", type: "Full-time", salary: "$40K-$60K", skills: ["JavaScript", "React", "Node.js"], url: "#", logo: "T" },
-      { id: 6, title: "Senior AI Engineer", company: "Lemon.io", location: "Remote", level: "senior", type: "Contract", salary: "$140K-$180K", skills: ["Python", "PyTorch", "LLMs", "MLOps"], url: "https://lemon.io", logo: "L" },
+      { id: 1, title: "Senior Platform Engineer", company: "Grafana Labs", location: "Remote (India OK)", level: "senior", type: "Full-time", salary: "$150K-$180K", skills: ["Kubernetes", "Go", "AWS", "Terraform"], url: "https://grafana.com/careers/platform-engineer", email: "careers@grafana.com", logo: "G" },
+      { id: 2, title: "Data Scientist", company: "Airbnb", location: "Remote", level: "senior", type: "Full-time", salary: "$180K-$220K", skills: ["Python", "ML", "SQL", "TensorFlow"], url: "https://careers.airbnb.com/positions/data-scientist", email: "talent@airbnb.com", logo: "A" },
+      { id: 3, title: "Frontend Engineer", company: "Fintech Startup", location: "India", level: "mid", type: "Contract", salary: "$80K-$120K", skills: ["React", "TypeScript", "GraphQL"], url: "https://angel.co/company/fintech-startup/jobs", email: "hr@fintechstartup.io", logo: "F" },
+      { id: 4, title: "Associate Data Engineer", company: "DataFlow Inc", location: "Remote", level: "fresher", type: "Full-time", salary: "$60K-$80K", skills: ["Python", "SQL", "dbt", "AWS"], url: "https://dataflow.io/careers/associate-data-engineer", email: "jobs@dataflow.io", logo: "D" },
+      { id: 5, title: "Junior Full Stack Dev", company: "TechNova", location: "India", level: "junior", type: "Full-time", salary: "$40K-$60K", skills: ["JavaScript", "React", "Node.js"], url: "https://technova.com/careers", email: "hiring@technova.com", logo: "T" },
+      { id: 6, title: "Senior AI Engineer", company: "Lemon.io", location: "Remote", level: "senior", type: "Contract", salary: "$140K-$180K", skills: ["Python", "PyTorch", "LLMs", "MLOps"], url: "https://lemon.io/for-developers", email: "developers@lemon.io", logo: "L" },
     ];
     
     // ==================== INITIALIZATION ====================
@@ -827,7 +827,7 @@
       let jobs = level === 'all' ? jobsData : jobsData.filter(j => j.level === level);
       
       grid.innerHTML = jobs.map(job => `
-        <div class="job-card" onclick="openUrl('${job.url}')">
+        <div class="job-card">
           <div class="job-header">
             <div class="job-company-logo">${job.logo}</div>
             <div class="job-badges">
@@ -838,9 +838,25 @@
           <h3 class="job-title">${job.title}</h3>
           <p class="job-company">${job.company} · ${job.location}</p>
           <div class="job-skills">${job.skills.map(s => `<span class="job-skill">${s}</span>`).join('')}</div>
+          
+          <div class="job-contact" style="margin: 12px 0; padding: 12px; background: var(--bg-hover); border-radius: 8px; border-left: 3px solid var(--accent-green);">
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">📬 HOW TO APPLY:</div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <a href="${job.url}" target="_blank" style="color: var(--accent-cyan); font-size: 13px; text-decoration: none; word-break: break-all;">
+                🔗 ${job.url}
+              </a>
+              <a href="mailto:${job.email}?subject=Application for ${job.title}" style="color: var(--accent-green); font-size: 13px; text-decoration: none;">
+                📧 ${job.email}
+              </a>
+            </div>
+          </div>
+          
           <div class="job-footer">
             <span class="job-salary">${job.salary}</span>
-            <button class="job-apply" onclick="event.stopPropagation(); openUrl('${job.url}')">Apply Now</button>
+            <div style="display: flex; gap: 8px;">
+              <button class="job-apply" style="background: var(--accent-purple);" onclick="event.stopPropagation(); window.location.href='mailto:${job.email}?subject=Application for ${job.title}&body=Hi,%0A%0AI am interested in the ${job.title} position.%0A%0APlease find my resume attached.%0A%0ABest regards'">📧 Email</button>
+              <button class="job-apply" onclick="event.stopPropagation(); openUrl('${job.url}')">🔗 Apply</button>
+            </div>
           </div>
         </div>
       `).join('');

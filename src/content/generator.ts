@@ -177,20 +177,37 @@ export function generateTelegramJobContent(job: Job): TelegramJobContent {
   text += `━━━━━━━━━━━━━━━━━━\n`;
   text += `📬 <b>HOW TO APPLY:</b>\n\n`;
   
-  // Application URL (primary)
+  // Application URL (primary - always show full URL)
   if (job.applicationUrl) {
     text += `🔗 <b>Apply Here:</b>\n`;
-    text += `<a href="${escapeHtml(job.applicationUrl)}">${escapeHtml(job.applicationUrl.slice(0, 60))}${job.applicationUrl.length > 60 ? '...' : ''}</a>\n\n`;
+    text += `<a href="${escapeHtml(job.applicationUrl)}">${escapeHtml(job.applicationUrl)}</a>\n\n`;
   }
   
-  // Email (if we can extract it)
-  const emailMatch = (job.description || '').match(/[\w.-]+@[\w.-]+\.\w+/);
-  if (emailMatch) {
-    text += `📧 <b>Send Resume To:</b>\n`;
-    text += `${escapeHtml(emailMatch[0])}\n\n`;
+  // Direct Email (from dedicated field or extracted from description)
+  const jobAny = job as Record<string, unknown>;
+  const directEmail = jobAny.applicationEmail as string | undefined;
+  const contactInfo = jobAny.contactInfo as { email?: string; recruiterName?: string } | undefined;
+  
+  if (directEmail) {
+    text += `📧 <b>Email Your Resume:</b>\n`;
+    text += `${escapeHtml(directEmail)}\n\n`;
+  } else if (contactInfo?.email) {
+    text += `📧 <b>Email Your Resume:</b>\n`;
+    text += `${escapeHtml(contactInfo.email)}`;
+    if (contactInfo.recruiterName) {
+      text += ` (Contact: ${escapeHtml(contactInfo.recruiterName)})`;
+    }
+    text += `\n\n`;
+  } else {
+    // Try to extract email from description
+    const emailMatch = (job.description || '').match(/[\w.-]+@[\w.-]+\.\w+/);
+    if (emailMatch) {
+      text += `📧 <b>Send Resume To:</b>\n`;
+      text += `${escapeHtml(emailMatch[0])}\n\n`;
+    }
   }
   
-  // Source link
+  // Source link (if different from application URL)
   if (job.sourceUrl && job.sourceUrl !== job.applicationUrl) {
     text += `📍 <b>Original Posting:</b>\n`;
     text += `<a href="${escapeHtml(job.sourceUrl)}">${escapeHtml(job.sourceName || 'View on Job Board')}</a>\n\n`;

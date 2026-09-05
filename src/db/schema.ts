@@ -117,7 +117,15 @@ export const jobs = sqliteTable('jobs', {
   
   // Application
   applicationUrl: text('application_url').notNull(),
+  applicationEmail: text('application_email'), // Direct email for resume submission
   applicationDeadline: text('application_deadline'),
+  // Store as JSON for multiple contact methods
+  contactInfo: text('contact_info', { mode: 'json' }).$type<{
+    email?: string;
+    phone?: string;
+    linkedin?: string;
+    recruiterName?: string;
+  }>(),
   
   // Source
   sourceId: text('source_id').references(() => sources.id),
