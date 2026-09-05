@@ -15,7 +15,8 @@
  */
 
 const SHOTSTACK_API_KEY = process.env.SHOTSTACK_API_KEY || '';
-const SHOTSTACK_ENV = process.env.SHOTSTACK_ENV || 'stage'; // 'stage' for sandbox, 'v1' for production
+// Use 'v1' for production API key, 'stage' for sandbox
+const SHOTSTACK_ENV = process.env.SHOTSTACK_ENV || process.env.SHOTSTACK || 'v1';
 
 const API_BASE = `https://api.shotstack.io/${SHOTSTACK_ENV}`;
 
