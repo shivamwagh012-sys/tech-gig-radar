@@ -29,6 +29,7 @@
       background: var(--bg-dark);
       color: var(--text);
       min-height: 100vh;
+      overflow-x: hidden;
     }
     
     .app { display: flex; min-height: 100vh; }
@@ -36,12 +37,16 @@
     /* Sidebar */
     .sidebar {
       width: 220px;
+      min-width: 220px;
       background: var(--bg-card);
       border-right: 1px solid var(--border);
       padding: 20px 0;
       position: fixed;
+      left: 0;
+      top: 0;
       height: 100vh;
       overflow-y: auto;
+      z-index: 100;
     }
     
     .logo { padding: 0 20px 20px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
@@ -95,7 +100,13 @@
     .stat-label { font-size: 11px; color: var(--text-muted); }
     
     /* Main */
-    .main { flex: 1; margin-left: 220px; padding: 30px; }
+    .main { 
+      flex: 1; 
+      margin-left: 220px; 
+      padding: 30px; 
+      max-width: calc(100vw - 220px);
+      overflow-x: hidden;
+    }
     
     .header {
       display: flex; justify-content: space-between;
@@ -132,7 +143,7 @@
     }
     .btn-secondary:hover { background: var(--bg-hover); border-color: var(--accent-cyan); }
     
-    .view { display: none; }
+    .view { display: none; max-width: 100%; overflow-x: hidden; }
     .view.active { display: block; }
     
     /* NEWS FLASH STYLES */
@@ -140,12 +151,16 @@
       background: linear-gradient(135deg, #1a0a0a 0%, #0a0a1a 100%);
       border-radius: 16px; padding: 0; overflow: hidden;
       border: 1px solid var(--accent-red);
+      max-width: 100%;
     }
     
     .news-flash-header {
       background: linear-gradient(90deg, var(--accent-red), #ff6b6b);
       padding: 15px 25px; display: flex;
       justify-content: space-between; align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
     .news-flash-header h3 {
       display: flex; align-items: center; gap: 10px;
@@ -168,10 +183,12 @@
     .news-ticker {
       background: #1a0505; padding: 10px 20px;
       overflow: hidden; border-bottom: 1px solid #330000;
+      max-width: 100%;
     }
     .ticker-content {
       display: flex; animation: ticker 30s linear infinite;
       white-space: nowrap;
+      width: max-content;
     }
     @keyframes ticker {
       0% { transform: translateX(0); }
@@ -187,8 +204,9 @@
     
     .news-flash-grid {
       padding: 20px; display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
       gap: 15px; max-height: 600px; overflow-y: auto;
+      overflow-x: hidden;
     }
     
     .flash-card {
@@ -247,7 +265,7 @@
     }
     
     /* REELS GRID */
-    .reels-section { margin-bottom: 30px; }
+    .reels-section { margin-bottom: 30px; max-width: 100%; overflow: hidden; }
     .section-header {
       display: flex; justify-content: space-between;
       align-items: center; margin-bottom: 15px;
@@ -260,6 +278,7 @@
     .reels-scroll {
       display: flex; gap: 15px; overflow-x: auto;
       padding-bottom: 10px; scroll-snap-type: x mandatory;
+      max-width: 100%;
     }
     .reels-scroll::-webkit-scrollbar { height: 6px; }
     .reels-scroll::-webkit-scrollbar-track { background: var(--bg-card); border-radius: 3px; }
@@ -336,13 +355,14 @@
     .tab-count { margin-left: 10px; color: var(--text-muted); font-size: 14px; }
     
     /* Feed */
-    .feed { display: flex; flex-direction: column; gap: 15px; }
+    .feed { display: flex; flex-direction: column; gap: 15px; max-width: 100%; }
     
     .feed-card {
       background: var(--bg-card); border-radius: 12px;
       padding: 20px; border: 1px solid var(--border);
       cursor: pointer; transition: all 0.3s;
       display: grid; grid-template-columns: 1fr auto 120px; gap: 20px;
+      max-width: 100%; overflow: hidden;
     }
     .feed-card:hover {
       border-color: var(--accent-cyan);
@@ -389,7 +409,7 @@
     }
     .job-filter:hover, .job-filter.active { border-color: var(--accent-cyan); color: var(--accent-cyan); }
     
-    .job-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 15px; }
+    .job-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 15px; max-width: 100%; }
     
     .job-card {
       background: var(--bg-card); border-radius: 12px;
