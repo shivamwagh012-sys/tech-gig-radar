@@ -982,96 +982,36 @@
         <div class="header">
           <div>
             <h2>Video Reels</h2>
-            <p>Animated infographic videos for social media</p>
+            <p>Auto-generated every 4 hours • Stock videos + AI voice + music</p>
           </div>
-          <div class="header-actions">
-            <button class="btn-primary" onclick="openReelCreator()">🎬 Create Reel</button>
-          </div>
-        </div>
-        
-        <!-- Reel Creator Modal -->
-        <div id="reel-creator" style="display: none; margin-bottom: 25px; background: var(--bg-card); border-radius: 16px; padding: 25px; border: 1px solid var(--border);">
-          <h3 style="margin-bottom: 20px; color: var(--accent-cyan);">🎬 Create New Reel</h3>
-          
-          <div style="display: flex; gap: 15px; margin-bottom: 20px;">
-            <button class="reel-type-btn active" data-type="news" onclick="selectReelType('news')" style="flex: 1; padding: 15px; background: var(--accent-cyan); color: var(--bg-dark); border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
-              📰 News Reel
-            </button>
-            <button class="reel-type-btn" data-type="job" onclick="selectReelType('job')" style="flex: 1; padding: 15px; background: var(--bg-hover); color: var(--text); border: 1px solid var(--border); border-radius: 8px; font-weight: 600; cursor: pointer;">
-              💼 Job Reel
-            </button>
-          </div>
-          
-          <!-- News Reel Form -->
-          <div id="news-reel-form">
-            <div style="margin-bottom: 15px;">
-              <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 5px;">Headline *</label>
-              <input type="text" id="reel-headline" placeholder="e.g., GPT-5 Launches Today" style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 14px;">
-            </div>
-            <div style="margin-bottom: 15px;">
-              <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 5px;">Key Points (one per line)</label>
-              <textarea id="reel-points" rows="4" placeholder="Trained on 100K+ GPUs&#10;First model rated CRITICAL&#10;36x faster than humans&#10;Plus tier only" style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 14px; resize: vertical;"></textarea>
-            </div>
-            <div style="margin-bottom: 15px;">
-              <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 5px;">Stats (format: value:label, one per line)</label>
-              <textarea id="reel-stats" rows="2" placeholder="100K+:Training GPUs&#10;36x:Speed Improvement" style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 14px; resize: vertical;"></textarea>
-            </div>
-          </div>
-          
-          <!-- Job Reel Form -->
-          <div id="job-reel-form" style="display: none;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-              <div>
-                <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 5px;">Company *</label>
-                <input type="text" id="reel-company" placeholder="e.g., Google" style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 14px;">
-              </div>
-              <div>
-                <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 5px;">Job Title *</label>
-                <input type="text" id="reel-job-title" placeholder="e.g., Senior Engineer" style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 14px;">
-              </div>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
-              <div>
-                <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 5px;">Salary Range</label>
-                <input type="text" id="reel-salary" placeholder="e.g., $150K-$200K" style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 14px;">
-              </div>
-              <div>
-                <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 5px;">Skills (comma separated)</label>
-                <input type="text" id="reel-skills" placeholder="e.g., React, Node.js, AWS" style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 14px;">
-              </div>
-            </div>
-          </div>
-          
-          <div style="display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap;">
-            <button onclick="previewReel()" style="flex: 1; min-width: 150px; padding: 14px; background: var(--accent-cyan); color: var(--bg-dark); border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 15px;">
-              👁️ Preview Reel
-            </button>
-            <button onclick="generateProReel()" style="flex: 1; min-width: 150px; padding: 14px; background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan)); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 15px;">
-              🎬 Generate Pro Video
-            </button>
-            <button onclick="closeReelCreator()" style="padding: 14px 24px; background: var(--bg-hover); color: var(--text); border: 1px solid var(--border); border-radius: 8px; font-weight: 600; cursor: pointer;">
-              ✕ Cancel
-            </button>
-          </div>
-          
-          <!-- Pro Video Status -->
-          <div id="pro-video-status" style="display: none; margin-top: 20px; padding: 20px; background: var(--bg-hover); border-radius: 12px; border-left: 4px solid var(--accent-purple);">
-            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
-              <div class="spinner" style="width: 20px; height: 20px; border: 3px solid var(--border); border-top-color: var(--accent-purple); border-radius: 50%; animation: spin 1s linear infinite;"></div>
-              <span style="font-weight: 600; color: var(--accent-purple);" id="pro-status-text">Generating video...</span>
-            </div>
-            <p style="font-size: 13px; color: var(--text-muted);" id="pro-status-detail">This may take 30-60 seconds. The video includes stock backgrounds, music, and animations.</p>
-            <a id="pro-video-link" href="#" target="_blank" style="display: none; margin-top: 15px; padding: 12px 20px; background: var(--accent-green); color: var(--bg-dark); border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-block;">
-              ⬇️ Download Video
-            </a>
+          <div class="header-actions" style="display: flex; gap: 10px;">
+            <span style="background: var(--accent-green); color: var(--bg-dark); padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;">🤖 Auto-Generated</span>
           </div>
         </div>
         
-        <style>
-          @keyframes spin {
-            to { transform: rotate(360deg); }
-          }
-        </style>
+        <!-- Auto Generation Info Banner -->
+        <div style="background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(168,85,247,0.1)); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 25px;">
+          <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 200px;">
+              <h4 style="color: var(--accent-cyan); margin-bottom: 8px;">🎬 Fully Automated Video Generation</h4>
+              <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Videos are automatically created every 4 hours using FFmpeg, stock footage, AI voice narration, and background music. Posted directly to Telegram.</p>
+            </div>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+              <div style="text-align: center;">
+                <div style="font-size: 24px; font-weight: 700; color: var(--accent-green);">FREE</div>
+                <div style="font-size: 11px; color: var(--text-muted);">Forever</div>
+              </div>
+              <div style="text-align: center;">
+                <div style="font-size: 24px; font-weight: 700; color: var(--accent-cyan);">4h</div>
+                <div style="font-size: 11px; color: var(--text-muted);">Interval</div>
+              </div>
+              <div style="text-align: center;">
+                <div style="font-size: 24px; font-weight: 700; color: var(--accent-purple);">∞</div>
+                <div style="font-size: 11px; color: var(--text-muted);">Unlimited</div>
+              </div>
+            </div>
+          </div>
+        </div>
         
         <div class="reels-scroll" id="all-reels-grid" style="flex-wrap: wrap; overflow: visible;"></div>
       </div>

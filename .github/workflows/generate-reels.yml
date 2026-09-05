@@ -1,0 +1,62 @@
+name: Auto Generate Video Reels
+
+on:
+  schedule:
+    # Run every 4 hours
+    - cron: '0 */4 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+env:
+  PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+
+jobs:
+  generate-reels:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          # Install edge-tts for voice generation
+          pip install edge-tts
+          
+          # Install Node dependencies
+          npm install
+          
+          # FFmpeg is pre-installed on GitHub Actions runners
+          ffmpeg -version
+      
+      - name: Generate video reels
+        run: |
+          node scripts/generate-reels.js
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+      
+      - name: Upload generated videos
+        uses: actions/upload-artifact@v4
+        with:
+          name: video-reels-${{ github.run_number }}
+          path: output/reels/*.mp4
+          retention-days: 7
+      
+      - name: Post to Telegram
+        if: success()
+        run: |
+          node scripts/post-reels-telegram.js
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
