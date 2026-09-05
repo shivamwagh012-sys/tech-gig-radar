@@ -599,21 +599,238 @@
     .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
     .empty-state svg { width: 80px; height: 80px; margin-bottom: 20px; opacity: 0.5; }
     
+    /* ==================== MOBILE RESPONSIVE ==================== */
+    
+    /* Mobile Menu Toggle Button */
+    .mobile-menu-btn {
+      display: none;
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 200;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      color: var(--text);
+      cursor: pointer;
+    }
+    
+    .mobile-menu-btn svg {
+      width: 24px;
+      height: 24px;
+    }
+    
+    /* Mobile Overlay */
+    .mobile-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 90;
+    }
+    
+    .mobile-overlay.active {
+      display: block;
+    }
+    
+    /* Tablet: 768px - 1024px */
+    @media (max-width: 1024px) {
+      .header { flex-direction: column; gap: 15px; align-items: stretch; }
+      .header-actions { flex-wrap: wrap; }
+      .search-box { flex: 1; min-width: 200px; }
+      .news-flash-grid { grid-template-columns: repeat(2, 1fr); }
+      .job-grid { grid-template-columns: repeat(2, 1fr); }
+      .reels-scroll { gap: 15px; }
+      .reel-card { min-width: 180px; }
+    }
+    
+    /* Mobile: Below 768px */
     @media (max-width: 768px) {
-      .sidebar { width: 60px; } .sidebar .logo h1 { font-size: 16px; }
-      .sidebar .logo span, .nav-item span { display: none; }
-      .main { margin-left: 60px; padding: 15px; }
-      .news-flash-grid { grid-template-columns: 1fr; }
-      .job-grid { grid-template-columns: 1fr; }
-      .feed-card { grid-template-columns: 1fr; }
+      /* Show mobile menu button */
+      .mobile-menu-btn { display: block; }
+      
+      /* Hide sidebar by default, show when active */
+      .sidebar {
+        width: 280px;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5);
+      }
+      
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      
+      /* Main content takes full width */
+      .main {
+        margin-left: 0;
+        max-width: 100vw;
+        padding: 70px 15px 15px;
+      }
+      
+      /* Header adjustments */
+      .header {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .header h2 { font-size: 20px; }
+      .header p { font-size: 12px; }
+      
+      .header-actions {
+        flex-direction: column;
+        width: 100%;
+      }
+      
+      .search-box {
+        width: 100%;
+        max-width: 100%;
+      }
+      
+      .search-box input {
+        width: 100%;
+      }
+      
+      .btn-primary {
+        width: 100%;
+        text-align: center;
+      }
+      
+      /* News Flash Grid - single column */
+      .news-flash-container { padding: 15px; }
+      .news-flash-grid { grid-template-columns: 1fr; gap: 12px; }
+      .flash-card { padding: 15px; }
+      .flash-title { font-size: 14px; }
+      
+      /* News Ticker */
+      .news-ticker { padding: 8px 10px; }
+      .ticker-item { font-size: 12px; }
+      
+      /* Reels Section */
+      .reels-section { padding: 15px; margin-bottom: 20px; }
+      .reels-scroll { gap: 12px; padding-bottom: 10px; }
+      .reel-card { min-width: 150px; }
+      .reel-card video { height: 200px; }
+      .reel-info { padding: 10px; }
+      .reel-title { font-size: 12px; }
+      
+      /* Feed Cards */
+      .feed { gap: 12px; }
+      .feed-card { 
+        grid-template-columns: 1fr;
+        padding: 15px;
+      }
       .feed-image { display: none; }
+      .feed-title { font-size: 15px; }
+      .feed-desc { font-size: 13px; }
+      
+      /* Job Grid - single column */
+      .job-grid { grid-template-columns: 1fr; gap: 12px; }
+      .job-card { padding: 15px; }
+      .job-title { font-size: 16px; }
+      .job-skills { gap: 6px; }
+      .job-skill { font-size: 11px; padding: 3px 8px; }
+      .job-footer { flex-direction: column; gap: 10px; align-items: stretch; }
+      .job-footer > div { justify-content: center; }
+      .job-apply { width: 100%; text-align: center; }
+      
+      /* Filter Tabs */
+      .filter-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 10px;
+        gap: 8px;
+        -webkit-overflow-scrolling: touch;
+      }
+      .filter-tabs::-webkit-scrollbar { display: none; }
+      .filter-tab {
+        white-space: nowrap;
+        flex-shrink: 0;
+        padding: 8px 12px;
+        font-size: 12px;
+      }
+      
+      /* Queue View */
+      .queue-stats { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .queue-stat { padding: 12px; }
+      .queue-stat-value { font-size: 20px; }
+      .queue-filters { flex-wrap: nowrap; overflow-x: auto; gap: 8px; }
+      .queue-filter { white-space: nowrap; flex-shrink: 0; font-size: 12px; }
+      .queue-item { padding: 12px; }
+      .queue-item-title { font-size: 14px; }
+      
+      /* Saved View */
+      .saved-stats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .saved-stat { padding: 10px; }
+      .saved-stat-value { font-size: 18px; }
+      .saved-item { padding: 12px; }
+      
+      /* User Section in Sidebar */
+      .user-section { padding: 12px 15px; }
+      .login-prompt { flex-direction: column; gap: 8px; }
+      .btn-login, .btn-signup { padding: 12px; }
+      
+      /* Toast Notifications */
+      .toast {
+        left: 15px;
+        right: 15px;
+        bottom: 15px;
+        max-width: calc(100vw - 30px);
+        font-size: 13px;
+      }
+    }
+    
+    /* Small Mobile: Below 480px */
+    @media (max-width: 480px) {
+      .main { padding: 65px 10px 10px; }
+      
+      .header h2 { font-size: 18px; }
+      
+      .news-flash-grid { gap: 10px; }
+      .flash-card { padding: 12px; }
+      .flash-title { font-size: 13px; }
+      
+      .reel-card { min-width: 130px; }
+      .reel-card video { height: 170px; }
+      
+      .feed-card { padding: 12px; }
+      .feed-title { font-size: 14px; }
+      
+      .job-card { padding: 12px; }
+      .job-title { font-size: 15px; }
+      .job-company { font-size: 13px; }
+      
+      .queue-stats { grid-template-columns: repeat(2, 1fr); }
+      .queue-stat { padding: 10px; }
+      .queue-stat-value { font-size: 18px; }
+      
+      .saved-stats { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+      .saved-stat { padding: 8px; }
+      .saved-stat-value { font-size: 16px; }
+      .saved-stat-label { font-size: 9px; }
     }
   </style>
 </head>
 <body>
+  <!-- Mobile Menu Button -->
+  <button class="mobile-menu-btn" id="mobile-menu-btn" onclick="toggleMobileMenu()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+  
+  <!-- Mobile Overlay -->
+  <div class="mobile-overlay" id="mobile-overlay" onclick="toggleMobileMenu()"></div>
+  
   <div class="app">
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
       <div class="logo">
         <img src="/logo.svg" alt="TechGig Radar" style="height: 40px; width: auto;">
       </div>
@@ -977,6 +1194,48 @@
       loadSaved();
       setupEventListeners();
       startAutoRefresh();
+    });
+    
+    // ==================== MOBILE MENU ====================
+    
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('mobile-overlay');
+      const menuBtn = document.getElementById('mobile-menu-btn');
+      
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+      
+      // Update menu button icon
+      if (sidebar.classList.contains('active')) {
+        menuBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>`;
+      } else {
+        menuBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>`;
+      }
+    }
+    
+    // Close mobile menu when clicking a nav item
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          const sidebar = document.getElementById('sidebar');
+          const overlay = document.getElementById('mobile-overlay');
+          sidebar.classList.remove('active');
+          overlay.classList.remove('active');
+          document.getElementById('mobile-menu-btn').innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>`;
+        }
+      });
     });
     
     // ==================== AUTHENTICATION ====================
