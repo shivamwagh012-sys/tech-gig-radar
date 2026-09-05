@@ -116,7 +116,7 @@ module.exports = async (req, res) => {
       }
       
       const user = {
-        id: crypto.randomUUID(),
+        id: 'user-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
         email: normalizedEmail,
         password: hashPassword(password),
         name: name.trim(),
