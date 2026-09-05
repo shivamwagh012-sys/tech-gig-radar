@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS jobs (
   location TEXT DEFAULT 'Remote',
   salary TEXT,
   job_type TEXT DEFAULT 'Full-time',
+  category TEXT DEFAULT 'Software Engineering',
   experience TEXT DEFAULT 'Mid-level',
   skills JSONB DEFAULT '[]',
   description TEXT,
@@ -66,3 +67,4 @@ CREATE POLICY "Allow service update" ON reels FOR UPDATE USING (true);
 CREATE INDEX IF NOT EXISTS idx_news_published_at ON news(published_at DESC);
 CREATE INDEX IF NOT EXISTS idx_jobs_posted_at ON jobs(posted_at DESC);
 CREATE INDEX IF NOT EXISTS idx_news_category ON news(category);
+CREATE INDEX IF NOT EXISTS idx_jobs_category ON jobs(category);
