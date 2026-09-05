@@ -93,29 +93,36 @@ async function main() {
     }
   }
   
-  // Dedupe by title
-  const seen = new Set();
+  // Dedupe by ID (must be unique for upsert)
+  const seenIds = new Set();
+  const seenTitles = new Set();
   const uniqueNews = allNews.filter(item => {
-    const key = item.title.toLowerCase().slice(0, 50);
-    if (seen.has(key)) return false;
-    seen.add(key);
+    if (seenIds.has(item.id)) return false;
+    const titleKey = item.title.toLowerCase().slice(0, 50);
+    if (seenTitles.has(titleKey)) return false;
+    seenIds.add(item.id);
+    seenTitles.add(titleKey);
     return true;
   }).slice(0, 50);
   
-  // Upsert to Supabase
+  // Upsert to Supabase one by one to avoid conflicts
   console.log(`\nUpserting ${uniqueNews.length} news items to Supabase...`);
   
-  const { data, error } = await supabase
-    .from('news')
-    .upsert(uniqueNews, { onConflict: 'id' });
-  
-  if (error) {
-    console.error('Supabase error:', error.message);
-    process.exit(1);
+  let successCount = 0;
+  for (const news of uniqueNews) {
+    const { error } = await supabase
+      .from('news')
+      .upsert(news, { onConflict: 'id' });
+    
+    if (error) {
+      console.log(`  Skip: ${news.title.slice(0, 40)}... (${error.message})`);
+    } else {
+      successCount++;
+    }
   }
   
   console.log('\n' + '='.repeat(50));
-  console.log(`✅ Saved ${uniqueNews.length} news items to Supabase`);
+  console.log(`✅ Saved ${successCount} news items to Supabase`);
   console.log('Latest:', uniqueNews[0]?.title);
 }
 

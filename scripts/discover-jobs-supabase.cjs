@@ -104,29 +104,36 @@ async function main() {
   
   const allJobs = [...remoteOKJobs, ...remotiveJobs];
   
-  // Dedupe
-  const seen = new Set();
+  // Dedupe by ID
+  const seenIds = new Set();
+  const seenKeys = new Set();
   const uniqueJobs = allJobs.filter(job => {
+    if (seenIds.has(job.id)) return false;
     const key = `${job.company}_${job.title}`.toLowerCase();
-    if (seen.has(key)) return false;
-    seen.add(key);
+    if (seenKeys.has(key)) return false;
+    seenIds.add(job.id);
+    seenKeys.add(key);
     return true;
   }).slice(0, 50);
   
-  // Upsert to Supabase
+  // Upsert to Supabase one by one
   console.log(`\nUpserting ${uniqueJobs.length} jobs to Supabase...`);
   
-  const { data, error } = await supabase
-    .from('jobs')
-    .upsert(uniqueJobs, { onConflict: 'id' });
-  
-  if (error) {
-    console.error('Supabase error:', error.message);
-    process.exit(1);
+  let successCount = 0;
+  for (const job of uniqueJobs) {
+    const { error } = await supabase
+      .from('jobs')
+      .upsert(job, { onConflict: 'id' });
+    
+    if (error) {
+      console.log(`  Skip: ${job.title.slice(0, 30)}... (${error.message})`);
+    } else {
+      successCount++;
+    }
   }
   
   console.log('\n' + '='.repeat(50));
-  console.log(`✅ Saved ${uniqueJobs.length} jobs to Supabase`);
+  console.log(`✅ Saved ${successCount} jobs to Supabase`);
   console.log('Latest:', uniqueJobs[0]?.title, 'at', uniqueJobs[0]?.company);
 }
 
