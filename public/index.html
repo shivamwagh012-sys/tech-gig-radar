@@ -1038,7 +1038,10 @@
   <div class="video-modal" id="video-modal">
     <div class="video-container">
       <button class="video-close" onclick="closeVideo()">×</button>
-      <iframe class="video-player" id="video-player" src="" frameborder="0" allowfullscreen></iframe>
+      <video class="video-player" id="video-player" controls autoplay>
+        <source src="" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
       <div class="video-info">
         <h3 id="video-title">Video Title</h3>
         <p id="video-description">Video description</p>
@@ -1052,42 +1055,46 @@
       {
         id: 1,
         title: "Three fake job posts, spotted in 30 seconds",
-        description: "Learn how to identify scam job postings quickly",
+        description: "Learn how to identify scam job postings quickly. Red flags to watch out for!",
         category: "verification",
         duration: "0:34",
         views: 18200,
         thumbnail: "https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?w=400&h=300&fit=crop",
-        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+        videoUrl: "/reels/reel-1-fake-jobs.mp4",
+        isLocal: true
       },
       {
         id: 2,
         title: "AWS just made your backups cheaper",
-        description: "Quick breakdown of the new AWS pricing",
+        description: "Breaking news! AWS removes egress fees for cross-region S3 replication.",
         category: "cloud",
-        duration: "0:21",
+        duration: "0:28",
         views: 11700,
         thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop",
-        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+        videoUrl: "/reels/reel-2-aws-backups.mp4",
+        isLocal: true
       },
       {
         id: 3,
         title: "A fresher-friendly job, read line by line",
-        description: "How to evaluate entry-level job postings",
+        description: "Perfect for fresh graduates! Associate Data Engineer role breakdown.",
         category: "freshers",
-        duration: "0:48",
+        duration: "0:35",
         views: 26400,
         thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop",
-        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+        videoUrl: "/reels/reel-3-fresher-jobs.mp4",
+        isLocal: true
       },
       {
         id: 4,
         title: "5 VS Code extensions you need in 2026",
-        description: "Boost your productivity with these tools",
+        description: "Boost your productivity with these essential developer tools!",
         category: "devtools",
-        duration: "1:12",
+        duration: "0:42",
         views: 34500,
         thumbnail: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop",
-        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+        videoUrl: "/reels/reel-4-vscode.mp4",
+        isLocal: true
       }
     ];
     
@@ -1546,7 +1553,12 @@
       const reel = reelsData.find(r => r.id === id);
       if (!reel) return;
       
-      document.getElementById('video-player').src = reel.videoUrl + '?autoplay=1';
+      const player = document.getElementById('video-player');
+      const source = player.querySelector('source');
+      source.src = reel.videoUrl;
+      player.load();
+      player.play();
+      
       document.getElementById('video-title').textContent = reel.title;
       document.getElementById('video-description').textContent = reel.description;
       document.getElementById('video-modal').classList.add('active');
@@ -1554,7 +1566,10 @@
     
     // Close video
     function closeVideo() {
-      document.getElementById('video-player').src = '';
+      const player = document.getElementById('video-player');
+      player.pause();
+      player.querySelector('source').src = '';
+      player.load();
       document.getElementById('video-modal').classList.remove('active');
     }
     
