@@ -274,13 +274,15 @@ async function main() {
     });
   }
   
-  // Fallback if no data
+  // Fallback if no data - skip generation
   if (CONTENT.length === 0) {
-    CONTENT.push({
-      title: 'TechGig Radar Update',
-      voice: 'Welcome to TechGig Radar! Your source for real tech news and verified remote job opportunities. Visit tech gig radar dot vercel dot app for the latest updates. Follow us for daily tech news and global remote jobs!',
-      type: 'promo'
-    });
+    console.log('\n⚠️ No news or jobs data available in Supabase');
+    console.log('Please run the discovery workflow first to populate data.');
+    console.log('Skipping reel generation.');
+    
+    // Output for workflow
+    console.log(`::set-output name=reels_count::0`);
+    return;
   }
   
   console.log(`\nGenerating ${CONTENT.length} reels...`);

@@ -1173,78 +1173,14 @@
   
   <script>
     // ==================== DATA ====================
+    // All data fetched from Supabase API - no hardcoded values
     
-    // News Flash - Last 4 hours
-    const newsFlashData = [
-      { id: 1, title: "OpenAI releases GPT-5 preview for enterprise customers", summary: "The latest model shows 40% improvement in reasoning tasks and supports 200K context window.", category: "ai", time: "12 min ago", breaking: true, source: "OpenAI Blog", url: "https://openai.com" },
-      { id: 2, title: "GitHub Copilot now generates entire test suites", summary: "New feature automatically creates unit tests, integration tests, and mocks for your codebase.", category: "devtools", time: "28 min ago", breaking: true, source: "GitHub", url: "https://github.blog" },
-      { id: 3, title: "AWS announces 50% price cut on Lambda functions", summary: "Effective immediately, serverless computing costs reduced across all regions.", category: "cloud", time: "45 min ago", breaking: false, source: "AWS", url: "https://aws.amazon.com" },
-      { id: 4, title: "Critical zero-day in popular npm package affects millions", summary: "Patch released for express-validator. Update immediately to version 7.2.1 or higher.", category: "security", time: "1 hour ago", breaking: true, source: "npm Security", url: "https://npmjs.com" },
-      { id: 5, title: "Stripe launches AI-powered fraud detection", summary: "New Radar Pro uses machine learning to block 99.9% of fraudulent transactions.", category: "ai", time: "1.5 hours ago", breaking: false, source: "Stripe", url: "https://stripe.com" },
-      { id: 6, title: "Google Cloud offers free $300 credits for students", summary: "New program provides cloud resources for learning. Valid worldwide including India.", category: "cloud", time: "2 hours ago", breaking: false, source: "Google Cloud", url: "https://cloud.google.com" },
-      { id: 7, title: "Microsoft acquires DevOps startup for $2.5B", summary: "JetBridge acquisition will enhance Azure DevOps with advanced CI/CD capabilities.", category: "devtools", time: "2.5 hours ago", breaking: false, source: "TechCrunch", url: "https://techcrunch.com" },
-      { id: 8, title: "Remote.com raises $300M for global hiring platform", summary: "Platform now supports contractor payments in 180+ countries including India.", category: "jobs", time: "3 hours ago", breaking: false, source: "TechCrunch", url: "https://remote.com" },
-      { id: 9, title: "Python 3.13 released with performance boost", summary: "New version is 25% faster with improved garbage collection and type hints.", category: "devtools", time: "3.5 hours ago", breaking: false, source: "Python.org", url: "https://python.org" },
-      { id: 10, title: "Cloudflare blocks largest DDoS attack ever", summary: "26 million requests per second mitigated. New protection features rolling out.", category: "security", time: "4 hours ago", breaking: false, source: "Cloudflare", url: "https://cloudflare.com" },
-    ];
-    
-    // Reels - 12 reels refreshed every 4 hours
-    const reelsData = [
-      { id: 1, title: "🚨 Spot Fake Jobs in 30 Seconds", category: "verification", duration: "0:50", views: 18200, badge: "trending", thumbnail: "https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?w=400&h=700&fit=crop", videoUrl: "/reels/reel-1-fake-jobs.mp4" },
-      { id: 2, title: "☁️ AWS Drops Backup Costs", category: "cloud", duration: "0:30", views: 11700, badge: "new", thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=700&fit=crop", videoUrl: "/reels/reel-2-aws-backups.mp4" },
-      { id: 3, title: "🎯 Fresher Job Breakdown", category: "freshers", duration: "0:45", views: 26400, badge: "verified", thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=700&fit=crop", videoUrl: "/reels/reel-3-fresher-jobs.mp4" },
-      { id: 4, title: "💻 Top 5 VS Code Extensions", category: "devtools", duration: "0:58", views: 34500, badge: "trending", thumbnail: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=700&fit=crop", videoUrl: "/reels/reel-4-vscode.mp4" },
-      { id: 5, title: "🏠 Remote Work Tips", category: "career", duration: "0:45", views: 8900, badge: "new", thumbnail: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=700&fit=crop", videoUrl: "/reels/reel-1-fake-jobs.mp4" },
-      { id: 6, title: "🐳 Docker in 60 Seconds", category: "devops", duration: "1:00", views: 15600, badge: "verified", thumbnail: "https://images.unsplash.com/photo-1605745341112-85968b19335b?w=400&h=700&fit=crop", videoUrl: "/reels/reel-2-aws-backups.mp4" },
-      { id: 7, title: "🤖 AI Tools for Devs", category: "ai", duration: "0:38", views: 22100, badge: "trending", thumbnail: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=700&fit=crop", videoUrl: "/reels/reel-3-fresher-jobs.mp4" },
-      { id: 8, title: "🔀 Git Commands Guide", category: "devtools", duration: "0:52", views: 19300, badge: "verified", thumbnail: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=400&h=700&fit=crop", videoUrl: "/reels/reel-4-vscode.mp4" },
-      { id: 9, title: "💰 Salary Negotiation", category: "career", duration: "0:40", views: 31200, badge: "trending", thumbnail: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=400&h=700&fit=crop", videoUrl: "/reels/reel-1-fake-jobs.mp4" },
-      { id: 10, title: "⚛️ React vs Vue 2026", category: "frontend", duration: "0:55", views: 12400, badge: "new", thumbnail: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=700&fit=crop", videoUrl: "/reels/reel-2-aws-backups.mp4" },
-      { id: 11, title: "💼 LinkedIn Hacks", category: "career", duration: "0:35", views: 28700, badge: "verified", thumbnail: "https://images.unsplash.com/photo-1611944212129-29977ae1398c?w=400&h=700&fit=crop", videoUrl: "/reels/reel-3-fresher-jobs.mp4" },
-      { id: 12, title: "📘 TypeScript Basics", category: "devtools", duration: "1:10", views: 9800, badge: "new", thumbnail: "https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=400&h=700&fit=crop", videoUrl: "/reels/reel-4-vscode.mp4" },
-    ];
-    
-    const feedData = [
-      { id: 1, type: "news", title: "OpenAI opens fine-tuning to o-series models", description: "Reasoning models can now be tuned on domain data — first-party pricing published.", category: "AI", score: 94, source: "OpenAI Blog", timeAgo: "18m ago", status: "published", views: 214, url: "https://openai.com/blog", image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=300&h=200&fit=crop" },
-      { id: 2, type: "job", title: "Senior Platform Engineer", description: "Kubernetes-heavy platform team, async-first. Hiring from India.", category: "REMOTE", source: "Grafana Labs", timeAgo: "42m ago", status: "published", views: 87, salary: "$150K-$180K", url: "https://grafana.com/careers", image: "https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?w=300&h=200&fit=crop" },
-      { id: 3, type: "carousel", title: "Five remote-first companies hiring freshers", description: "Swipe-through carousel from this week's verified entry-level listings.", category: "5 slides", source: "Radar", timeAgo: "1h ago", status: "published", views: 431, url: "#", image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=300&h=200&fit=crop" },
-      { id: 4, type: "news", title: "CISA flags active exploitation in CI runner", description: "Self-hosted runners need patching today. Critical security advisory.", category: "SECURITY", score: 91, source: "CISA", timeAgo: "2h ago", status: "published", views: 96, url: "https://cisa.gov", image: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=300&h=200&fit=crop" },
-      { id: 5, type: "job", title: "Frontend Engineer (React)", description: "Design-systems team at a Series B fintech, contract-to-hire.", category: "INDIA OK", source: "WWR", timeAgo: "4h ago", status: "review", views: 63, salary: "$80K-$120K", url: "https://weworkremotely.com", image: "https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?w=300&h=200&fit=crop" },
-    ];
-    
-    const jobsData = [
-      { id: 1, title: "Senior Platform Engineer", company: "Grafana Labs", location: "Remote (India OK)", level: "senior", type: "Full-time", salary: "$150K-$180K", skills: ["Kubernetes", "Go", "AWS", "Terraform"], url: "https://grafana.com/careers/platform-engineer", email: "careers@grafana.com", logo: "G" },
-      { id: 2, title: "Data Scientist", company: "Airbnb", location: "Remote", level: "senior", type: "Full-time", salary: "$180K-$220K", skills: ["Python", "ML", "SQL", "TensorFlow"], url: "https://careers.airbnb.com/positions/data-scientist", email: "talent@airbnb.com", logo: "A" },
-      { id: 3, title: "Frontend Engineer", company: "Fintech Startup", location: "India", level: "mid", type: "Contract", salary: "$80K-$120K", skills: ["React", "TypeScript", "GraphQL"], url: "https://angel.co/company/fintech-startup/jobs", email: "hr@fintechstartup.io", logo: "F" },
-      { id: 4, title: "Associate Data Engineer", company: "DataFlow Inc", location: "Remote", level: "fresher", type: "Full-time", salary: "$60K-$80K", skills: ["Python", "SQL", "dbt", "AWS"], url: "https://dataflow.io/careers/associate-data-engineer", email: "jobs@dataflow.io", logo: "D" },
-      { id: 5, title: "Junior Full Stack Dev", company: "TechNova", location: "India", level: "junior", type: "Full-time", salary: "$40K-$60K", skills: ["JavaScript", "React", "Node.js"], url: "https://technova.com/careers", email: "hiring@technova.com", logo: "T" },
-      { id: 6, title: "Senior AI Engineer", company: "Lemon.io", location: "Remote", level: "senior", type: "Contract", salary: "$140K-$180K", skills: ["Python", "PyTorch", "LLMs", "MLOps"], url: "https://lemon.io/for-developers", email: "developers@lemon.io", logo: "L" },
-    ];
-    
-    // HR & Recruitment Jobs Data
-    const hrJobsData = [
-      { id: 101, title: "Technical Recruiter", company: "Google", location: "Remote (India OK)", hrLevel: "recruiter", type: "Full-time", salary: "$80K-$120K", skills: ["Tech Recruiting", "LinkedIn", "ATS", "Sourcing"], url: "https://careers.google.com/jobs/technical-recruiter", email: "recruiting@google.com", logo: "G" },
-      { id: 102, title: "Senior Talent Acquisition", company: "Microsoft", location: "Remote", hrLevel: "talent", type: "Full-time", salary: "$100K-$140K", skills: ["Talent Acquisition", "Employer Branding", "Campus Hiring", "Leadership"], url: "https://careers.microsoft.com/talent-acquisition", email: "talent@microsoft.com", logo: "M" },
-      { id: 103, title: "HR Business Partner", company: "Amazon", location: "India", hrLevel: "manager", type: "Full-time", salary: "$90K-$130K", skills: ["HRBP", "Employee Relations", "Performance Mgmt", "Strategy"], url: "https://amazon.jobs/hr-business-partner", email: "hr-careers@amazon.com", logo: "A" },
-      { id: 104, title: "IT Recruiter - Entry Level", company: "Infosys", location: "Bangalore", hrLevel: "recruiter", type: "Full-time", salary: "$25K-$40K", skills: ["IT Recruiting", "Campus Drives", "Interview Scheduling", "MS Office"], url: "https://careers.infosys.com/recruiter", email: "careers@infosys.com", logo: "I" },
-      { id: 105, title: "Talent Sourcer", company: "Meta", location: "Remote", hrLevel: "talent", type: "Contract", salary: "$60K-$90K", skills: ["Boolean Search", "LinkedIn Recruiter", "Sourcing Tools", "Outreach"], url: "https://metacareers.com/talent-sourcer", email: "sourcing@meta.com", logo: "M" },
-      { id: 106, title: "People Operations Manager", company: "Stripe", location: "Remote (India OK)", hrLevel: "manager", type: "Full-time", salary: "$120K-$160K", skills: ["People Ops", "HRIS", "Compensation", "Benefits"], url: "https://stripe.com/jobs/people-ops", email: "people@stripe.com", logo: "S" },
-      { id: 107, title: "Technical Sourcer", company: "Netflix", location: "Remote", hrLevel: "talent", type: "Full-time", salary: "$70K-$100K", skills: ["Technical Sourcing", "Engineering Hiring", "Talent Mapping", "Diversity"], url: "https://jobs.netflix.com/technical-sourcer", email: "recruiting@netflix.com", logo: "N" },
-      { id: 108, title: "Campus Recruiter", company: "TCS", location: "India", hrLevel: "recruiter", type: "Full-time", salary: "$30K-$50K", skills: ["Campus Recruitment", "University Relations", "Fresher Hiring", "Events"], url: "https://careers.tcs.com/campus-recruiter", email: "campushiring@tcs.com", logo: "T" },
-      { id: 109, title: "HR Manager - Tech", company: "Flipkart", location: "Bangalore", hrLevel: "manager", type: "Full-time", salary: "$70K-$100K", skills: ["HR Management", "Tech Teams", "Policy", "Employee Engagement"], url: "https://careers.flipkart.com/hr-manager", email: "hr@flipkart.com", logo: "F" },
-      { id: 110, title: "Recruitment Coordinator", company: "Accenture", location: "India", hrLevel: "recruiter", type: "Full-time", salary: "$20K-$35K", skills: ["Coordination", "Scheduling", "Onboarding", "Documentation"], url: "https://accenture.com/careers/recruiter", email: "talent.acquisition@accenture.com", logo: "A" },
-    ];
-    
-    // Queue Data - Posts pending/scheduled for publishing
-    const queueData = [
-      { id: 101, type: "news", title: "Rust 2.0 officially announced with async improvements", description: "Major language update brings better async/await, improved error handling.", category: "DEVTOOLS", source: "Rust Blog", scheduledFor: "Today, 6:00 PM", status: "scheduled", platform: "telegram", url: "https://rust-lang.org" },
-      { id: 102, type: "job", title: "Backend Engineer - Remote", description: "Node.js + PostgreSQL, startup culture. $90K-$130K.", category: "REMOTE", source: "AngelList", scheduledFor: "Today, 7:30 PM", status: "scheduled", platform: "telegram", url: "https://angel.co" },
-      { id: 103, type: "news", title: "Docker announces new pricing for teams", description: "Free tier remains unchanged, team pricing restructured.", category: "DEVOPS", source: "Docker Blog", scheduledFor: "Tomorrow, 9:00 AM", status: "pending", platform: "telegram", url: "https://docker.com" },
-      { id: 104, type: "job", title: "ML Engineer - Contract", description: "6-month contract, PyTorch experience required. $150/hr.", category: "AI/ML", source: "Toptal", scheduledFor: "Tomorrow, 10:00 AM", status: "pending", platform: "telegram", url: "https://toptal.com" },
-      { id: 105, type: "news", title: "GitHub Actions gets 50% faster runners", description: "New M1 Mac runners available in beta for all users.", category: "DEVTOOLS", source: "GitHub", scheduledFor: "Sep 4, 2:00 PM", status: "published", platform: "telegram", publishedAt: "Sep 4, 2:00 PM", url: "https://github.blog" },
-      { id: 106, type: "job", title: "DevOps Lead", description: "Lead infrastructure team, AWS/Terraform expert.", category: "REMOTE", source: "RemoteOK", scheduledFor: "Sep 4, 4:00 PM", status: "published", platform: "telegram", publishedAt: "Sep 4, 4:15 PM", url: "https://remoteok.com" },
-      { id: 107, type: "news", title: "Vercel introduces edge middleware", description: "Run code at the edge before requests hit your origin.", category: "CLOUD", source: "Vercel", scheduledFor: "Sep 3, 11:00 AM", status: "failed", platform: "telegram", error: "Rate limit exceeded", url: "https://vercel.com" },
-    ];
+    let newsFlashData = [];
+    let reelsData = [];
+    let feedData = [];
+    let jobsData = [];
+    let hrJobsData = [];
+    let queueData = [];
     
     // Saved Items - User's bookmarks (persisted to localStorage)
     let savedItems = JSON.parse(localStorage.getItem('techgig_saved') || '[]');
@@ -1291,7 +1227,7 @@
             });
           }
           
-          // Update jobs data
+          // Update tech jobs data
           if (data.jobs && data.jobs.length > 0) {
             jobsData.length = 0;
             data.jobs.forEach((job, i) => {
@@ -1313,12 +1249,82 @@
             });
           }
           
+          // Update HR jobs data
+          if (data.hrJobs && data.hrJobs.length > 0) {
+            hrJobsData.length = 0;
+            data.hrJobs.forEach((job, i) => {
+              hrJobsData.push({
+                id: job.id || 100 + i,
+                title: job.title,
+                company: job.company,
+                location: job.location,
+                hrLevel: job.title?.toLowerCase().includes('manager') ? 'manager' : 
+                         job.title?.toLowerCase().includes('talent') ? 'talent' : 'recruiter',
+                type: job.type || 'Full-time',
+                salary: job.salary,
+                skills: job.skills || [],
+                url: job.applyUrl || '#',
+                email: 'apply@' + (job.company || 'company').toLowerCase().replace(/\s/g, '') + '.com',
+                logo: (job.company || 'C')[0]
+              });
+            });
+          }
+          
+          // Update reels data
+          if (data.reels && data.reels.length > 0) {
+            reelsData.length = 0;
+            data.reels.forEach((reel) => {
+              reelsData.push({
+                id: reel.id,
+                title: reel.title,
+                category: reel.category || 'tech',
+                duration: reel.duration || '0:30',
+                views: reel.views || 0,
+                badge: reel.badge || 'new',
+                thumbnail: reel.thumbnail,
+                videoUrl: reel.videoUrl
+              });
+            });
+          }
+          
+          // Update feed data from news + jobs
+          feedData.length = 0;
+          newsFlashData.slice(0, 3).forEach((n, i) => {
+            feedData.push({
+              id: i + 1,
+              type: 'news',
+              title: n.title,
+              description: n.summary,
+              category: n.category?.toUpperCase(),
+              source: n.source,
+              timeAgo: n.time,
+              status: 'published',
+              views: Math.floor(Math.random() * 200) + 50,
+              url: n.url
+            });
+          });
+          jobsData.slice(0, 2).forEach((j, i) => {
+            feedData.push({
+              id: 10 + i,
+              type: 'job',
+              title: j.title,
+              description: `${j.company} - ${j.location}`,
+              category: 'REMOTE',
+              source: j.company,
+              timeAgo: 'Recently',
+              status: 'published',
+              views: Math.floor(Math.random() * 100) + 30,
+              salary: j.salary,
+              url: j.url
+            });
+          });
+          
           // Update last refresh time
           document.getElementById('news-update-time').textContent = 'Updated: ' + new Date().toLocaleTimeString();
           console.log('Content refreshed from API');
         }
       } catch (error) {
-        console.log('Using cached data:', error.message);
+        console.log('API Error:', error.message);
       }
     }
     
