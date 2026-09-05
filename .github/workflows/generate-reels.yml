@@ -2,16 +2,15 @@ name: Auto Generate Video Reels
 
 on:
   schedule:
-    # Run every 4 hours
     - cron: '0 */4 * * *'
-  workflow_dispatch: # Allow manual trigger
+  workflow_dispatch:
 
 jobs:
   generate-reels:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
       
       - name: Setup Node.js
@@ -19,48 +18,44 @@ jobs:
         with:
           node-version: '20'
       
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      
-      - name: Install dependencies
+      - name: Setup Python and Edge TTS
         run: |
-          # Install edge-tts for voice generation
-          pip install edge-tts
-          
-          # Verify installations
-          which edge-tts || echo "edge-tts not in PATH, using python -m edge_tts"
-          ffmpeg -version | head -1
-          
-          # Create output directories
+          python3 -m pip install --upgrade pip
+          python3 -m pip install edge-tts
           mkdir -p output/reels temp
       
-      - name: Generate video reels
+      - name: Verify tools
         run: |
-          node scripts/generate-reels.js
+          echo "=== Checking FFmpeg ==="
+          ffmpeg -version | head -3
+          echo ""
+          echo "=== Checking Edge TTS ==="
+          python3 -m edge_tts --list-voices | head -5
+          echo ""
+          echo "=== Ready to generate videos ==="
+      
+      - name: Generate reels
+        run: node scripts/generate-reels.js
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
       
-      - name: List generated files
-        run: |
-          echo "Generated files:"
-          ls -la output/reels/ || echo "No reels generated"
-      
-      - name: Upload generated videos
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: video-reels-${{ github.run_number }}
+          name: reels-${{ github.run_number }}
           path: output/reels/
-          retention-days: 7
           if-no-files-found: warn
       
       - name: Post to Telegram
-        if: success() && hashFiles('output/reels/manifest.json') != ''
+        if: success()
         run: |
-          node scripts/post-reels-telegram.js
+          if [ -f output/reels/manifest.json ]; then
+            node scripts/post-reels-telegram.js
+          else
+            echo "No manifest found, skipping Telegram post"
+          fi
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}

@@ -1,95 +1,92 @@
 /**
  * Post generated reels to Telegram
  */
-
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
-const FormData = require('form-data');
 
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-const TELEGRAM_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID;
-const OUTPUT_DIR = path.join(process.cwd(), 'output', 'reels');
+const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+const CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID || '@TechGigRadar';
 
-/**
- * Send video to Telegram
- */
-async function sendVideoToTelegram(videoPath, caption) {
+if (!BOT_TOKEN) {
+  console.log('No TELEGRAM_BOT_TOKEN, skipping post');
+  process.exit(0);
+}
+
+const manifestPath = './output/reels/manifest.json';
+if (!fs.existsSync(manifestPath)) {
+  console.log('No manifest found, nothing to post');
+  process.exit(0);
+}
+
+const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+console.log(`Found ${manifest.reels.length} reels to post\n`);
+
+async function postVideo(videoPath, caption) {
   return new Promise((resolve, reject) => {
-    const form = new FormData();
-    form.append('chat_id', TELEGRAM_CHANNEL_ID);
-    form.append('video', fs.createReadStream(videoPath));
-    form.append('caption', caption);
-    form.append('parse_mode', 'HTML');
+    const boundary = '----FormBoundary' + Math.random().toString(36).slice(2);
+    const videoData = fs.readFileSync(videoPath);
+    const filename = path.basename(videoPath);
+    
+    let body = '';
+    body += `--${boundary}\r\n`;
+    body += `Content-Disposition: form-data; name="chat_id"\r\n\r\n${CHANNEL_ID}\r\n`;
+    body += `--${boundary}\r\n`;
+    body += `Content-Disposition: form-data; name="caption"\r\n\r\n${caption}\r\n`;
+    body += `--${boundary}\r\n`;
+    body += `Content-Disposition: form-data; name="video"; filename="${filename}"\r\n`;
+    body += `Content-Type: video/mp4\r\n\r\n`;
+    
+    const bodyStart = Buffer.from(body, 'utf8');
+    const bodyEnd = Buffer.from(`\r\n--${boundary}--\r\n`, 'utf8');
+    const fullBody = Buffer.concat([bodyStart, videoData, bodyEnd]);
     
     const options = {
       hostname: 'api.telegram.org',
-      path: `/bot${TELEGRAM_BOT_TOKEN}/sendVideo`,
+      path: `/bot${BOT_TOKEN}/sendVideo`,
       method: 'POST',
-      headers: form.getHeaders()
+      headers: {
+        'Content-Type': `multipart/form-data; boundary=${boundary}`,
+        'Content-Length': fullBody.length
+      }
     };
     
     const req = https.request(options, (res) => {
       let data = '';
       res.on('data', chunk => data += chunk);
       res.on('end', () => {
-        try {
-          const result = JSON.parse(data);
-          if (result.ok) {
-            resolve(result);
-          } else {
-            reject(new Error(result.description));
-          }
-        } catch (e) {
-          reject(e);
+        if (res.statusCode === 200) {
+          resolve(JSON.parse(data));
+        } else {
+          reject(new Error(`Telegram API error: ${res.statusCode} ${data}`));
         }
       });
     });
     
     req.on('error', reject);
-    form.pipe(req);
+    req.write(fullBody);
+    req.end();
   });
 }
 
-/**
- * Main function
- */
 async function main() {
-  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHANNEL_ID) {
-    console.log('Telegram credentials not configured. Skipping post.');
-    return;
-  }
-  
-  const manifestPath = path.join(OUTPUT_DIR, 'manifest.json');
-  
-  if (!fs.existsSync(manifestPath)) {
-    console.log('No manifest found. No reels to post.');
-    return;
-  }
-  
-  const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-  
-  console.log(`Posting ${manifest.reels.length} reels to Telegram...`);
-  
   for (const reel of manifest.reels) {
     if (!fs.existsSync(reel.path)) {
       console.log(`Skipping ${reel.title} - file not found`);
       continue;
     }
     
-    const caption = `🎬 <b>${reel.title}</b>\n\n` +
-                   `📍 ${reel.type === 'job' ? '💼 Job Alert' : '📰 Tech News'}\n\n` +
-                   `👉 Follow @TechGigRadar for daily updates!\n\n` +
-                   `#TechGigRadar #Tech #Jobs #Remote`;
+    const caption = `🎬 ${reel.title}\n\n📲 Follow @TechGigRadar for daily tech news & remote jobs!\n\n#TechNews #RemoteJobs #TechGigRadar`;
     
     try {
-      await sendVideoToTelegram(reel.path, caption);
-      console.log(`✅ Posted: ${reel.title}`);
+      console.log(`Posting: ${reel.title}...`);
+      await postVideo(reel.path, caption);
+      console.log(`✓ Posted successfully!\n`);
       
-      // Wait 5 seconds between posts to avoid rate limiting
-      await new Promise(r => setTimeout(r, 5000));
-    } catch (error) {
-      console.error(`❌ Failed to post ${reel.title}:`, error.message);
+      // Wait between posts
+      await new Promise(r => setTimeout(r, 2000));
+    } catch (e) {
+      console.error(`✗ Failed to post ${reel.title}:`, e.message);
     }
   }
   
