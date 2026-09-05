@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
       
       - name: Install Edge TTS
         run: |
@@ -24,8 +24,15 @@ jobs:
           mkdir -p output/reels temp
       
       - name: Generate reels
-        run: node scripts/generate-reels.cjs
-        continue-on-error: false
+        id: reels
+        run: |
+          OUTPUT=$(node scripts/generate-reels.cjs 2>&1)
+          echo "$OUTPUT"
+          REELS_COUNT=$(echo "$OUTPUT" | grep -oP '✅ Generated \K[0-9]+' || echo "0")
+          echo "count=$REELS_COUNT" >> $GITHUB_OUTPUT
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
       
       - name: Show output
         if: always()
@@ -47,3 +54,16 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+      
+      - name: Send notification
+        run: node scripts/send-notification.cjs
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_ADMIN_CHAT_ID: ${{ secrets.TELEGRAM_ADMIN_CHAT_ID }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          NEWS_COUNT: "0"
+          JOBS_COUNT: "0"
+          TECH_JOBS_COUNT: "0"
+          HR_JOBS_COUNT: "0"
+          REELS_COUNT: ${{ steps.reels.outputs.count }}

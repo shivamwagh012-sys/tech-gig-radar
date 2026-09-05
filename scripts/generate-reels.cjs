@@ -1,10 +1,14 @@
 // TechGig Radar - Video Reel Generator
-// Ultra-simple version that works on GitHub Actions
+// Fetches real news/jobs from Supabase and creates video reels
 
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
+
+// Supabase config
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_KEY;
 
 // Directories
 const OUTPUT_DIR = path.join(__dirname, '..', 'output', 'reels');
@@ -14,30 +18,83 @@ const TEMP_DIR = path.join(__dirname, '..', 'temp');
 try {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   fs.mkdirSync(TEMP_DIR, { recursive: true });
-} catch (e) {
-  console.log('Dirs already exist');
-}
+} catch (e) {}
 
 console.log('='.repeat(50));
 console.log('TechGig Radar - Video Generator');
 console.log('='.repeat(50));
-console.log('Output dir:', OUTPUT_DIR);
-console.log('Temp dir:', TEMP_DIR);
 
-// Sample content
-const CONTENT = [
-  {
-    title: 'AI News Update',
-    voice: 'Breaking tech news from TechGig Radar. The AI revolution continues in 2026. Major companies are releasing powerful new AI models. Follow TechGig Radar for daily updates on tech news and remote jobs.'
+// Fetch JSON from URL
+function fetchJSON(url, headers = {}) {
+  return new Promise((resolve, reject) => {
+    const urlObj = new URL(url);
+    const options = {
+      hostname: urlObj.hostname,
+      path: urlObj.pathname + urlObj.search,
+      headers: { 'User-Agent': 'TechGigRadar/1.0', ...headers }
+    };
+    
+    https.get(options, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          resolve(JSON.parse(data));
+        } catch (e) {
+          reject(new Error('JSON parse error: ' + data.slice(0, 100)));
+        }
+      });
+    }).on('error', reject);
+  });
+}
+
+// Fetch latest news from Supabase
+async function fetchLatestNews() {
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
+    console.log('Supabase not configured, using fallback content');
+    return [];
   }
-];
+  
+  try {
+    const url = `${SUPABASE_URL}/rest/v1/news?select=*&order=published_at.desc&limit=3`;
+    const data = await fetchJSON(url, {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`
+    });
+    console.log(`Fetched ${data.length} news from Supabase`);
+    return data;
+  } catch (e) {
+    console.log('Failed to fetch news:', e.message);
+    return [];
+  }
+}
 
-// Simple file download
+// Fetch latest jobs from Supabase
+async function fetchLatestJobs() {
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
+    return [];
+  }
+  
+  try {
+    const url = `${SUPABASE_URL}/rest/v1/jobs?select=*&order=posted_at.desc&limit=5`;
+    const data = await fetchJSON(url, {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`
+    });
+    console.log(`Fetched ${data.length} jobs from Supabase`);
+    return data;
+  } catch (e) {
+    console.log('Failed to fetch jobs:', e.message);
+    return [];
+  }
+}
+
+// Download file
 function downloadFile(url, dest) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     console.log('Downloading:', url.substring(0, 60) + '...');
-    var file = fs.createWriteStream(dest);
-    https.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' } }, function(res) {
+    const file = fs.createWriteStream(dest);
+    https.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' } }, (res) => {
       if (res.statusCode === 301 || res.statusCode === 302) {
         file.close();
         try { fs.unlinkSync(dest); } catch(e) {}
@@ -51,11 +108,11 @@ function downloadFile(url, dest) {
         return;
       }
       res.pipe(file);
-      file.on('finish', function() {
+      file.on('finish', () => {
         file.close();
         resolve(dest);
       });
-    }).on('error', function(e) {
+    }).on('error', (e) => {
       file.close();
       try { fs.unlinkSync(dest); } catch(x) {}
       reject(e);
@@ -65,30 +122,19 @@ function downloadFile(url, dest) {
 
 // Generate voice
 function generateVoice(text, outputPath) {
-  // Remove problematic characters
-  var clean = text.replace(/['"\\$`!]/g, '').replace(/\n/g, ' ');
+  const clean = text.replace(/['\"\\$`!]/g, '').replace(/\n/g, ' ').slice(0, 800);
   
   console.log('Generating voice...');
-  var cmd = 'edge-tts --voice en-US-AriaNeural --text "' + clean + '" --write-media "' + outputPath + '"';
+  let cmd = `python3 -m edge_tts --voice en-US-AriaNeural --text "${clean}" --write-media "${outputPath}"`;
   
   try {
     execSync(cmd, { stdio: 'inherit', timeout: 120000 });
     if (fs.existsSync(outputPath)) {
-      console.log('Voice OK:', outputPath);
+      console.log('Voice OK');
       return true;
     }
   } catch (e) {
-    console.log('edge-tts failed, trying python -m...');
-    cmd = 'python3 -m edge_tts --voice en-US-AriaNeural --text "' + clean + '" --write-media "' + outputPath + '"';
-    try {
-      execSync(cmd, { stdio: 'inherit', timeout: 120000 });
-      if (fs.existsSync(outputPath)) {
-        console.log('Voice OK:', outputPath);
-        return true;
-      }
-    } catch (e2) {
-      console.error('Voice failed:', e2.message);
-    }
+    console.log('Voice failed:', e.message);
   }
   return false;
 }
@@ -96,83 +142,79 @@ function generateVoice(text, outputPath) {
 // Get audio duration
 function getDuration(file) {
   try {
-    var out = execSync('ffprobe -v error -show_entries format=duration -of csv=p=0 "' + file + '"', { encoding: 'utf8' });
+    const out = execSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "${file}"`, { encoding: 'utf8' });
     return Math.ceil(parseFloat(out.trim())) + 2;
   } catch (e) {
-    return 15;
+    return 20;
   }
 }
 
-// Create video
+// Create video reel
 async function createVideo(content, index) {
-  var id = 'reel_' + Date.now() + '_' + index;
-  var tempDir = path.join(TEMP_DIR, id);
+  const id = 'reel_' + Date.now() + '_' + index;
+  const tempDir = path.join(TEMP_DIR, id);
   fs.mkdirSync(tempDir, { recursive: true });
   
-  console.log('\n--- Creating reel:', content.title, '---');
+  console.log('\n--- Creating reel:', content.title.slice(0, 40), '---');
   
   // 1. Generate voice
-  var voicePath = path.join(tempDir, 'voice.mp3');
+  const voicePath = path.join(tempDir, 'voice.mp3');
   if (!generateVoice(content.voice, voicePath)) {
     throw new Error('Voice generation failed');
   }
   
-  var duration = getDuration(voicePath);
+  const duration = getDuration(voicePath);
   console.log('Duration:', duration, 'seconds');
   
-  // 2. Download background (or use color)
-  var bgPath = path.join(tempDir, 'bg.mp4');
-  var hasBg = false;
+  // 2. Download background
+  const bgPath = path.join(tempDir, 'bg.mp4');
+  let hasBg = false;
   
-  var bgUrls = [
-    'https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-futuristic-devices-99786-large.mp4'
+  const bgUrls = [
+    'https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-futuristic-devices-99786-large.mp4',
+    'https://assets.mixkit.co/videos/preview/mixkit-typing-on-a-laptop-in-a-coffee-shop-4782-large.mp4'
   ];
   
-  for (var i = 0; i < bgUrls.length; i++) {
+  for (const url of bgUrls) {
     try {
-      await downloadFile(bgUrls[i], bgPath);
-      var stats = fs.statSync(bgPath);
-      if (stats.size > 10000) {
+      await downloadFile(url, bgPath);
+      if (fs.statSync(bgPath).size > 10000) {
         hasBg = true;
         console.log('Background OK');
         break;
       }
     } catch (e) {
-      console.log('Background download failed:', e.message);
+      console.log('Background failed:', e.message);
     }
   }
   
-  // 3. Create output video
-  var outputPath = path.join(OUTPUT_DIR, id + '.mp4');
-  var title = content.title.replace(/[^a-zA-Z0-9 ]/g, '');
+  // 3. Create video
+  const outputPath = path.join(OUTPUT_DIR, id + '.mp4');
+  const title = content.title.replace(/[^a-zA-Z0-9 ]/g, '').slice(0, 30);
   
   console.log('Creating video with FFmpeg...');
   
-  var ffmpegCmd;
+  let ffmpegCmd;
   if (hasBg) {
-    // With background video
-    ffmpegCmd = 'ffmpeg -y -stream_loop -1 -i "' + bgPath + '" -i "' + voicePath + '" ' +
-      '-filter_complex "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps=30,drawbox=x=0:y=0:w=iw:h=ih:c=black@0.5:t=fill,drawtext=text=' + "'" + title + "'" + ':fontsize=60:fontcolor=white:x=(w-text_w)/2:y=h/3,drawtext=text=' + "'@TechGigRadar'" + ':fontsize=30:fontcolor=white:x=w-text_w-40:y=h-80[v]" ' +
-      '-map "[v]" -map 1:a -c:v libx264 -preset fast -c:a aac -t ' + duration + ' -pix_fmt yuv420p "' + outputPath + '"';
+    ffmpegCmd = `ffmpeg -y -stream_loop -1 -i "${bgPath}" -i "${voicePath}" ` +
+      `-filter_complex "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps=30,drawbox=x=0:y=0:w=iw:h=ih:c=black@0.5:t=fill,drawtext=text='${title}':fontsize=50:fontcolor=white:x=(w-text_w)/2:y=h/3,drawtext=text='@TechGigRadar':fontsize=30:fontcolor=white:x=w-text_w-40:y=h-80[v]" ` +
+      `-map "[v]" -map 1:a -c:v libx264 -preset fast -c:a aac -t ${duration} -pix_fmt yuv420p "${outputPath}"`;
   } else {
-    // Solid background
-    ffmpegCmd = 'ffmpeg -y -f lavfi -i "color=c=0x1a1a2e:s=1080x1920:d=' + duration + '" -i "' + voicePath + '" ' +
-      '-filter_complex "[0:v]drawtext=text=' + "'" + title + "'" + ':fontsize=60:fontcolor=white:x=(w-text_w)/2:y=h/3,drawtext=text=' + "'@TechGigRadar'" + ':fontsize=30:fontcolor=white:x=w-text_w-40:y=h-80[v]" ' +
-      '-map "[v]" -map 1:a -c:v libx264 -preset fast -c:a aac -t ' + duration + ' -pix_fmt yuv420p "' + outputPath + '"';
+    ffmpegCmd = `ffmpeg -y -f lavfi -i "color=c=0x1a1a2e:s=1080x1920:d=${duration}" -i "${voicePath}" ` +
+      `-filter_complex "[0:v]drawtext=text='${title}':fontsize=50:fontcolor=white:x=(w-text_w)/2:y=h/3,drawtext=text='@TechGigRadar':fontsize=30:fontcolor=white:x=w-text_w-40:y=h-80[v]" ` +
+      `-map "[v]" -map 1:a -c:v libx264 -preset fast -c:a aac -t ${duration} -pix_fmt yuv420p "${outputPath}"`;
   }
   
   try {
     execSync(ffmpegCmd, { stdio: 'inherit', timeout: 300000 });
   } catch (e) {
-    console.log('Complex FFmpeg failed, trying simple...');
-    // Simplest fallback - just voice over solid color
-    ffmpegCmd = 'ffmpeg -y -f lavfi -i "color=c=0x1a1a2e:s=1080x1920:d=' + duration + '" -i "' + voicePath + '" ' +
-      '-c:v libx264 -c:a aac -t ' + duration + ' -pix_fmt yuv420p "' + outputPath + '"';
+    ffmpegCmd = `ffmpeg -y -f lavfi -i "color=c=0x1a1a2e:s=1080x1920:d=${duration}" -i "${voicePath}" ` +
+      `-c:v libx264 -c:a aac -t ${duration} -pix_fmt yuv420p "${outputPath}"`;
     execSync(ffmpegCmd, { stdio: 'inherit', timeout: 300000 });
   }
   
   if (fs.existsSync(outputPath)) {
-    var size = fs.statSync(outputPath).size;
+    const size = fs.statSync(outputPath).size;
     console.log('Video created:', outputPath, '(' + Math.round(size/1024) + 'KB)');
   } else {
     throw new Error('Video file not created');
@@ -183,16 +225,70 @@ async function createVideo(content, index) {
     fs.rmSync(tempDir, { recursive: true, force: true });
   } catch (e) {}
   
-  return { path: outputPath, title: content.title };
+  return { path: outputPath, title: content.title, type: content.type };
 }
 
 // Main
 async function main() {
-  var results = [];
+  // Fetch real content from Supabase
+  const news = await fetchLatestNews();
+  const jobs = await fetchLatestJobs();
   
-  for (var i = 0; i < CONTENT.length; i++) {
+  const CONTENT = [];
+  
+  // Add news reel
+  if (news.length > 0) {
+    const topNews = news.slice(0, 3);
+    const newsVoice = `Tech News Update from TechGig Radar! ${topNews.map((n, i) => 
+      `Number ${i+1}: ${n.title}. ${n.summary || ''}`
+    ).join(' ')}. Follow at TechGig Radar for more tech updates!`;
+    
+    CONTENT.push({
+      title: 'Tech News Today',
+      voice: newsVoice,
+      type: 'news'
+    });
+  }
+  
+  // Add jobs reel
+  if (jobs.length > 0) {
+    const techJobs = jobs.filter(j => j.category !== 'HR & Recruitment').slice(0, 3);
+    const hrJobs = jobs.filter(j => j.category === 'HR & Recruitment').slice(0, 2);
+    
+    let jobsVoice = `Remote Jobs Alert from TechGig Radar! `;
+    
+    if (techJobs.length > 0) {
+      jobsVoice += `Tech roles: ${techJobs.map(j => `${j.title} at ${j.company}`).join('. ')}. `;
+    }
+    
+    if (hrJobs.length > 0) {
+      jobsVoice += `HR positions: ${hrJobs.map(j => `${j.title} at ${j.company}`).join('. ')}. `;
+    }
+    
+    jobsVoice += `Apply now at tech gig radar dot vercel dot app!`;
+    
+    CONTENT.push({
+      title: 'Remote Jobs Alert',
+      voice: jobsVoice,
+      type: 'jobs'
+    });
+  }
+  
+  // Fallback if no data
+  if (CONTENT.length === 0) {
+    CONTENT.push({
+      title: 'TechGig Radar Update',
+      voice: 'Welcome to TechGig Radar! Your source for real tech news and verified remote job opportunities. Visit tech gig radar dot vercel dot app for the latest updates. Follow us for daily tech news and global remote jobs!',
+      type: 'promo'
+    });
+  }
+  
+  console.log(`\nGenerating ${CONTENT.length} reels...`);
+  
+  const results = [];
+  for (let i = 0; i < CONTENT.length; i++) {
     try {
-      var reel = await createVideo(CONTENT[i], i);
+      const reel = await createVideo(CONTENT[i], i);
       results.push(reel);
     } catch (e) {
       console.error('Reel', i, 'failed:', e.message);
@@ -200,26 +296,23 @@ async function main() {
   }
   
   // Save manifest
-  var manifest = {
+  const manifest = {
     time: new Date().toISOString(),
+    news_count: news.length,
+    jobs_count: jobs.length,
     reels: results
   };
   fs.writeFileSync(path.join(OUTPUT_DIR, 'manifest.json'), JSON.stringify(manifest, null, 2));
   
-  console.log('\n='.repeat(50));
-  console.log('Done! Generated', results.length, 'of', CONTENT.length, 'reels');
+  console.log('\n' + '='.repeat(50));
+  console.log(`✅ Generated ${results.length} reels`);
   console.log('='.repeat(50));
   
-  // List files
-  console.log('\nOutput files:');
-  fs.readdirSync(OUTPUT_DIR).forEach(function(f) {
-    var s = fs.statSync(path.join(OUTPUT_DIR, f));
-    console.log(' -', f, '(' + Math.round(s.size/1024) + 'KB)');
-  });
+  // Output for workflow
+  console.log(`::set-output name=reels_count::${results.length}`);
 }
 
-main().catch(function(e) {
+main().catch((e) => {
   console.error('FATAL:', e.message);
-  console.error(e.stack);
   process.exit(1);
 });
