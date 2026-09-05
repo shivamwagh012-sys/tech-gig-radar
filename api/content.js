@@ -1,50 +1,83 @@
-import { readFileSync, existsSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-export default function handler(req, res) {
+export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json');
   
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_ANON_KEY;
+  
+  if (!supabaseUrl || !supabaseKey) {
+    return res.status(500).json({ error: 'Supabase not configured' });
+  }
+  
+  const supabase = createClient(supabaseUrl, supabaseKey);
   const { type, limit = 20 } = req.query;
   
   try {
-    // Read from static JSON files (exported from SQLite)
-    const dataDir = join(__dirname, '..', 'public', 'data');
-    
     let news = [];
     let jobs = [];
     
-    // Read news
-    const newsFile = join(dataDir, 'news.json');
-    if (existsSync(newsFile)) {
-      const allNews = JSON.parse(readFileSync(newsFile, 'utf8'));
-      news = allNews.slice(0, parseInt(limit) || 20);
+    if (!type || type === 'news' || type === 'all') {
+      const { data, error } = await supabase
+        .from('news')
+        .select('*')
+        .order('published_at', { ascending: false })
+        .limit(parseInt(limit));
+      
+      if (error) throw error;
+      news = data || [];
     }
     
-    // Read jobs
-    const jobsFile = join(dataDir, 'jobs.json');
-    if (existsSync(jobsFile)) {
-      const allJobs = JSON.parse(readFileSync(jobsFile, 'utf8'));
-      jobs = allJobs.slice(0, parseInt(limit) || 20);
+    if (!type || type === 'jobs' || type === 'all') {
+      const { data, error } = await supabase
+        .from('jobs')
+        .select('*')
+        .order('posted_at', { ascending: false })
+        .limit(parseInt(limit));
+      
+      if (error) throw error;
+      jobs = data || [];
     }
     
-    // Read manifest for last update time
-    let updated = new Date().toISOString();
-    const manifestFile = join(dataDir, 'manifest.json');
-    if (existsSync(manifestFile)) {
-      const manifest = JSON.parse(readFileSync(manifestFile, 'utf8'));
-      updated = manifest.exportedAt || updated;
-    }
+    // Transform for frontend compatibility
+    const transformedNews = news.map(n => ({
+      id: n.id,
+      title: n.title,
+      summary: n.summary,
+      source: n.source,
+      url: n.url,
+      category: n.category,
+      publishedAt: n.published_at,
+      isVerified: n.is_verified
+    }));
+    
+    const transformedJobs = jobs.map(j => ({
+      id: j.id,
+      title: j.title,
+      company: j.company,
+      location: j.location,
+      salary: j.salary,
+      type: j.job_type,
+      experience: j.experience,
+      skills: j.skills || [],
+      description: j.description,
+      applyUrl: j.apply_url,
+      source: j.source,
+      postedAt: j.posted_at,
+      isVerified: j.is_verified
+    }));
     
     if (type === 'news') {
-      return res.status(200).json({ news, updated });
+      return res.status(200).json({ news: transformedNews, updated: new Date().toISOString() });
     } else if (type === 'jobs') {
-      return res.status(200).json({ jobs, updated });
+      return res.status(200).json({ jobs: transformedJobs, updated: new Date().toISOString() });
     } else {
-      return res.status(200).json({ news, jobs, updated });
+      return res.status(200).json({ 
+        news: transformedNews, 
+        jobs: transformedJobs, 
+        updated: new Date().toISOString() 
+      });
     }
   } catch (error) {
     console.error('API Error:', error);
