@@ -1,4 +1,4 @@
-const crypto = require('crypto');
+import { createHmac } from 'crypto';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'techgig-radar-secret-2026';
 
@@ -9,7 +9,7 @@ function b64decode(str) {
 }
 
 function sign(data) {
-  return crypto.createHmac('sha256', JWT_SECRET).update(data).digest('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+  return createHmac('sha256', JWT_SECRET).update(data).digest('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
 }
 
 function verifyToken(token) {
@@ -23,7 +23,7 @@ function verifyToken(token) {
   } catch (e) { return null; }
 }
 
-module.exports = (req, res) => {
+export default function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -35,4 +35,4 @@ module.exports = (req, res) => {
   const { token } = req.body || {};
   const payload = verifyToken(token || '');
   return res.json({ valid: !!payload, user: payload });
-};
+}

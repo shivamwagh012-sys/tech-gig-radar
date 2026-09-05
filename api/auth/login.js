@@ -1,4 +1,4 @@
-const crypto = require('crypto');
+import { createHmac, createHash } from 'crypto';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'techgig-radar-secret-2026';
 
@@ -7,7 +7,7 @@ function b64encode(str) {
 }
 
 function sign(data) {
-  return crypto.createHmac('sha256', JWT_SECRET).update(data).digest('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+  return createHmac('sha256', JWT_SECRET).update(data).digest('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
 }
 
 function createToken(payload) {
@@ -17,7 +17,7 @@ function createToken(payload) {
 }
 
 function hash(password) {
-  return crypto.createHash('sha256').update(password + JWT_SECRET).digest('hex');
+  return createHash('sha256').update(password + JWT_SECRET).digest('hex');
 }
 
 // Demo user
@@ -28,7 +28,7 @@ const DEMO_USER = {
   name: 'Demo User'
 };
 
-module.exports = (req, res) => {
+export default function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -60,4 +60,4 @@ module.exports = (req, res) => {
   }
   
   return res.status(401).json({ success: false, error: 'Invalid email or password' });
-};
+}
