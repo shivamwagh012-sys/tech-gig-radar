@@ -124,6 +124,9 @@ async function main() {
   console.log('\n' + '='.repeat(50));
   console.log(`✅ Saved ${successCount} news items to Supabase`);
   console.log('Latest:', uniqueNews[0]?.title);
+  
+  // Output for GitHub Actions
+  console.log(`\n::set-output name=news_count::${successCount}`);
 }
 
 main().catch(e => {

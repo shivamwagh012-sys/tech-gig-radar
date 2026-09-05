@@ -22,13 +22,40 @@ jobs:
         run: npm ci
       
       - name: Run news discovery
-        run: node scripts/discover-news-supabase.cjs
+        id: news
+        run: |
+          OUTPUT=$(node scripts/discover-news-supabase.cjs 2>&1)
+          echo "$OUTPUT"
+          NEWS_COUNT=$(echo "$OUTPUT" | grep -oP '✅ Saved \K[0-9]+' || echo "0")
+          echo "count=$NEWS_COUNT" >> $GITHUB_OUTPUT
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
       
       - name: Run jobs discovery
-        run: node scripts/discover-jobs-supabase.cjs
+        id: jobs
+        run: |
+          OUTPUT=$(node scripts/discover-jobs-supabase.cjs 2>&1)
+          echo "$OUTPUT"
+          JOBS_COUNT=$(echo "$OUTPUT" | grep -oP '✅ Saved \K[0-9]+' || echo "0")
+          TECH_COUNT=$(echo "$OUTPUT" | grep -oP 'Breakdown: \K[0-9]+' || echo "0")
+          HR_COUNT=$(echo "$OUTPUT" | grep -oP 'Technical, \K[0-9]+' || echo "0")
+          echo "count=$JOBS_COUNT" >> $GITHUB_OUTPUT
+          echo "tech=$TECH_COUNT" >> $GITHUB_OUTPUT
+          echo "hr=$HR_COUNT" >> $GITHUB_OUTPUT
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      
+      - name: Send notification
+        run: node scripts/send-notification.cjs
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_ADMIN_CHAT_ID: ${{ secrets.TELEGRAM_ADMIN_CHAT_ID }}
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          NEWS_COUNT: ${{ steps.news.outputs.count }}
+          JOBS_COUNT: ${{ steps.jobs.outputs.count }}
+          TECH_JOBS_COUNT: ${{ steps.jobs.outputs.tech }}
+          HR_JOBS_COUNT: ${{ steps.jobs.outputs.hr }}
+          REELS_COUNT: "0"

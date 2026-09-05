@@ -135,6 +135,17 @@ async function main() {
   console.log('\n' + '='.repeat(50));
   console.log(`✅ Saved ${successCount} jobs to Supabase`);
   console.log('Latest:', uniqueJobs[0]?.title, 'at', uniqueJobs[0]?.company);
+  
+  // Count by category
+  const techCount = uniqueJobs.filter(j => j.category !== 'HR & Recruitment').length;
+  const hrCount = uniqueJobs.filter(j => j.category === 'HR & Recruitment').length;
+  
+  console.log(`\n📊 Breakdown: ${techCount} Technical, ${hrCount} HR/Recruitment`);
+  
+  // Output for GitHub Actions
+  console.log(`\n::set-output name=jobs_count::${successCount}`);
+  console.log(`::set-output name=tech_jobs::${techCount}`);
+  console.log(`::set-output name=hr_jobs::${hrCount}`);
 }
 
 main().catch(e => {
