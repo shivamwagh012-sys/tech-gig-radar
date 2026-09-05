@@ -230,6 +230,25 @@ export const settings = sqliteTable('settings', {
 });
 
 // ================================
+// Users Table (Authentication)
+// ================================
+export const users = sqliteTable('users', {
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  email: text('email').notNull().unique(),
+  password: text('password').notNull(), // bcrypt hashed
+  name: text('name').notNull(),
+  role: text('role').default('user'), // user, admin
+  isActive: integer('is_active', { mode: 'boolean' }).default(true),
+  lastLoginAt: text('last_login_at'),
+  createdAt: text('created_at').$defaultFn(() => new Date().toISOString()),
+  updatedAt: text('updated_at').$defaultFn(() => new Date().toISOString()),
+});
+
+// User type export
+export type User = typeof users.$inferSelect;
+export type NewUser = typeof users.$inferInsert;
+
+// ================================
 // Relations
 // ================================
 export const sourcesRelations = relations(sources, ({ many }) => ({
