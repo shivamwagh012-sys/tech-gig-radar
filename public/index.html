@@ -1042,15 +1042,36 @@
             </div>
           </div>
           
-          <div style="display: flex; gap: 15px; margin-top: 20px;">
-            <button onclick="previewReel()" style="flex: 1; padding: 14px; background: var(--accent-cyan); color: var(--bg-dark); border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 15px;">
+          <div style="display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap;">
+            <button onclick="previewReel()" style="flex: 1; min-width: 150px; padding: 14px; background: var(--accent-cyan); color: var(--bg-dark); border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 15px;">
               👁️ Preview Reel
+            </button>
+            <button onclick="generateProReel()" style="flex: 1; min-width: 150px; padding: 14px; background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan)); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 15px;">
+              🎬 Generate Pro Video
             </button>
             <button onclick="closeReelCreator()" style="padding: 14px 24px; background: var(--bg-hover); color: var(--text); border: 1px solid var(--border); border-radius: 8px; font-weight: 600; cursor: pointer;">
               ✕ Cancel
             </button>
           </div>
+          
+          <!-- Pro Video Status -->
+          <div id="pro-video-status" style="display: none; margin-top: 20px; padding: 20px; background: var(--bg-hover); border-radius: 12px; border-left: 4px solid var(--accent-purple);">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+              <div class="spinner" style="width: 20px; height: 20px; border: 3px solid var(--border); border-top-color: var(--accent-purple); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+              <span style="font-weight: 600; color: var(--accent-purple);" id="pro-status-text">Generating video...</span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted);" id="pro-status-detail">This may take 30-60 seconds. The video includes stock backgrounds, music, and animations.</p>
+            <a id="pro-video-link" href="#" target="_blank" style="display: none; margin-top: 15px; padding: 12px 20px; background: var(--accent-green); color: var(--bg-dark); border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-block;">
+              ⬇️ Download Video
+            </a>
+          </div>
         </div>
+        
+        <style>
+          @keyframes spin {
+            to { transform: rotate(360deg); }
+          }
+        </style>
         
         <div class="reels-scroll" id="all-reels-grid" style="flex-wrap: wrap; overflow: visible;"></div>
       </div>
@@ -1654,6 +1675,143 @@
       // Open in new window
       window.open(url, '_blank', 'width=450,height=950');
       showToast('Professional reel opened! Play, record, and download.');
+    }
+    
+    // Generate Pro Video via Shotstack API
+    async function generateProReel() {
+      let url = '/api/video-render?';
+      
+      if (currentReelType === 'news') {
+        const headline = document.getElementById('reel-headline').value.trim();
+        const points = document.getElementById('reel-points').value.trim().split('\n').filter(p => p).join('|');
+        const stats = document.getElementById('reel-stats').value.trim().split('\n').filter(s => s).join('|');
+        
+        if (!headline) {
+          showToast('Please enter a headline');
+          return;
+        }
+        
+        url += `type=news&headline=${encodeURIComponent(headline)}`;
+        if (points) url += `&points=${encodeURIComponent(points)}`;
+        if (stats) url += `&stats=${encodeURIComponent(stats)}`;
+      } else {
+        const company = document.getElementById('reel-company').value.trim();
+        const title = document.getElementById('reel-job-title').value.trim();
+        const salary = document.getElementById('reel-salary').value.trim() || '$100K+';
+        const skills = document.getElementById('reel-skills').value.trim();
+        
+        if (!company || !title) {
+          showToast('Please enter company and job title');
+          return;
+        }
+        
+        url += `type=job&company=${encodeURIComponent(company)}&title=${encodeURIComponent(title)}&salary=${encodeURIComponent(salary)}`;
+        if (skills) url += `&skills=${encodeURIComponent(skills)}`;
+      }
+      
+      // Show status
+      const statusDiv = document.getElementById('pro-video-status');
+      const statusText = document.getElementById('pro-status-text');
+      const statusDetail = document.getElementById('pro-status-detail');
+      const videoLink = document.getElementById('pro-video-link');
+      
+      statusDiv.style.display = 'block';
+      videoLink.style.display = 'none';
+      statusText.textContent = 'Submitting render job...';
+      statusDetail.textContent = 'Connecting to Shotstack API...';
+      
+      try {
+        // Submit render job
+        const response = await fetch(url);
+        const result = await response.json();
+        
+        if (!result.success) {
+          if (result.setup) {
+            statusText.textContent = '⚠️ API Key Required';
+            statusText.style.color = 'var(--accent-yellow)';
+            statusDetail.innerHTML = `
+              <strong>Setup Instructions:</strong><br>
+              1. Sign up at <a href="https://dashboard.shotstack.io/register" target="_blank" style="color: var(--accent-cyan);">Shotstack (free)</a><br>
+              2. Get your API key from the dashboard<br>
+              3. Add SHOTSTACK_API_KEY to Vercel environment variables<br>
+              4. Free tier: 10 credits (1 credit = 1 minute video)
+            `;
+            return;
+          }
+          throw new Error(result.error);
+        }
+        
+        statusText.textContent = '🎬 Video rendering...';
+        statusDetail.textContent = `Render ID: ${result.renderId} - Estimated time: ${result.estimatedTime}`;
+        
+        // Poll for status
+        pollRenderStatus(result.renderId);
+        
+      } catch (error) {
+        statusText.textContent = '❌ Error';
+        statusText.style.color = 'var(--accent-red)';
+        statusDetail.textContent = error.message;
+        showToast('Failed to generate video: ' + error.message);
+      }
+    }
+    
+    async function pollRenderStatus(renderId) {
+      const statusText = document.getElementById('pro-status-text');
+      const statusDetail = document.getElementById('pro-status-detail');
+      const videoLink = document.getElementById('pro-video-link');
+      const spinner = document.querySelector('#pro-video-status .spinner');
+      
+      let attempts = 0;
+      const maxAttempts = 60; // 2 minutes max
+      
+      const checkStatus = async () => {
+        try {
+          const response = await fetch(`/api/video-render?action=status&renderId=${renderId}`);
+          const result = await response.json();
+          
+          if (result.status === 'done') {
+            // Success!
+            statusText.textContent = '✅ Video Ready!';
+            statusText.style.color = 'var(--accent-green)';
+            statusDetail.textContent = 'Your professional video is ready to download.';
+            spinner.style.display = 'none';
+            
+            videoLink.href = result.url;
+            videoLink.style.display = 'inline-block';
+            
+            showToast('🎉 Professional video generated successfully!');
+            return;
+          }
+          
+          if (result.status === 'failed') {
+            statusText.textContent = '❌ Render Failed';
+            statusText.style.color = 'var(--accent-red)';
+            statusDetail.textContent = 'The video generation failed. Please try again.';
+            spinner.style.display = 'none';
+            return;
+          }
+          
+          // Still processing
+          attempts++;
+          statusDetail.textContent = `Status: ${result.status} (attempt ${attempts}/${maxAttempts})`;
+          
+          if (attempts < maxAttempts) {
+            setTimeout(checkStatus, 2000); // Check every 2 seconds
+          } else {
+            statusText.textContent = '⏱️ Timeout';
+            statusDetail.textContent = 'Taking longer than expected. Check back later with render ID: ' + renderId;
+            spinner.style.display = 'none';
+          }
+          
+        } catch (error) {
+          attempts++;
+          if (attempts < maxAttempts) {
+            setTimeout(checkStatus, 3000);
+          }
+        }
+      };
+      
+      checkStatus();
     }
     
     function loadHRJobs(level = 'all') {
