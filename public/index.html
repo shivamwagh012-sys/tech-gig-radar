@@ -981,10 +981,77 @@
       <div id="view-reels" class="view">
         <div class="header">
           <div>
-            <h2>All Reels</h2>
-            <p>Video content for developers - refreshed every 4 hours</p>
+            <h2>Video Reels</h2>
+            <p>Animated infographic videos for social media</p>
+          </div>
+          <div class="header-actions">
+            <button class="btn-primary" onclick="openReelCreator()">🎬 Create Reel</button>
           </div>
         </div>
+        
+        <!-- Reel Creator Modal -->
+        <div id="reel-creator" style="display: none; margin-bottom: 25px; background: var(--bg-card); border-radius: 16px; padding: 25px; border: 1px solid var(--border);">
+          <h3 style="margin-bottom: 20px; color: var(--accent-cyan);">🎬 Create New Reel</h3>
+          
+          <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+            <button class="reel-type-btn active" data-type="news" onclick="selectReelType('news')" style="flex: 1; padding: 15px; background: var(--accent-cyan); color: var(--bg-dark); border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+              📰 News Reel
+            </button>
+            <button class="reel-type-btn" data-type="job" onclick="selectReelType('job')" style="flex: 1; padding: 15px; background: var(--bg-hover); color: var(--text); border: 1px solid var(--border); border-radius: 8px; font-weight: 600; cursor: pointer;">
+              💼 Job Reel
+            </button>
+          </div>
+          
+          <!-- News Reel Form -->
+          <div id="news-reel-form">
+            <div style="margin-bottom: 15px;">
+              <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 5px;">Headline *</label>
+              <input type="text" id="reel-headline" placeholder="e.g., GPT-5 Launches Today" style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 14px;">
+            </div>
+            <div style="margin-bottom: 15px;">
+              <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 5px;">Key Points (one per line)</label>
+              <textarea id="reel-points" rows="4" placeholder="Trained on 100K+ GPUs&#10;First model rated CRITICAL&#10;36x faster than humans&#10;Plus tier only" style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 14px; resize: vertical;"></textarea>
+            </div>
+            <div style="margin-bottom: 15px;">
+              <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 5px;">Stats (format: value:label, one per line)</label>
+              <textarea id="reel-stats" rows="2" placeholder="100K+:Training GPUs&#10;36x:Speed Improvement" style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 14px; resize: vertical;"></textarea>
+            </div>
+          </div>
+          
+          <!-- Job Reel Form -->
+          <div id="job-reel-form" style="display: none;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+              <div>
+                <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 5px;">Company *</label>
+                <input type="text" id="reel-company" placeholder="e.g., Google" style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 14px;">
+              </div>
+              <div>
+                <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 5px;">Job Title *</label>
+                <input type="text" id="reel-job-title" placeholder="e.g., Senior Engineer" style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 14px;">
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+              <div>
+                <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 5px;">Salary Range</label>
+                <input type="text" id="reel-salary" placeholder="e.g., $150K-$200K" style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 14px;">
+              </div>
+              <div>
+                <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 5px;">Skills (comma separated)</label>
+                <input type="text" id="reel-skills" placeholder="e.g., React, Node.js, AWS" style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 14px;">
+              </div>
+            </div>
+          </div>
+          
+          <div style="display: flex; gap: 15px; margin-top: 20px;">
+            <button onclick="previewReel()" style="flex: 1; padding: 14px; background: var(--accent-cyan); color: var(--bg-dark); border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 15px;">
+              👁️ Preview Reel
+            </button>
+            <button onclick="closeReelCreator()" style="padding: 14px 24px; background: var(--bg-hover); color: var(--text); border: 1px solid var(--border); border-radius: 8px; font-weight: 600; cursor: pointer;">
+              ✕ Cancel
+            </button>
+          </div>
+        </div>
+        
         <div class="reels-scroll" id="all-reels-grid" style="flex-wrap: wrap; overflow: visible;"></div>
       </div>
       
@@ -1517,6 +1584,76 @@
       }
       
       showToast(`Showing ${category === 'tech' ? 'Tech' : 'HR & Recruitment'} jobs`);
+    }
+    
+    // ==================== REEL CREATOR ====================
+    
+    let currentReelType = 'news';
+    
+    function openReelCreator() {
+      document.getElementById('reel-creator').style.display = 'block';
+      showToast('Create your animated reel');
+    }
+    
+    function closeReelCreator() {
+      document.getElementById('reel-creator').style.display = 'none';
+    }
+    
+    function selectReelType(type) {
+      currentReelType = type;
+      
+      // Update buttons
+      document.querySelectorAll('.reel-type-btn').forEach(btn => {
+        if (btn.dataset.type === type) {
+          btn.style.background = 'var(--accent-cyan)';
+          btn.style.color = 'var(--bg-dark)';
+          btn.style.border = 'none';
+        } else {
+          btn.style.background = 'var(--bg-hover)';
+          btn.style.color = 'var(--text)';
+          btn.style.border = '1px solid var(--border)';
+        }
+      });
+      
+      // Toggle forms
+      document.getElementById('news-reel-form').style.display = type === 'news' ? 'block' : 'none';
+      document.getElementById('job-reel-form').style.display = type === 'job' ? 'block' : 'none';
+    }
+    
+    function previewReel() {
+      let url = '/api/reel?';
+      
+      if (currentReelType === 'news') {
+        const headline = document.getElementById('reel-headline').value.trim();
+        const points = document.getElementById('reel-points').value.trim().split('\n').filter(p => p).join('|');
+        const stats = document.getElementById('reel-stats').value.trim().split('\n').filter(s => s).join('|');
+        
+        if (!headline) {
+          showToast('Please enter a headline');
+          return;
+        }
+        
+        url += `type=news&headline=${encodeURIComponent(headline)}`;
+        if (points) url += `&points=${encodeURIComponent(points)}`;
+        if (stats) url += `&stats=${encodeURIComponent(stats)}`;
+      } else {
+        const company = document.getElementById('reel-company').value.trim();
+        const title = document.getElementById('reel-job-title').value.trim();
+        const salary = document.getElementById('reel-salary').value.trim() || '$100K+';
+        const skills = document.getElementById('reel-skills').value.trim();
+        
+        if (!company || !title) {
+          showToast('Please enter company and job title');
+          return;
+        }
+        
+        url += `type=job&company=${encodeURIComponent(company)}&title=${encodeURIComponent(title)}&salary=${encodeURIComponent(salary)}`;
+        if (skills) url += `&skills=${encodeURIComponent(skills)}`;
+      }
+      
+      // Open in new window
+      window.open(url, '_blank', 'width=450,height=900');
+      showToast('Reel preview opened! Play, record, and download.');
     }
     
     function loadHRJobs(level = 'all') {
