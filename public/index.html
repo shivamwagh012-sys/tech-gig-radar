@@ -31,15 +31,11 @@
       min-height: 100vh;
     }
     
-    /* Layout */
-    .app {
-      display: flex;
-      min-height: 100vh;
-    }
+    .app { display: flex; min-height: 100vh; }
     
     /* Sidebar */
     .sidebar {
-      width: 200px;
+      width: 220px;
       background: var(--bg-card);
       border-right: 1px solid var(--border);
       padding: 20px 0;
@@ -48,800 +44,436 @@
       overflow-y: auto;
     }
     
-    .logo {
-      padding: 0 20px 20px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 20px;
-    }
-    
-    .logo h1 {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--accent-cyan);
-    }
-    
-    .logo span {
-      font-size: 11px;
-      color: var(--text-muted);
-      letter-spacing: 1px;
-    }
+    .logo { padding: 0 20px 20px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+    .logo h1 { font-size: 24px; font-weight: 700; color: var(--accent-cyan); }
+    .logo span { font-size: 11px; color: var(--text-muted); letter-spacing: 1px; }
     
     .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 20px;
-      color: var(--text-muted);
-      text-decoration: none;
-      cursor: pointer;
-      transition: all 0.2s;
-      border-left: 3px solid transparent;
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 20px; color: var(--text-muted);
+      text-decoration: none; cursor: pointer;
+      transition: all 0.2s; border-left: 3px solid transparent;
+    }
+    .nav-item:hover { background: var(--bg-hover); color: var(--text); }
+    .nav-item.active { background: var(--bg-hover); color: var(--accent-cyan); border-left-color: var(--accent-cyan); }
+    .nav-item svg { width: 20px; height: 20px; }
+    .nav-item .badge {
+      margin-left: auto; background: var(--accent-red);
+      color: white; font-size: 10px; padding: 2px 6px;
+      border-radius: 10px; font-weight: 600;
+    }
+    .nav-item .live-dot {
+      width: 8px; height: 8px; background: var(--accent-red);
+      border-radius: 50%; margin-left: auto;
+      animation: pulse-red 1.5s infinite;
     }
     
-    .nav-item:hover {
-      background: var(--bg-hover);
-      color: var(--text);
+    @keyframes pulse-red {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.7); }
+      50% { opacity: 0.8; box-shadow: 0 0 0 6px rgba(255, 71, 87, 0); }
     }
     
-    .nav-item.active {
-      background: var(--bg-hover);
-      color: var(--accent-cyan);
-      border-left-color: var(--accent-cyan);
-    }
-    
-    .nav-item svg {
-      width: 20px;
-      height: 20px;
-    }
-    
-    /* Stats Box */
     .stats-box {
-      margin: 20px;
-      padding: 15px;
-      background: var(--bg-dark);
-      border-radius: 12px;
+      margin: 20px; padding: 15px;
+      background: var(--bg-dark); border-radius: 12px;
       border: 1px solid var(--border);
     }
-    
     .stats-box .status {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      color: var(--accent-green);
-      margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; color: var(--accent-green); margin-bottom: 10px;
     }
-    
     .stats-box .status::before {
-      content: '';
-      width: 8px;
-      height: 8px;
-      background: var(--accent-green);
-      border-radius: 50%;
+      content: ''; width: 8px; height: 8px;
+      background: var(--accent-green); border-radius: 50%;
       animation: pulse 2s infinite;
     }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
+    .stats-numbers { display: flex; gap: 20px; }
+    .stat { text-align: center; }
+    .stat-value { font-size: 24px; font-weight: 700; }
+    .stat-label { font-size: 11px; color: var(--text-muted); }
     
-    .stats-numbers {
-      display: flex;
-      gap: 20px;
-    }
+    /* Main */
+    .main { flex: 1; margin-left: 220px; padding: 30px; }
     
-    .stat {
-      text-align: center;
-    }
-    
-    .stat-value {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--text);
-    }
-    
-    .stat-label {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-    
-    /* Main Content */
-    .main {
-      flex: 1;
-      margin-left: 200px;
-      padding: 30px;
-    }
-    
-    /* Header */
     .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 30px;
+      display: flex; justify-content: space-between;
+      align-items: flex-start; margin-bottom: 30px;
     }
+    .header h2 { font-size: 28px; font-weight: 700; }
+    .header p { color: var(--text-muted); margin-top: 5px; }
     
-    .header h2 {
-      font-size: 28px;
-      font-weight: 700;
-    }
-    
-    .header p {
-      color: var(--text-muted);
-      margin-top: 5px;
-    }
-    
-    .header-actions {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-    }
+    .header-actions { display: flex; gap: 15px; align-items: center; }
     
     .search-box {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 15px;
-      width: 300px;
+      display: flex; align-items: center; gap: 10px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 15px; width: 300px;
     }
-    
     .search-box input {
-      background: none;
-      border: none;
-      color: var(--text);
-      outline: none;
-      width: 100%;
-      font-size: 14px;
+      background: none; border: none; color: var(--text);
+      outline: none; width: 100%; font-size: 14px;
     }
-    
-    .search-box input::placeholder {
-      color: var(--text-muted);
-    }
+    .search-box input::placeholder { color: var(--text-muted); }
     
     .btn-primary {
-      background: var(--accent-cyan);
-      color: var(--bg-dark);
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.2s;
+      background: var(--accent-cyan); color: var(--bg-dark);
+      border: none; padding: 10px 20px; border-radius: 8px;
+      font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; gap: 8px;
     }
-    
-    .btn-primary:hover {
-      background: #00b8e0;
-      transform: translateY(-1px);
-    }
-    
-    /* Reels Section */
-    .reels-section {
-      margin-bottom: 30px;
-    }
-    
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-    
-    .section-title {
-      font-size: 12px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
+    .btn-primary:hover { background: #00b8e0; }
     
     .btn-secondary {
-      background: var(--bg-card);
-      color: var(--text);
-      border: 1px solid var(--border);
-      padding: 8px 15px;
-      border-radius: 6px;
-      font-size: 13px;
-      cursor: pointer;
-      transition: all 0.2s;
+      background: var(--bg-card); color: var(--text);
+      border: 1px solid var(--border); padding: 8px 15px;
+      border-radius: 6px; font-size: 13px; cursor: pointer;
+    }
+    .btn-secondary:hover { background: var(--bg-hover); border-color: var(--accent-cyan); }
+    
+    .view { display: none; }
+    .view.active { display: block; }
+    
+    /* NEWS FLASH STYLES */
+    .news-flash-container {
+      background: linear-gradient(135deg, #1a0a0a 0%, #0a0a1a 100%);
+      border-radius: 16px; padding: 0; overflow: hidden;
+      border: 1px solid var(--accent-red);
     }
     
-    .btn-secondary:hover {
-      background: var(--bg-hover);
-      border-color: var(--accent-cyan);
+    .news-flash-header {
+      background: linear-gradient(90deg, var(--accent-red), #ff6b6b);
+      padding: 15px 25px; display: flex;
+      justify-content: space-between; align-items: center;
+    }
+    .news-flash-header h3 {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 18px; color: white;
+    }
+    .news-flash-header .live-badge {
+      background: white; color: var(--accent-red);
+      padding: 4px 12px; border-radius: 20px;
+      font-size: 11px; font-weight: 700;
+      animation: pulse-scale 1s infinite;
+    }
+    @keyframes pulse-scale {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .news-flash-header .update-time {
+      color: rgba(255,255,255,0.8); font-size: 13px;
     }
     
-    .reels-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 15px;
+    .news-ticker {
+      background: #1a0505; padding: 10px 20px;
+      overflow: hidden; border-bottom: 1px solid #330000;
     }
+    .ticker-content {
+      display: flex; animation: ticker 30s linear infinite;
+      white-space: nowrap;
+    }
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-item {
+      display: inline-flex; align-items: center; gap: 15px;
+      padding: 0 30px; color: var(--accent-yellow); font-size: 14px;
+    }
+    .ticker-item::before {
+      content: '⚡'; font-size: 16px;
+    }
+    
+    .news-flash-grid {
+      padding: 20px; display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      gap: 15px; max-height: 600px; overflow-y: auto;
+    }
+    
+    .flash-card {
+      background: var(--bg-card); border-radius: 12px;
+      padding: 20px; border: 1px solid var(--border);
+      cursor: pointer; transition: all 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .flash-card:hover {
+      border-color: var(--accent-red);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(255, 71, 87, 0.2);
+    }
+    .flash-card.breaking::before {
+      content: 'BREAKING'; position: absolute;
+      top: 10px; right: -30px; background: var(--accent-red);
+      color: white; font-size: 10px; font-weight: 700;
+      padding: 3px 40px; transform: rotate(45deg);
+    }
+    
+    .flash-time {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; color: var(--accent-red); margin-bottom: 10px;
+    }
+    .flash-time::before {
+      content: ''; width: 6px; height: 6px;
+      background: var(--accent-red); border-radius: 50%;
+    }
+    
+    .flash-category {
+      display: inline-block; padding: 3px 10px;
+      border-radius: 4px; font-size: 11px;
+      font-weight: 600; margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+    .cat-ai { background: var(--accent-purple); color: white; }
+    .cat-cloud { background: var(--accent-cyan); color: black; }
+    .cat-security { background: var(--accent-red); color: white; }
+    .cat-devtools { background: var(--accent-yellow); color: black; }
+    .cat-jobs { background: var(--accent-green); color: black; }
+    .cat-crypto { background: var(--accent-orange); color: black; }
+    
+    .flash-title {
+      font-size: 16px; font-weight: 600;
+      line-height: 1.4; margin-bottom: 8px;
+    }
+    .flash-summary {
+      font-size: 14px; color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .flash-source {
+      margin-top: 12px; padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: 12px; color: var(--text-muted);
+      display: flex; justify-content: space-between;
+    }
+    
+    /* REELS GRID */
+    .reels-section { margin-bottom: 30px; }
+    .section-header {
+      display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 15px;
+    }
+    .section-title {
+      font-size: 12px; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    
+    .reels-scroll {
+      display: flex; gap: 15px; overflow-x: auto;
+      padding-bottom: 10px; scroll-snap-type: x mandatory;
+    }
+    .reels-scroll::-webkit-scrollbar { height: 6px; }
+    .reels-scroll::-webkit-scrollbar-track { background: var(--bg-card); border-radius: 3px; }
+    .reels-scroll::-webkit-scrollbar-thumb { background: var(--accent-cyan); border-radius: 3px; }
     
     .reel-card {
-      background: var(--bg-card);
-      border-radius: 12px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: all 0.3s;
-      border: 1px solid var(--border);
+      flex-shrink: 0; width: 200px;
+      background: var(--bg-card); border-radius: 12px;
+      overflow: hidden; cursor: pointer; transition: all 0.3s;
+      border: 1px solid var(--border); scroll-snap-align: start;
     }
-    
     .reel-card:hover {
-      transform: translateY(-5px);
+      transform: scale(1.03);
       border-color: var(--accent-cyan);
       box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
     }
     
     .reel-thumbnail {
-      position: relative;
-      height: 160px;
-      background-size: cover;
-      background-position: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: relative; height: 280px;
+      background-size: cover; background-position: center;
     }
-    
     .reel-thumbnail::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.8));
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.9));
+    }
+    .reel-thumbnail video {
+      width: 100%; height: 100%; object-fit: cover;
     }
     
     .play-btn {
-      width: 50px;
-      height: 50px;
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50px; height: 50px;
       background: rgba(255,255,255,0.2);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1;
-      transition: all 0.3s;
-      backdrop-filter: blur(10px);
+      border-radius: 50%; display: flex;
+      align-items: center; justify-content: center;
+      backdrop-filter: blur(10px); transition: all 0.3s;
     }
-    
-    .reel-card:hover .play-btn {
-      background: var(--accent-cyan);
-      transform: scale(1.1);
-    }
-    
-    .play-btn svg {
-      width: 20px;
-      height: 20px;
-      fill: white;
-      margin-left: 3px;
-    }
+    .reel-card:hover .play-btn { background: var(--accent-cyan); transform: translate(-50%, -50%) scale(1.1); }
+    .play-btn svg { width: 20px; height: 20px; fill: white; margin-left: 3px; }
     
     .reel-badge {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      padding: 4px 10px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 600;
+      position: absolute; top: 10px; left: 10px;
+      padding: 4px 10px; border-radius: 4px;
+      font-size: 11px; font-weight: 600;
       text-transform: uppercase;
-      z-index: 1;
     }
-    
-    .badge-verification { background: var(--accent-green); color: #000; }
-    .badge-cloud { background: var(--accent-cyan); color: #000; }
-    .badge-freshers { background: var(--accent-purple); color: #fff; }
-    .badge-ai { background: var(--accent-orange); color: #000; }
-    .badge-security { background: var(--accent-red); color: #fff; }
-    .badge-remote { background: var(--accent-green); color: #000; }
-    .badge-devtools { background: var(--accent-yellow); color: #000; }
+    .badge-new { background: var(--accent-red); color: white; animation: pulse-scale 1s infinite; }
+    .badge-trending { background: var(--accent-orange); color: black; }
+    .badge-verified { background: var(--accent-green); color: black; }
     
     .reel-duration {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-      background: rgba(0,0,0,0.7);
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      z-index: 1;
+      position: absolute; bottom: 80px; left: 10px;
+      background: rgba(0,0,0,0.7); padding: 3px 8px;
+      border-radius: 4px; font-size: 12px;
     }
     
-    .reel-info {
-      padding: 12px;
-    }
-    
-    .reel-title {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 5px;
-      line-height: 1.3;
-    }
-    
-    .reel-views {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
+    .reel-info { padding: 12px; }
+    .reel-title { font-size: 13px; font-weight: 600; margin-bottom: 5px; line-height: 1.3; }
+    .reel-views { font-size: 12px; color: var(--text-muted); }
     
     /* Tabs */
     .tabs {
-      display: flex;
-      gap: 5px;
-      margin-bottom: 20px;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 15px;
+      display: flex; gap: 5px; margin-bottom: 20px;
+      border-bottom: 1px solid var(--border); padding-bottom: 15px;
     }
-    
     .tab {
-      padding: 8px 18px;
-      border-radius: 20px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.2s;
-      color: var(--text-muted);
-      background: transparent;
-      border: none;
+      padding: 8px 18px; border-radius: 20px;
+      font-size: 14px; cursor: pointer;
+      color: var(--text-muted); background: transparent; border: none;
     }
-    
-    .tab:hover {
-      color: var(--text);
-      background: var(--bg-hover);
-    }
-    
-    .tab.active {
-      background: var(--accent-cyan);
-      color: var(--bg-dark);
-      font-weight: 600;
-    }
-    
-    .tab-count {
-      margin-left: 10px;
-      color: var(--text-muted);
-      font-size: 14px;
-    }
+    .tab:hover { color: var(--text); background: var(--bg-hover); }
+    .tab.active { background: var(--accent-cyan); color: var(--bg-dark); font-weight: 600; }
+    .tab-count { margin-left: 10px; color: var(--text-muted); font-size: 14px; }
     
     /* Feed */
-    .feed {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
+    .feed { display: flex; flex-direction: column; gap: 15px; }
     
     .feed-card {
-      background: var(--bg-card);
-      border-radius: 12px;
-      padding: 20px;
-      border: 1px solid var(--border);
-      cursor: pointer;
-      transition: all 0.3s;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 20px;
+      background: var(--bg-card); border-radius: 12px;
+      padding: 20px; border: 1px solid var(--border);
+      cursor: pointer; transition: all 0.3s;
+      display: grid; grid-template-columns: 1fr auto 120px; gap: 20px;
     }
-    
     .feed-card:hover {
       border-color: var(--accent-cyan);
       transform: translateX(5px);
       box-shadow: 0 5px 20px rgba(0, 212, 255, 0.1);
     }
     
-    .feed-card-content {
-      flex: 1;
-    }
-    
-    .feed-card-meta {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
+    .feed-card-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
     
     .feed-type {
-      padding: 4px 10px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
+      padding: 4px 10px; border-radius: 4px;
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
     }
-    
     .type-news { background: var(--accent-cyan); color: #000; }
     .type-job { background: var(--accent-green); color: #000; }
     .type-carousel { background: var(--accent-purple); color: #fff; }
     .type-reel { background: var(--accent-orange); color: #000; }
     
-    .feed-category {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
+    .feed-category { font-size: 12px; color: var(--text-muted); }
+    .feed-score { font-size: 12px; color: var(--accent-green); }
     
-    .feed-score {
-      font-size: 12px;
-      color: var(--accent-green);
-    }
+    .feed-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; line-height: 1.4; }
+    .feed-description { color: var(--text-muted); font-size: 14px; line-height: 1.5; margin-bottom: 12px; }
     
-    .feed-title {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      line-height: 1.4;
-    }
+    .feed-footer { display: flex; align-items: center; gap: 20px; font-size: 13px; color: var(--text-muted); }
+    .feed-footer span { display: flex; align-items: center; gap: 5px; }
     
-    .feed-description {
-      color: var(--text-muted);
-      font-size: 14px;
-      line-height: 1.5;
-      margin-bottom: 12px;
-    }
-    
-    .feed-footer {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-    
-    .feed-footer span {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    
-    .feed-status {
-      padding: 4px 10px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-    
+    .feed-status { padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
     .status-published { background: rgba(0, 255, 136, 0.2); color: var(--accent-green); }
     .status-scheduled { background: rgba(0, 212, 255, 0.2); color: var(--accent-cyan); }
     .status-review { background: rgba(255, 217, 61, 0.2); color: var(--accent-yellow); }
     
     .feed-image {
-      width: 120px;
-      height: 90px;
-      border-radius: 8px;
-      background-size: cover;
-      background-position: center;
-      flex-shrink: 0;
+      width: 120px; height: 90px; border-radius: 8px;
+      background-size: cover; background-position: center;
     }
     
-    /* Job Board Styles */
-    .job-board {
-      display: none;
-    }
-    
-    .job-board.active {
-      display: block;
-    }
-    
-    .job-filters {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    
+    /* Job Board */
+    .job-filters { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
     .job-filter {
-      padding: 8px 15px;
-      border-radius: 8px;
-      font-size: 13px;
-      cursor: pointer;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      transition: all 0.2s;
+      padding: 8px 15px; border-radius: 8px; font-size: 13px;
+      cursor: pointer; background: var(--bg-card);
+      border: 1px solid var(--border); color: var(--text-muted);
     }
+    .job-filter:hover, .job-filter.active { border-color: var(--accent-cyan); color: var(--accent-cyan); }
     
-    .job-filter:hover, .job-filter.active {
-      border-color: var(--accent-cyan);
-      color: var(--accent-cyan);
-    }
-    
-    .job-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-      gap: 15px;
-    }
+    .job-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 15px; }
     
     .job-card {
-      background: var(--bg-card);
-      border-radius: 12px;
-      padding: 20px;
-      border: 1px solid var(--border);
-      cursor: pointer;
-      transition: all 0.3s;
+      background: var(--bg-card); border-radius: 12px;
+      padding: 20px; border: 1px solid var(--border);
+      cursor: pointer; transition: all 0.3s;
     }
-    
     .job-card:hover {
       border-color: var(--accent-green);
       transform: translateY(-3px);
       box-shadow: 0 10px 30px rgba(0, 255, 136, 0.15);
     }
     
-    .job-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 15px;
-    }
-    
+    .job-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
     .job-company-logo {
-      width: 50px;
-      height: 50px;
-      border-radius: 10px;
-      background: var(--bg-hover);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--accent-cyan);
+      width: 50px; height: 50px; border-radius: 10px;
+      background: var(--bg-hover); display: flex;
+      align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 700; color: var(--accent-cyan);
     }
+    .job-badges { display: flex; gap: 8px; }
+    .job-badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; }
     
-    .job-badges {
-      display: flex;
-      gap: 8px;
-    }
+    .job-title { font-size: 16px; font-weight: 600; margin-bottom: 5px; }
+    .job-company { color: var(--text-muted); font-size: 14px; margin-bottom: 15px; }
     
-    .job-badge {
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-    
-    .job-title {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 5px;
-    }
-    
-    .job-company {
-      color: var(--text-muted);
-      font-size: 14px;
-      margin-bottom: 15px;
-    }
-    
-    .job-skills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 15px;
-    }
-    
-    .job-skill {
-      padding: 4px 10px;
-      background: var(--bg-hover);
-      border-radius: 4px;
-      font-size: 12px;
-      color: var(--text-muted);
-    }
+    .job-skills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
+    .job-skill { padding: 4px 10px; background: var(--bg-hover); border-radius: 4px; font-size: 12px; color: var(--text-muted); }
     
     .job-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 15px;
+      display: flex; justify-content: space-between;
+      align-items: center; padding-top: 15px;
       border-top: 1px solid var(--border);
     }
-    
-    .job-salary {
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--accent-green);
-    }
-    
+    .job-salary { font-size: 16px; font-weight: 600; color: var(--accent-green); }
     .job-apply {
-      padding: 8px 16px;
-      background: var(--accent-green);
-      color: #000;
-      border: none;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
+      padding: 8px 16px; background: var(--accent-green);
+      color: #000; border: none; border-radius: 6px;
+      font-weight: 600; cursor: pointer;
     }
-    
-    .job-apply:hover {
-      background: #00cc6a;
-      transform: scale(1.05);
-    }
+    .job-apply:hover { background: #00cc6a; }
     
     /* Video Modal */
     .video-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.9);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
+      display: none; position: fixed; inset: 0;
+      background: rgba(0, 0, 0, 0.95); z-index: 1000;
+      align-items: center; justify-content: center;
     }
-    
-    .video-modal.active {
-      display: flex;
-    }
+    .video-modal.active { display: flex; }
     
     .video-container {
-      position: relative;
-      width: 90%;
-      max-width: 900px;
-      background: var(--bg-card);
-      border-radius: 16px;
-      overflow: hidden;
+      position: relative; width: 90%; max-width: 500px;
+      background: var(--bg-card); border-radius: 16px; overflow: hidden;
     }
-    
     .video-close {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      width: 40px;
-      height: 40px;
-      background: rgba(0, 0, 0, 0.5);
-      border: none;
-      border-radius: 50%;
-      color: white;
-      font-size: 24px;
-      cursor: pointer;
-      z-index: 10;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: absolute; top: 15px; right: 15px;
+      width: 40px; height: 40px; background: rgba(0, 0, 0, 0.5);
+      border: none; border-radius: 50%; color: white;
+      font-size: 24px; cursor: pointer; z-index: 10;
     }
+    .video-player { width: 100%; aspect-ratio: 9/16; background: #000; }
+    .video-info { padding: 20px; }
+    .video-info h3 { font-size: 18px; margin-bottom: 10px; }
+    .video-info p { color: var(--text-muted); font-size: 14px; }
     
-    .video-player {
-      width: 100%;
-      aspect-ratio: 16/9;
-      background: #000;
-    }
-    
-    .video-info {
-      padding: 20px;
-    }
-    
-    .video-info h3 {
-      font-size: 20px;
-      margin-bottom: 10px;
-    }
-    
-    .video-info p {
-      color: var(--text-muted);
-    }
-    
-    /* Publish Queue */
-    .queue-section {
-      display: none;
-    }
-    
-    .queue-section.active {
-      display: block;
-    }
-    
-    .queue-item {
-      background: var(--bg-card);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 15px;
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    
-    .queue-time {
-      text-align: center;
-      min-width: 80px;
-    }
-    
-    .queue-time .time {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--accent-cyan);
-    }
-    
-    .queue-time .date {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    
-    .queue-content {
-      flex: 1;
-    }
-    
-    .queue-actions {
-      display: flex;
-      gap: 10px;
-    }
-    
-    .queue-btn {
-      padding: 8px 15px;
-      border-radius: 6px;
-      font-size: 13px;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text);
-      transition: all 0.2s;
-    }
-    
-    .queue-btn:hover {
-      background: var(--bg-hover);
-    }
-    
-    .queue-btn.publish {
-      background: var(--accent-green);
-      color: #000;
-      border: none;
-    }
-    
-    /* Empty State */
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--text-muted);
-    }
-    
-    .empty-state svg {
-      width: 80px;
-      height: 80px;
-      margin-bottom: 20px;
-      opacity: 0.5;
-    }
-    
-    /* Loading */
-    .loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px;
-    }
-    
+    /* Loading & Empty */
+    .loading { display: flex; align-items: center; justify-content: center; padding: 40px; }
     .spinner {
-      width: 40px;
-      height: 40px;
-      border: 3px solid var(--border);
-      border-top-color: var(--accent-cyan);
-      border-radius: 50%;
+      width: 40px; height: 40px; border: 3px solid var(--border);
+      border-top-color: var(--accent-cyan); border-radius: 50%;
       animation: spin 1s linear infinite;
     }
+    @keyframes spin { to { transform: rotate(360deg); } }
     
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    .empty-state svg { width: 80px; height: 80px; margin-bottom: 20px; opacity: 0.5; }
     
-    /* Responsive */
     @media (max-width: 768px) {
-      .sidebar {
-        width: 60px;
-        padding: 10px 0;
-      }
-      
-      .sidebar .logo h1 {
-        font-size: 16px;
-      }
-      
-      .sidebar .logo span,
-      .nav-item span {
-        display: none;
-      }
-      
-      .main {
-        margin-left: 60px;
-        padding: 15px;
-      }
-      
-      .header-actions {
-        flex-direction: column;
-      }
-      
-      .search-box {
-        width: 100%;
-      }
+      .sidebar { width: 60px; } .sidebar .logo h1 { font-size: 16px; }
+      .sidebar .logo span, .nav-item span { display: none; }
+      .main { margin-left: 60px; padding: 15px; }
+      .news-flash-grid { grid-template-columns: 1fr; }
+      .job-grid { grid-template-columns: 1fr; }
+      .feed-card { grid-template-columns: 1fr; }
+      .feed-image { display: none; }
     }
   </style>
 </head>
@@ -857,36 +489,40 @@
       <nav>
         <a class="nav-item active" data-view="feed">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="7" height="7" rx="1"/>
-            <rect x="14" y="3" width="7" height="7" rx="1"/>
-            <rect x="3" y="14" width="7" height="7" rx="1"/>
-            <rect x="14" y="14" width="7" height="7" rx="1"/>
+            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
           </svg>
           <span>Feed</span>
+        </a>
+        <a class="nav-item" data-view="newsflash">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+          <span>News Flash</span>
+          <div class="live-dot"></div>
         </a>
         <a class="nav-item" data-view="reels">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polygon points="5 3 19 12 5 21 5 3"/>
           </svg>
           <span>Reels</span>
+          <span class="badge">12</span>
         </a>
         <a class="nav-item" data-view="jobs">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="2" y="7" width="20" height="14" rx="2"/>
             <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
           </svg>
-          <span>Job board</span>
+          <span>Job Board</span>
         </a>
         <a class="nav-item" data-view="queue">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="8" y1="6" x2="21" y2="6"/>
-            <line x1="8" y1="12" x2="21" y2="12"/>
+            <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
             <line x1="8" y1="18" x2="21" y2="18"/>
-            <line x1="3" y1="6" x2="3.01" y2="6"/>
-            <line x1="3" y1="12" x2="3.01" y2="12"/>
+            <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/>
             <line x1="3" y1="18" x2="3.01" y2="18"/>
           </svg>
-          <span>Publish queue</span>
+          <span>Queue</span>
         </a>
         <a class="nav-item" data-view="saved">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -897,56 +533,47 @@
       </nav>
       
       <div class="stats-box">
-        <div class="status">SCANNING · 4H</div>
+        <div class="status">LIVE · 4H CYCLE</div>
         <div class="stats-numbers">
           <div class="stat">
-            <div class="stat-value" id="stat-discovered">0</div>
+            <div class="stat-value" id="stat-discovered">1450</div>
             <div class="stat-label">discovered</div>
           </div>
           <div class="stat">
-            <div class="stat-value" id="stat-published">0</div>
+            <div class="stat-value" id="stat-published">45</div>
             <div class="stat-label">published</div>
           </div>
         </div>
       </div>
     </aside>
     
-    <!-- Main Content -->
+    <!-- Main -->
     <main class="main">
       <!-- Feed View -->
       <div id="view-feed" class="view active">
         <div class="header">
           <div>
-            <h2>Radar feed</h2>
+            <h2>Radar Feed</h2>
             <p>Verified news, jobs and reels — newest first</p>
           </div>
           <div class="header-actions">
             <div class="search-box">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8"/>
-                <path d="M21 21l-4.35-4.35"/>
+                <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
               </svg>
-              <input type="text" placeholder="Search headlines, companies, skills, sources" id="search-input">
+              <input type="text" placeholder="Search headlines, companies, skills" id="search-input">
             </div>
-            <button class="btn-primary">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="12" y1="5" x2="12" y2="19"/>
-                <line x1="5" y1="12" x2="19" y2="12"/>
-              </svg>
-              New post
-            </button>
+            <button class="btn-primary">+ New Post</button>
           </div>
         </div>
         
         <!-- Reels Section -->
         <div class="reels-section">
           <div class="section-header">
-            <span class="section-title">REELS THIS WEEK</span>
-            <button class="btn-secondary" onclick="openVideoPlayer()">Open player</button>
+            <span class="section-title">🔥 TRENDING REELS - Updated every 4 hours</span>
+            <button class="btn-secondary" onclick="refreshReels()">↻ Refresh</button>
           </div>
-          <div class="reels-grid" id="reels-grid">
-            <!-- Reels loaded dynamically -->
-          </div>
+          <div class="reels-scroll" id="reels-scroll"></div>
         </div>
         
         <!-- Tabs -->
@@ -956,14 +583,26 @@
           <button class="tab" data-filter="job">Jobs</button>
           <button class="tab" data-filter="reel">Reels</button>
           <button class="tab" data-filter="carousel">Carousels</button>
-          <button class="tab" data-filter="announcement">Announcements</button>
-          <button class="tab" data-filter="event">Events</button>
           <span class="tab-count" id="feed-count">0 posts</span>
         </div>
         
-        <!-- Feed -->
-        <div class="feed" id="feed-container">
-          <div class="loading"><div class="spinner"></div></div>
+        <div class="feed" id="feed-container"></div>
+      </div>
+      
+      <!-- News Flash View -->
+      <div id="view-newsflash" class="view">
+        <div class="news-flash-container">
+          <div class="news-flash-header">
+            <h3>
+              <span>⚡ NEWS FLASH</span>
+              <span class="live-badge">● LIVE</span>
+            </h3>
+            <span class="update-time" id="news-update-time">Updated just now</span>
+          </div>
+          <div class="news-ticker">
+            <div class="ticker-content" id="ticker-content"></div>
+          </div>
+          <div class="news-flash-grid" id="news-flash-grid"></div>
         </div>
       </div>
       
@@ -971,64 +610,45 @@
       <div id="view-reels" class="view">
         <div class="header">
           <div>
-            <h2>Reels</h2>
-            <p>Short-form video content for developers</p>
+            <h2>All Reels</h2>
+            <p>Video content for developers - refreshed every 4 hours</p>
           </div>
         </div>
-        <div class="reels-grid" id="all-reels-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
-          <!-- All reels loaded dynamically -->
-        </div>
+        <div class="reels-scroll" id="all-reels-grid" style="flex-wrap: wrap; overflow: visible;"></div>
       </div>
       
       <!-- Jobs View -->
-      <div id="view-jobs" class="view job-board">
+      <div id="view-jobs" class="view">
         <div class="header">
           <div>
             <h2>Job Board</h2>
             <p>Remote tech jobs hiring from India</p>
           </div>
         </div>
-        
         <div class="job-filters">
           <button class="job-filter active" data-level="all">All Levels</button>
           <button class="job-filter" data-level="fresher">🌱 Freshers</button>
-          <button class="job-filter" data-level="junior">💼 Junior (1-3 yrs)</button>
-          <button class="job-filter" data-level="mid">🎯 Mid (3-5 yrs)</button>
-          <button class="job-filter" data-level="senior">🚀 Senior (5+ yrs)</button>
+          <button class="job-filter" data-level="junior">💼 Junior</button>
+          <button class="job-filter" data-level="mid">🎯 Mid</button>
+          <button class="job-filter" data-level="senior">🚀 Senior</button>
         </div>
-        
-        <div class="job-grid" id="jobs-grid">
-          <div class="loading"><div class="spinner"></div></div>
-        </div>
+        <div class="job-grid" id="jobs-grid"></div>
       </div>
       
       <!-- Queue View -->
-      <div id="view-queue" class="view queue-section">
-        <div class="header">
-          <div>
-            <h2>Publish Queue</h2>
-            <p>Scheduled posts waiting to go live</p>
-          </div>
-        </div>
-        <div id="queue-container">
-          <div class="loading"><div class="spinner"></div></div>
-        </div>
+      <div id="view-queue" class="view">
+        <div class="header"><div><h2>Publish Queue</h2><p>Scheduled posts</p></div></div>
+        <div id="queue-container"></div>
       </div>
       
       <!-- Saved View -->
       <div id="view-saved" class="view">
-        <div class="header">
-          <div>
-            <h2>Saved</h2>
-            <p>Your bookmarked items</p>
-          </div>
-        </div>
+        <div class="header"><div><h2>Saved</h2><p>Your bookmarks</p></div></div>
         <div class="empty-state">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
             <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
           </svg>
-          <h3>No saved items yet</h3>
-          <p>Click the bookmark icon on any post to save it here</p>
+          <h3>No saved items</h3><p>Click the bookmark icon on any post</p>
         </div>
       </div>
     </main>
@@ -1038,325 +658,117 @@
   <div class="video-modal" id="video-modal">
     <div class="video-container">
       <button class="video-close" onclick="closeVideo()">×</button>
-      <video class="video-player" id="video-player" controls autoplay>
+      <video class="video-player" id="video-player" controls>
         <source src="" type="video/mp4">
-        Your browser does not support the video tag.
       </video>
       <div class="video-info">
-        <h3 id="video-title">Video Title</h3>
-        <p id="video-description">Video description</p>
+        <h3 id="video-title"></h3>
+        <p id="video-description"></p>
       </div>
     </div>
   </div>
   
   <script>
-    // Data
+    // ==================== DATA ====================
+    
+    // News Flash - Last 4 hours
+    const newsFlashData = [
+      { id: 1, title: "OpenAI releases GPT-5 preview for enterprise customers", summary: "The latest model shows 40% improvement in reasoning tasks and supports 200K context window.", category: "ai", time: "12 min ago", breaking: true, source: "OpenAI Blog", url: "https://openai.com" },
+      { id: 2, title: "GitHub Copilot now generates entire test suites", summary: "New feature automatically creates unit tests, integration tests, and mocks for your codebase.", category: "devtools", time: "28 min ago", breaking: true, source: "GitHub", url: "https://github.blog" },
+      { id: 3, title: "AWS announces 50% price cut on Lambda functions", summary: "Effective immediately, serverless computing costs reduced across all regions.", category: "cloud", time: "45 min ago", breaking: false, source: "AWS", url: "https://aws.amazon.com" },
+      { id: 4, title: "Critical zero-day in popular npm package affects millions", summary: "Patch released for express-validator. Update immediately to version 7.2.1 or higher.", category: "security", time: "1 hour ago", breaking: true, source: "npm Security", url: "https://npmjs.com" },
+      { id: 5, title: "Stripe launches AI-powered fraud detection", summary: "New Radar Pro uses machine learning to block 99.9% of fraudulent transactions.", category: "ai", time: "1.5 hours ago", breaking: false, source: "Stripe", url: "https://stripe.com" },
+      { id: 6, title: "Google Cloud offers free $300 credits for students", summary: "New program provides cloud resources for learning. Valid worldwide including India.", category: "cloud", time: "2 hours ago", breaking: false, source: "Google Cloud", url: "https://cloud.google.com" },
+      { id: 7, title: "Microsoft acquires DevOps startup for $2.5B", summary: "JetBridge acquisition will enhance Azure DevOps with advanced CI/CD capabilities.", category: "devtools", time: "2.5 hours ago", breaking: false, source: "TechCrunch", url: "https://techcrunch.com" },
+      { id: 8, title: "Remote.com raises $300M for global hiring platform", summary: "Platform now supports contractor payments in 180+ countries including India.", category: "jobs", time: "3 hours ago", breaking: false, source: "TechCrunch", url: "https://remote.com" },
+      { id: 9, title: "Python 3.13 released with performance boost", summary: "New version is 25% faster with improved garbage collection and type hints.", category: "devtools", time: "3.5 hours ago", breaking: false, source: "Python.org", url: "https://python.org" },
+      { id: 10, title: "Cloudflare blocks largest DDoS attack ever", summary: "26 million requests per second mitigated. New protection features rolling out.", category: "security", time: "4 hours ago", breaking: false, source: "Cloudflare", url: "https://cloudflare.com" },
+    ];
+    
+    // Reels - 12 reels refreshed every 4 hours
     const reelsData = [
-      {
-        id: 1,
-        title: "Three fake job posts, spotted in 30 seconds",
-        description: "Learn how to identify scam job postings quickly. Red flags to watch out for!",
-        category: "verification",
-        duration: "0:34",
-        views: 18200,
-        thumbnail: "https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?w=400&h=300&fit=crop",
-        videoUrl: "/reels/reel-1-fake-jobs.mp4",
-        isLocal: true
-      },
-      {
-        id: 2,
-        title: "AWS just made your backups cheaper",
-        description: "Breaking news! AWS removes egress fees for cross-region S3 replication.",
-        category: "cloud",
-        duration: "0:28",
-        views: 11700,
-        thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop",
-        videoUrl: "/reels/reel-2-aws-backups.mp4",
-        isLocal: true
-      },
-      {
-        id: 3,
-        title: "A fresher-friendly job, read line by line",
-        description: "Perfect for fresh graduates! Associate Data Engineer role breakdown.",
-        category: "freshers",
-        duration: "0:35",
-        views: 26400,
-        thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop",
-        videoUrl: "/reels/reel-3-fresher-jobs.mp4",
-        isLocal: true
-      },
-      {
-        id: 4,
-        title: "5 VS Code extensions you need in 2026",
-        description: "Boost your productivity with these essential developer tools!",
-        category: "devtools",
-        duration: "0:42",
-        views: 34500,
-        thumbnail: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop",
-        videoUrl: "/reels/reel-4-vscode.mp4",
-        isLocal: true
-      }
+      { id: 1, title: "🚨 Spot Fake Jobs in 30 Seconds", category: "verification", duration: "0:50", views: 18200, badge: "trending", thumbnail: "https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?w=400&h=700&fit=crop", videoUrl: "/reels/reel-1-fake-jobs.mp4" },
+      { id: 2, title: "☁️ AWS Drops Backup Costs", category: "cloud", duration: "0:30", views: 11700, badge: "new", thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=700&fit=crop", videoUrl: "/reels/reel-2-aws-backups.mp4" },
+      { id: 3, title: "🎯 Fresher Job Breakdown", category: "freshers", duration: "0:45", views: 26400, badge: "verified", thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=700&fit=crop", videoUrl: "/reels/reel-3-fresher-jobs.mp4" },
+      { id: 4, title: "💻 Top 5 VS Code Extensions", category: "devtools", duration: "0:58", views: 34500, badge: "trending", thumbnail: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=700&fit=crop", videoUrl: "/reels/reel-4-vscode.mp4" },
+      { id: 5, title: "🏠 Remote Work Tips", category: "career", duration: "0:45", views: 8900, badge: "new", thumbnail: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=700&fit=crop", videoUrl: "/reels/reel-1-fake-jobs.mp4" },
+      { id: 6, title: "🐳 Docker in 60 Seconds", category: "devops", duration: "1:00", views: 15600, badge: "verified", thumbnail: "https://images.unsplash.com/photo-1605745341112-85968b19335b?w=400&h=700&fit=crop", videoUrl: "/reels/reel-2-aws-backups.mp4" },
+      { id: 7, title: "🤖 AI Tools for Devs", category: "ai", duration: "0:38", views: 22100, badge: "trending", thumbnail: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=700&fit=crop", videoUrl: "/reels/reel-3-fresher-jobs.mp4" },
+      { id: 8, title: "🔀 Git Commands Guide", category: "devtools", duration: "0:52", views: 19300, badge: "verified", thumbnail: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=400&h=700&fit=crop", videoUrl: "/reels/reel-4-vscode.mp4" },
+      { id: 9, title: "💰 Salary Negotiation", category: "career", duration: "0:40", views: 31200, badge: "trending", thumbnail: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=400&h=700&fit=crop", videoUrl: "/reels/reel-1-fake-jobs.mp4" },
+      { id: 10, title: "⚛️ React vs Vue 2026", category: "frontend", duration: "0:55", views: 12400, badge: "new", thumbnail: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=700&fit=crop", videoUrl: "/reels/reel-2-aws-backups.mp4" },
+      { id: 11, title: "💼 LinkedIn Hacks", category: "career", duration: "0:35", views: 28700, badge: "verified", thumbnail: "https://images.unsplash.com/photo-1611944212129-29977ae1398c?w=400&h=700&fit=crop", videoUrl: "/reels/reel-3-fresher-jobs.mp4" },
+      { id: 12, title: "📘 TypeScript Basics", category: "devtools", duration: "1:10", views: 9800, badge: "new", thumbnail: "https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=400&h=700&fit=crop", videoUrl: "/reels/reel-4-vscode.mp4" },
     ];
     
     const feedData = [
-      {
-        id: 1,
-        type: "news",
-        title: "OpenAI opens fine-tuning to o-series models",
-        description: "Reasoning models can now be tuned on domain data — first-party pricing published alongside. This opens up new possibilities for enterprise AI adoption.",
-        category: "AI",
-        score: 94,
-        source: "OpenAI Blog",
-        timeAgo: "18m ago",
-        status: "published",
-        views: 214,
-        comments: 2,
-        url: "https://openai.com/blog",
-        image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=300&h=200&fit=crop"
-      },
-      {
-        id: 2,
-        type: "job",
-        title: "Senior Platform Engineer",
-        description: "Kubernetes-heavy platform team, async-first culture. Hiring from India and LATAM for remote positions.",
-        category: "REMOTE",
-        source: "Grafana Labs",
-        timeAgo: "42m ago",
-        status: "published",
-        views: 87,
-        salary: "$150K - $180K",
-        url: "https://grafana.com/careers",
-        image: "https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?w=300&h=200&fit=crop"
-      },
-      {
-        id: 3,
-        type: "carousel",
-        title: "Five remote-first companies hiring freshers",
-        description: "Swipe-through carousel built from this week's verified entry-level listings. Perfect for fresh graduates.",
-        category: "5 slides",
-        source: "Radar original",
-        timeAgo: "1h ago",
-        status: "published",
-        views: 431,
-        url: "#",
-        image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=300&h=200&fit=crop"
-      },
-      {
-        id: 4,
-        type: "news",
-        title: "CISA flags active exploitation in a popular CI runner",
-        description: "Self-hosted runners on the affected minor versions need immediate patching. Critical security advisory.",
-        category: "SECURITY",
-        score: 91,
-        source: "CISA",
-        timeAgo: "2h ago",
-        status: "published",
-        views: 96,
-        url: "https://cisa.gov/advisories",
-        image: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=300&h=200&fit=crop"
-      },
-      {
-        id: 5,
-        type: "job",
-        title: "Frontend Engineer (React)",
-        description: "Design-systems team at a Series B fintech, contract-to-hire. Looking for passionate React developers.",
-        category: "INDIA OK",
-        source: "We Work Remotely",
-        timeAgo: "4h ago",
-        status: "review",
-        views: 63,
-        salary: "$80K - $120K",
-        url: "https://weworkremotely.com",
-        image: "https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?w=300&h=200&fit=crop"
-      },
-      {
-        id: 6,
-        type: "news",
-        title: "AWS drops egress fees for cross-region replication",
-        description: "Applies to S3 replication in all commercial regions from next billing cycle. Major cost savings incoming.",
-        category: "CLOUD",
-        score: 88,
-        source: "AWS News",
-        timeAgo: "7h ago",
-        status: "published",
-        views: 132,
-        url: "https://aws.amazon.com/blogs",
-        image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300&h=200&fit=crop"
-      },
-      {
-        id: 7,
-        type: "job",
-        title: "Associate Data Engineer",
-        description: "Zero-to-two years experience, structured mentoring program. dbt shop with modern data stack.",
-        category: "FRESHER",
-        source: "HN Who's Hiring",
-        timeAgo: "9h ago",
-        status: "published",
-        views: 74,
-        salary: "$60K - $80K",
-        url: "https://news.ycombinator.com",
-        image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=300&h=200&fit=crop"
-      },
-      {
-        id: 8,
-        type: "news",
-        title: "GitHub Actions gains native OIDC for third-party registries",
-        description: "Long-lived registry tokens can come out of your secrets today. Enhanced security for CI/CD pipelines.",
-        category: "DEV TOOLS",
-        score: 90,
-        source: "GitHub Changelog",
-        timeAgo: "11h ago",
-        status: "published",
-        views: 158,
-        url: "https://github.blog",
-        image: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=300&h=200&fit=crop"
-      }
+      { id: 1, type: "news", title: "OpenAI opens fine-tuning to o-series models", description: "Reasoning models can now be tuned on domain data — first-party pricing published.", category: "AI", score: 94, source: "OpenAI Blog", timeAgo: "18m ago", status: "published", views: 214, url: "https://openai.com/blog", image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=300&h=200&fit=crop" },
+      { id: 2, type: "job", title: "Senior Platform Engineer", description: "Kubernetes-heavy platform team, async-first. Hiring from India.", category: "REMOTE", source: "Grafana Labs", timeAgo: "42m ago", status: "published", views: 87, salary: "$150K-$180K", url: "https://grafana.com/careers", image: "https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?w=300&h=200&fit=crop" },
+      { id: 3, type: "carousel", title: "Five remote-first companies hiring freshers", description: "Swipe-through carousel from this week's verified entry-level listings.", category: "5 slides", source: "Radar", timeAgo: "1h ago", status: "published", views: 431, url: "#", image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=300&h=200&fit=crop" },
+      { id: 4, type: "news", title: "CISA flags active exploitation in CI runner", description: "Self-hosted runners need patching today. Critical security advisory.", category: "SECURITY", score: 91, source: "CISA", timeAgo: "2h ago", status: "published", views: 96, url: "https://cisa.gov", image: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=300&h=200&fit=crop" },
+      { id: 5, type: "job", title: "Frontend Engineer (React)", description: "Design-systems team at a Series B fintech, contract-to-hire.", category: "INDIA OK", source: "WWR", timeAgo: "4h ago", status: "review", views: 63, salary: "$80K-$120K", url: "https://weworkremotely.com", image: "https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?w=300&h=200&fit=crop" },
     ];
     
     const jobsData = [
-      {
-        id: 1,
-        title: "Senior Platform Engineer",
-        company: "Grafana Labs",
-        location: "Remote (India OK)",
-        level: "senior",
-        type: "Full-time",
-        salary: "$150K - $180K",
-        skills: ["Kubernetes", "Go", "AWS", "Terraform", "Prometheus"],
-        url: "https://grafana.com/careers",
-        logo: "G"
-      },
-      {
-        id: 2,
-        title: "Data Scientist - Inference",
-        company: "Airbnb",
-        location: "Remote",
-        level: "senior",
-        type: "Full-time",
-        salary: "$180K - $220K",
-        skills: ["Python", "ML", "SQL", "TensorFlow", "Statistics"],
-        url: "https://airbnb.com/careers",
-        logo: "A"
-      },
-      {
-        id: 3,
-        title: "Frontend Engineer (React)",
-        company: "Series B Fintech",
-        location: "India",
-        level: "mid",
-        type: "Contract",
-        salary: "$80K - $120K",
-        skills: ["React", "TypeScript", "CSS", "Testing", "GraphQL"],
-        url: "https://weworkremotely.com",
-        logo: "F"
-      },
-      {
-        id: 4,
-        title: "Associate Data Engineer",
-        company: "Data Startup",
-        location: "Remote (Worldwide)",
-        level: "fresher",
-        type: "Full-time",
-        salary: "$60K - $80K",
-        skills: ["Python", "SQL", "dbt", "AWS", "Airflow"],
-        url: "https://news.ycombinator.com",
-        logo: "D"
-      },
-      {
-        id: 5,
-        title: "Junior Full Stack Developer",
-        company: "Tech Startup",
-        location: "Remote (India)",
-        level: "junior",
-        type: "Full-time",
-        salary: "$40K - $60K",
-        skills: ["JavaScript", "React", "Node.js", "MongoDB", "Git"],
-        url: "https://remoteok.com",
-        logo: "T"
-      },
-      {
-        id: 6,
-        title: "Senior AI Engineer",
-        company: "Lemon.io",
-        location: "Remote (Worldwide)",
-        level: "senior",
-        type: "Contract",
-        salary: "$140K - $180K",
-        skills: ["Python", "PyTorch", "LLMs", "MLOps", "AWS"],
-        url: "https://lemon.io",
-        logo: "L"
-      },
-      {
-        id: 7,
-        title: "DevOps Engineer",
-        company: "CircleCI",
-        location: "Remote",
-        level: "mid",
-        type: "Full-time",
-        salary: "$120K - $150K",
-        skills: ["Docker", "Kubernetes", "CI/CD", "AWS", "Terraform"],
-        url: "https://circleci.com/careers",
-        logo: "C"
-      },
-      {
-        id: 8,
-        title: "Software Developer Intern",
-        company: "Microsoft",
-        location: "Remote (India)",
-        level: "fresher",
-        type: "Internship",
-        salary: "$30K - $40K",
-        skills: ["C#", ".NET", "Azure", "SQL", "Git"],
-        url: "https://careers.microsoft.com",
-        logo: "M"
-      }
+      { id: 1, title: "Senior Platform Engineer", company: "Grafana Labs", location: "Remote (India OK)", level: "senior", type: "Full-time", salary: "$150K-$180K", skills: ["Kubernetes", "Go", "AWS", "Terraform"], url: "https://grafana.com/careers", logo: "G" },
+      { id: 2, title: "Data Scientist", company: "Airbnb", location: "Remote", level: "senior", type: "Full-time", salary: "$180K-$220K", skills: ["Python", "ML", "SQL", "TensorFlow"], url: "https://airbnb.com/careers", logo: "A" },
+      { id: 3, title: "Frontend Engineer", company: "Fintech Startup", location: "India", level: "mid", type: "Contract", salary: "$80K-$120K", skills: ["React", "TypeScript", "GraphQL"], url: "#", logo: "F" },
+      { id: 4, title: "Associate Data Engineer", company: "Data Startup", location: "Remote", level: "fresher", type: "Full-time", salary: "$60K-$80K", skills: ["Python", "SQL", "dbt", "AWS"], url: "#", logo: "D" },
+      { id: 5, title: "Junior Full Stack Dev", company: "Tech Startup", location: "India", level: "junior", type: "Full-time", salary: "$40K-$60K", skills: ["JavaScript", "React", "Node.js"], url: "#", logo: "T" },
+      { id: 6, title: "Senior AI Engineer", company: "Lemon.io", location: "Remote", level: "senior", type: "Contract", salary: "$140K-$180K", skills: ["Python", "PyTorch", "LLMs", "MLOps"], url: "https://lemon.io", logo: "L" },
     ];
     
-    // Badge colors
-    const badgeColors = {
-      verification: 'badge-verification',
-      cloud: 'badge-cloud',
-      freshers: 'badge-freshers',
-      ai: 'badge-ai',
-      security: 'badge-security',
-      devtools: 'badge-devtools',
-      remote: 'badge-remote'
-    };
+    // ==================== INITIALIZATION ====================
     
-    // Initialize
     document.addEventListener('DOMContentLoaded', () => {
-      loadStats();
+      loadNewsFlash();
       loadReels();
       loadFeed();
       loadJobs();
-      loadQueue();
       setupEventListeners();
+      startAutoRefresh();
     });
     
-    // Load stats from API
-    async function loadStats() {
-      try {
-        const res = await fetch('/api/stats');
-        const data = await res.json();
-        document.getElementById('stat-discovered').textContent = data.news?.total || 0;
-        document.getElementById('stat-published').textContent = data.news?.published || 0;
-      } catch (e) {
-        document.getElementById('stat-discovered').textContent = '1450';
-        document.getElementById('stat-published').textContent = '45';
-      }
+    // ==================== NEWS FLASH ====================
+    
+    function loadNewsFlash() {
+      // Ticker
+      const ticker = document.getElementById('ticker-content');
+      const tickerItems = newsFlashData.slice(0, 5).map(n => 
+        `<span class="ticker-item">${n.title}</span>`
+      ).join('');
+      ticker.innerHTML = tickerItems + tickerItems; // Duplicate for seamless scroll
+      
+      // Grid
+      const grid = document.getElementById('news-flash-grid');
+      grid.innerHTML = newsFlashData.map(news => `
+        <div class="flash-card ${news.breaking ? 'breaking' : ''}" onclick="openUrl('${news.url}')">
+          <div class="flash-time">${news.time}</div>
+          <span class="flash-category cat-${news.category}">${news.category}</span>
+          <h4 class="flash-title">${news.title}</h4>
+          <p class="flash-summary">${news.summary}</p>
+          <div class="flash-source">
+            <span>📍 ${news.source}</span>
+            <span>→ Read more</span>
+          </div>
+        </div>
+      `).join('');
+      
+      document.getElementById('news-update-time').textContent = 'Updated just now';
     }
     
-    // Load reels
+    // ==================== REELS ====================
+    
     function loadReels() {
-      const grid = document.getElementById('reels-grid');
+      const scroll = document.getElementById('reels-scroll');
       const allGrid = document.getElementById('all-reels-grid');
       
       const html = reelsData.map(reel => `
         <div class="reel-card" onclick="playVideo(${reel.id})">
           <div class="reel-thumbnail" style="background-image: url('${reel.thumbnail}')">
-            <span class="reel-badge ${badgeColors[reel.category] || 'badge-ai'}">${reel.category}</span>
+            <span class="reel-badge badge-${reel.badge}">${reel.badge}</span>
             <div class="play-btn">
-              <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="white"/></svg>
+              <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21" fill="white"/></svg>
             </div>
             <span class="reel-duration">${reel.duration}</span>
           </div>
@@ -1367,34 +779,27 @@
         </div>
       `).join('');
       
-      grid.innerHTML = html;
+      scroll.innerHTML = html;
       allGrid.innerHTML = html;
     }
     
-    // Load feed
+    function refreshReels() {
+      // Shuffle reels
+      reelsData.sort(() => Math.random() - 0.5);
+      loadReels();
+    }
+    
+    // ==================== FEED ====================
+    
     function loadFeed(filter = 'all') {
       const container = document.getElementById('feed-container');
-      let items = feedData;
-      
-      if (filter !== 'all') {
-        items = feedData.filter(item => item.type === filter);
-      }
+      let items = filter === 'all' ? feedData : feedData.filter(i => i.type === filter);
       
       document.getElementById('feed-count').textContent = `${items.length} posts`;
       
-      if (items.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <h3>No ${filter} posts found</h3>
-            <p>Check back later for new content</p>
-          </div>
-        `;
-        return;
-      }
-      
       container.innerHTML = items.map(item => `
         <div class="feed-card" onclick="openUrl('${item.url}')">
-          <div class="feed-card-content">
+          <div>
             <div class="feed-card-meta">
               <span class="feed-type type-${item.type}">${item.type}</span>
               <span class="feed-category">${item.category}</span>
@@ -1407,7 +812,6 @@
               <span>📍 ${item.source}</span>
               <span>🕐 ${item.timeAgo}</span>
               <span>👁 ${item.views}</span>
-              ${item.comments !== undefined ? `<span>💬 ${item.comments}</span>` : ''}
             </div>
           </div>
           <span class="feed-status status-${item.status}">${item.status}</span>
@@ -1416,39 +820,24 @@
       `).join('');
     }
     
-    // Load jobs
+    // ==================== JOBS ====================
+    
     function loadJobs(level = 'all') {
       const grid = document.getElementById('jobs-grid');
-      let jobs = jobsData;
-      
-      if (level !== 'all') {
-        jobs = jobsData.filter(job => job.level === level);
-      }
-      
-      if (jobs.length === 0) {
-        grid.innerHTML = `
-          <div class="empty-state" style="grid-column: 1/-1;">
-            <h3>No ${level} jobs found</h3>
-            <p>Check back later for new opportunities</p>
-          </div>
-        `;
-        return;
-      }
+      let jobs = level === 'all' ? jobsData : jobsData.filter(j => j.level === level);
       
       grid.innerHTML = jobs.map(job => `
         <div class="job-card" onclick="openUrl('${job.url}')">
           <div class="job-header">
             <div class="job-company-logo">${job.logo}</div>
             <div class="job-badges">
-              <span class="job-badge badge-${job.level === 'fresher' ? 'freshers' : 'remote'}">${job.level}</span>
-              <span class="job-badge badge-cloud">${job.type}</span>
+              <span class="job-badge badge-${job.level === 'fresher' ? 'new' : 'verified'}">${job.level}</span>
+              <span class="job-badge" style="background:var(--accent-cyan);color:black">${job.type}</span>
             </div>
           </div>
           <h3 class="job-title">${job.title}</h3>
           <p class="job-company">${job.company} · ${job.location}</p>
-          <div class="job-skills">
-            ${job.skills.map(s => `<span class="job-skill">${s}</span>`).join('')}
-          </div>
+          <div class="job-skills">${job.skills.map(s => `<span class="job-skill">${s}</span>`).join('')}</div>
           <div class="job-footer">
             <span class="job-salary">${job.salary}</span>
             <button class="job-apply" onclick="event.stopPropagation(); openUrl('${job.url}')">Apply Now</button>
@@ -1457,59 +846,21 @@
       `).join('');
     }
     
-    // Load queue
-    function loadQueue() {
-      const container = document.getElementById('queue-container');
-      
-      const queueItems = [
-        { time: '10:00', date: 'Today', type: 'news', title: 'Node.js 22 LTS released with native test runner', status: 'scheduled' },
-        { time: '14:00', date: 'Today', type: 'job', title: 'Backend Engineer at Stripe (Remote)', status: 'scheduled' },
-        { time: '09:00', date: 'Tomorrow', type: 'carousel', title: 'Top 5 AI tools for developers this week', status: 'draft' }
-      ];
-      
-      container.innerHTML = queueItems.map(item => `
-        <div class="queue-item">
-          <div class="queue-time">
-            <div class="time">${item.time}</div>
-            <div class="date">${item.date}</div>
-          </div>
-          <div class="queue-content">
-            <span class="feed-type type-${item.type}">${item.type}</span>
-            <h4 style="margin-top: 8px;">${item.title}</h4>
-          </div>
-          <div class="queue-actions">
-            <button class="queue-btn">Edit</button>
-            <button class="queue-btn">Reschedule</button>
-            <button class="queue-btn publish">Publish Now</button>
-          </div>
-        </div>
-      `).join('');
-    }
+    // ==================== EVENT LISTENERS ====================
     
-    // Event listeners
     function setupEventListeners() {
-      // Sidebar navigation
+      // Nav
       document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', (e) => {
+        item.addEventListener('click', e => {
           e.preventDefault();
-          const view = item.dataset.view;
-          
-          // Update active nav
           document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
           item.classList.add('active');
-          
-          // Show view
           document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-          const viewEl = document.getElementById(`view-${view}`);
-          if (viewEl) {
-            viewEl.classList.add('active');
-            if (view === 'jobs') viewEl.style.display = 'block';
-            else if (view === 'queue') viewEl.style.display = 'block';
-          }
+          document.getElementById(`view-${item.dataset.view}`).classList.add('active');
         });
       });
       
-      // Feed tabs
+      // Tabs
       document.querySelectorAll('.tab').forEach(tab => {
         tab.addEventListener('click', () => {
           document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -1519,85 +870,69 @@
       });
       
       // Job filters
-      document.querySelectorAll('.job-filter').forEach(filter => {
-        filter.addEventListener('click', () => {
-          document.querySelectorAll('.job-filter').forEach(f => f.classList.remove('active'));
-          filter.classList.add('active');
-          loadJobs(filter.dataset.level);
+      document.querySelectorAll('.job-filter').forEach(f => {
+        f.addEventListener('click', () => {
+          document.querySelectorAll('.job-filter').forEach(x => x.classList.remove('active'));
+          f.classList.add('active');
+          loadJobs(f.dataset.level);
         });
       });
       
       // Search
-      document.getElementById('search-input').addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase();
-        const cards = document.querySelectorAll('.feed-card');
-        cards.forEach(card => {
-          const text = card.textContent.toLowerCase();
-          card.style.display = text.includes(query) ? 'grid' : 'none';
+      document.getElementById('search-input').addEventListener('input', e => {
+        const q = e.target.value.toLowerCase();
+        document.querySelectorAll('.feed-card').forEach(c => {
+          c.style.display = c.textContent.toLowerCase().includes(q) ? 'grid' : 'none';
         });
       });
       
-      // Close modal on escape
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeVideo();
-      });
-      
-      // Close modal on backdrop click
-      document.getElementById('video-modal').addEventListener('click', (e) => {
+      // Modal close
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') closeVideo(); });
+      document.getElementById('video-modal').addEventListener('click', e => {
         if (e.target.id === 'video-modal') closeVideo();
       });
     }
     
-    // Play video
+    // ==================== VIDEO ====================
+    
     function playVideo(id) {
       const reel = reelsData.find(r => r.id === id);
       if (!reel) return;
       
       const player = document.getElementById('video-player');
-      const source = player.querySelector('source');
-      source.src = reel.videoUrl;
+      player.querySelector('source').src = reel.videoUrl;
       player.load();
       player.play();
       
       document.getElementById('video-title').textContent = reel.title;
-      document.getElementById('video-description').textContent = reel.description;
+      document.getElementById('video-description').textContent = `${formatNumber(reel.views)} views · ${reel.category}`;
       document.getElementById('video-modal').classList.add('active');
     }
     
-    // Close video
     function closeVideo() {
       const player = document.getElementById('video-player');
       player.pause();
-      player.querySelector('source').src = '';
-      player.load();
       document.getElementById('video-modal').classList.remove('active');
     }
     
-    // Open video player view
-    function openVideoPlayer() {
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      document.querySelector('[data-view="reels"]').classList.add('active');
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-      document.getElementById('view-reels').classList.add('active');
-    }
+    // ==================== UTILITIES ====================
     
-    // Open URL
     function openUrl(url) {
-      if (url && url !== '#') {
-        window.open(url, '_blank');
-      }
+      if (url && url !== '#') window.open(url, '_blank');
     }
     
-    // Format number
-    function formatNumber(num) {
-      if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-      return num;
+    function formatNumber(n) {
+      return n >= 1000 ? (n / 1000).toFixed(1) + 'K' : n;
     }
     
-    // Add active class handling
-    document.querySelectorAll('.view').forEach(v => {
-      if (v.id === 'view-feed') v.classList.add('active');
-    });
+    // Auto-refresh every 4 hours (for demo, using 5 min)
+    function startAutoRefresh() {
+      setInterval(() => {
+        loadNewsFlash();
+        refreshReels();
+        console.log('Content refreshed at', new Date().toLocaleTimeString());
+      }, 5 * 60 * 1000); // 5 minutes for demo
+    }
   </script>
 </body>
 </html>
