@@ -7,8 +7,6 @@ const https = require('https');
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID; // Your personal chat ID
-const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
 // Get counts from environment (set by previous steps)
 const NEWS_COUNT = process.env.NEWS_COUNT || '0';
@@ -61,42 +59,46 @@ async function sendTelegram(message) {
 }
 
 async function sendEmail(subject, htmlBody) {
-  if (!SENDGRID_API_KEY || !ADMIN_EMAIL) {
+  // Use Resend API (free 100 emails/day)
+  const RESEND_API_KEY = process.env.RESEND_API_KEY;
+  const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+  
+  if (!RESEND_API_KEY || !ADMIN_EMAIL) {
     console.log('Email not configured, skipping...');
     return;
   }
   
   return new Promise((resolve, reject) => {
     const data = JSON.stringify({
-      personalizations: [{ to: [{ email: ADMIN_EMAIL }] }],
-      from: { email: 'notifications@techgigradar.com', name: 'TechGig Radar' },
+      from: 'TechGig Radar <onboarding@resend.dev>',
+      to: [ADMIN_EMAIL],
       subject: subject,
-      content: [{ type: 'text/html', value: htmlBody }]
+      html: htmlBody
     });
     
     const options = {
-      hostname: 'api.sendgrid.com',
-      path: '/v3/mail/send',
+      hostname: 'api.resend.com',
+      path: '/emails',
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${SENDGRID_API_KEY}`,
+        'Authorization': `Bearer ${RESEND_API_KEY}`,
         'Content-Type': 'application/json',
         'Content-Length': Buffer.byteLength(data)
       }
     };
     
     const req = https.request(options, (res) => {
-      if (res.statusCode === 202) {
-        console.log('✅ Email notification sent');
-        resolve();
-      } else {
-        let body = '';
-        res.on('data', chunk => body += chunk);
-        res.on('end', () => {
+      let body = '';
+      res.on('data', chunk => body += chunk);
+      res.on('end', () => {
+        if (res.statusCode === 200) {
+          console.log('✅ Email notification sent');
+          resolve();
+        } else {
           console.log('Email error:', res.statusCode, body);
           reject(new Error(body));
-        });
-      }
+        }
+      });
     });
     
     req.on('error', reject);
