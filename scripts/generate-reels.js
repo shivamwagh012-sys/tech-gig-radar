@@ -1,59 +1,61 @@
-/**
- * TechGig Radar - Video Reel Generator
- * 100% FREE: FFmpeg + Edge TTS + Mixkit
- */
+// TechGig Radar - Video Reel Generator
+// Ultra-simple version that works on GitHub Actions
 
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
 
-const OUTPUT_DIR = './output/reels';
-const TEMP_DIR = './temp';
+// Directories
+const OUTPUT_DIR = path.join(__dirname, '..', 'output', 'reels');
+const TEMP_DIR = path.join(__dirname, '..', 'temp');
 
-// Ensure directories exist
-fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-fs.mkdirSync(TEMP_DIR, { recursive: true });
+// Create dirs
+try {
+  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+  fs.mkdirSync(TEMP_DIR, { recursive: true });
+} catch (e) {
+  console.log('Dirs already exist');
+}
 
-// Content to generate (in production, fetch from DB)
+console.log('='.repeat(50));
+console.log('TechGig Radar - Video Generator');
+console.log('='.repeat(50));
+console.log('Output dir:', OUTPUT_DIR);
+console.log('Temp dir:', TEMP_DIR);
+
+// Sample content
 const CONTENT = [
   {
-    type: 'news',
-    title: 'AI Revolution 2026',
-    voice: 'Breaking tech news from TechGig Radar! The AI revolution continues with major breakthroughs. Top companies are releasing powerful new AI models. Stay ahead of the curve. Follow TechGig Radar for daily updates on tech news and remote jobs!'
-  },
-  {
-    type: 'job',
-    title: 'Remote Jobs Alert',
-    voice: 'Hot job alert from TechGig Radar! Top tech companies are hiring remote developers. Salaries range from 100K to 300K dollars. Skills needed: React, Node, Python, AWS. Check our Telegram channel for apply links. Follow TechGig Radar!'
+    title: 'AI News Update',
+    voice: 'Breaking tech news from TechGig Radar. The AI revolution continues in 2026. Major companies are releasing powerful new AI models. Follow TechGig Radar for daily updates on tech news and remote jobs.'
   }
 ];
 
-/**
- * Download file with proper error handling
- */
-function download(url, dest) {
-  return new Promise((resolve, reject) => {
-    console.log(`  Downloading: ${url.slice(0, 60)}...`);
-    const file = fs.createWriteStream(dest);
-    
-    https.get(url, { 
-      headers: { 'User-Agent': 'Mozilla/5.0' },
-      timeout: 30000 
-    }, (res) => {
+// Simple file download
+function downloadFile(url, dest) {
+  return new Promise(function(resolve, reject) {
+    console.log('Downloading:', url.substring(0, 60) + '...');
+    var file = fs.createWriteStream(dest);
+    https.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' } }, function(res) {
       if (res.statusCode === 301 || res.statusCode === 302) {
         file.close();
-        fs.unlinkSync(dest);
-        return download(res.headers.location, dest).then(resolve).catch(reject);
+        try { fs.unlinkSync(dest); } catch(e) {}
+        downloadFile(res.headers.location, dest).then(resolve).catch(reject);
+        return;
       }
       if (res.statusCode !== 200) {
         file.close();
-        fs.unlinkSync(dest);
-        return reject(new Error(`HTTP ${res.statusCode}`));
+        try { fs.unlinkSync(dest); } catch(e) {}
+        reject(new Error('HTTP ' + res.statusCode));
+        return;
       }
       res.pipe(file);
-      file.on('finish', () => { file.close(); resolve(dest); });
-    }).on('error', (e) => {
+      file.on('finish', function() {
+        file.close();
+        resolve(dest);
+      });
+    }).on('error', function(e) {
       file.close();
       try { fs.unlinkSync(dest); } catch(x) {}
       reject(e);
@@ -61,158 +63,163 @@ function download(url, dest) {
   });
 }
 
-/**
- * Generate voice using Edge TTS
- */
+// Generate voice
 function generateVoice(text, outputPath) {
-  // Clean text for shell
-  const clean = text.replace(/['"\\$`]/g, '');
+  // Remove problematic characters
+  var clean = text.replace(/['"\\$`!]/g, '').replace(/\n/g, ' ');
   
-  console.log('  Generating voice narration...');
+  console.log('Generating voice...');
+  var cmd = 'edge-tts --voice en-US-AriaNeural --text "' + clean + '" --write-media "' + outputPath + '"';
+  
   try {
-    execSync(
-      `python3 -m edge_tts --voice "en-US-AriaNeural" --rate="+10%" --text "${clean}" --write-media "${outputPath}"`,
-      { stdio: 'pipe', timeout: 120000 }
-    );
-    console.log('  ✓ Voice generated');
-    return true;
+    execSync(cmd, { stdio: 'inherit', timeout: 120000 });
+    if (fs.existsSync(outputPath)) {
+      console.log('Voice OK:', outputPath);
+      return true;
+    }
   } catch (e) {
-    console.error('  ✗ Voice failed:', e.message);
-    return false;
+    console.log('edge-tts failed, trying python -m...');
+    cmd = 'python3 -m edge_tts --voice en-US-AriaNeural --text "' + clean + '" --write-media "' + outputPath + '"';
+    try {
+      execSync(cmd, { stdio: 'inherit', timeout: 120000 });
+      if (fs.existsSync(outputPath)) {
+        console.log('Voice OK:', outputPath);
+        return true;
+      }
+    } catch (e2) {
+      console.error('Voice failed:', e2.message);
+    }
   }
+  return false;
 }
 
-/**
- * Get audio duration
- */
+// Get audio duration
 function getDuration(file) {
   try {
-    const out = execSync(
-      `ffprobe -v error -show_entries format=duration -of csv=p=0 "${file}"`,
-      { encoding: 'utf8' }
-    );
-    return Math.ceil(parseFloat(out.trim())) + 1;
+    var out = execSync('ffprobe -v error -show_entries format=duration -of csv=p=0 "' + file + '"', { encoding: 'utf8' });
+    return Math.ceil(parseFloat(out.trim())) + 2;
   } catch (e) {
-    return 30;
+    return 15;
   }
 }
 
-/**
- * Create video reel
- */
-async function createReel(content, index) {
-  const id = `reel_${Date.now()}_${index}`;
-  const dir = path.join(TEMP_DIR, id);
-  fs.mkdirSync(dir, { recursive: true });
+// Create video
+async function createVideo(content, index) {
+  var id = 'reel_' + Date.now() + '_' + index;
+  var tempDir = path.join(TEMP_DIR, id);
+  fs.mkdirSync(tempDir, { recursive: true });
   
-  console.log(`\n[${'='.repeat(40)}]`);
-  console.log(`Reel ${index + 1}: ${content.title}`);
-  console.log(`[${'='.repeat(40)}]`);
+  console.log('\n--- Creating reel:', content.title, '---');
   
   // 1. Generate voice
-  const voicePath = path.join(dir, 'voice.mp3');
+  var voicePath = path.join(tempDir, 'voice.mp3');
   if (!generateVoice(content.voice, voicePath)) {
     throw new Error('Voice generation failed');
   }
   
-  const duration = getDuration(voicePath);
-  console.log(`  Duration: ${duration}s`);
+  var duration = getDuration(voicePath);
+  console.log('Duration:', duration, 'seconds');
   
-  // 2. Try to download background video
-  const bgPath = path.join(dir, 'bg.mp4');
-  const bgUrls = [
-    'https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-futuristic-devices-99786-large.mp4',
-    'https://assets.mixkit.co/videos/preview/mixkit-hands-of-a-man-typing-on-a-laptop-34824-large.mp4',
-    'https://assets.mixkit.co/videos/preview/mixkit-woman-typing-on-laptop-1173-large.mp4'
+  // 2. Download background (or use color)
+  var bgPath = path.join(tempDir, 'bg.mp4');
+  var hasBg = false;
+  
+  var bgUrls = [
+    'https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-futuristic-devices-99786-large.mp4'
   ];
   
-  let hasBg = false;
-  for (const url of bgUrls) {
+  for (var i = 0; i < bgUrls.length; i++) {
     try {
-      await download(url, bgPath);
-      if (fs.existsSync(bgPath) && fs.statSync(bgPath).size > 10000) {
+      await downloadFile(bgUrls[i], bgPath);
+      var stats = fs.statSync(bgPath);
+      if (stats.size > 10000) {
         hasBg = true;
-        console.log('  ✓ Background video downloaded');
+        console.log('Background OK');
         break;
       }
     } catch (e) {
-      console.log(`  ⚠ Download failed: ${e.message}`);
+      console.log('Background download failed:', e.message);
     }
   }
   
-  // 3. Create video
-  const outputPath = path.join(OUTPUT_DIR, `${id}.mp4`);
-  const title = content.title.replace(/[^a-zA-Z0-9 ]/g, '');
+  // 3. Create output video
+  var outputPath = path.join(OUTPUT_DIR, id + '.mp4');
+  var title = content.title.replace(/[^a-zA-Z0-9 ]/g, '');
   
-  console.log('  Creating video...');
+  console.log('Creating video with FFmpeg...');
   
-  let cmd;
+  var ffmpegCmd;
   if (hasBg) {
     // With background video
-    cmd = `ffmpeg -y -stream_loop -1 -i "${bgPath}" -i "${voicePath}" -filter_complex "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps=30[v];[v]drawbox=x=0:y=0:w=iw:h=ih:c=black@0.5:t=fill[d];[d]drawtext=text='${title}':fontsize=60:fontcolor=white:x=(w-text_w)/2:y=h/3[t];[t]drawtext=text='@TechGigRadar':fontsize=30:fontcolor=white:x=w-text_w-40:y=h-80[out]" -map "[out]" -map 1:a -c:v libx264 -preset fast -c:a aac -t ${duration} -pix_fmt yuv420p "${outputPath}"`;
+    ffmpegCmd = 'ffmpeg -y -stream_loop -1 -i "' + bgPath + '" -i "' + voicePath + '" ' +
+      '-filter_complex "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps=30,drawbox=x=0:y=0:w=iw:h=ih:c=black@0.5:t=fill,drawtext=text=' + "'" + title + "'" + ':fontsize=60:fontcolor=white:x=(w-text_w)/2:y=h/3,drawtext=text=' + "'@TechGigRadar'" + ':fontsize=30:fontcolor=white:x=w-text_w-40:y=h-80[v]" ' +
+      '-map "[v]" -map 1:a -c:v libx264 -preset fast -c:a aac -t ' + duration + ' -pix_fmt yuv420p "' + outputPath + '"';
   } else {
-    // Solid color fallback
-    cmd = `ffmpeg -y -f lavfi -i "color=c=0x1a1a2e:s=1080x1920:d=${duration}" -i "${voicePath}" -filter_complex "[0:v]drawtext=text='${title}':fontsize=60:fontcolor=white:x=(w-text_w)/2:y=h/3[t];[t]drawtext=text='@TechGigRadar':fontsize=30:fontcolor=white:x=w-text_w-40:y=h-80[out]" -map "[out]" -map 1:a -c:v libx264 -preset fast -c:a aac -t ${duration} -pix_fmt yuv420p "${outputPath}"`;
+    // Solid background
+    ffmpegCmd = 'ffmpeg -y -f lavfi -i "color=c=0x1a1a2e:s=1080x1920:d=' + duration + '" -i "' + voicePath + '" ' +
+      '-filter_complex "[0:v]drawtext=text=' + "'" + title + "'" + ':fontsize=60:fontcolor=white:x=(w-text_w)/2:y=h/3,drawtext=text=' + "'@TechGigRadar'" + ':fontsize=30:fontcolor=white:x=w-text_w-40:y=h-80[v]" ' +
+      '-map "[v]" -map 1:a -c:v libx264 -preset fast -c:a aac -t ' + duration + ' -pix_fmt yuv420p "' + outputPath + '"';
   }
   
   try {
-    execSync(cmd, { stdio: 'pipe', timeout: 300000 });
-    const size = (fs.statSync(outputPath).size / 1024 / 1024).toFixed(2);
-    console.log(`  ✓ Video created: ${size}MB`);
+    execSync(ffmpegCmd, { stdio: 'inherit', timeout: 300000 });
   } catch (e) {
-    console.error('  ✗ FFmpeg failed, trying simple version...');
-    
-    // Simplest possible fallback
-    const simpleCmd = `ffmpeg -y -f lavfi -i "color=c=0x1a1a2e:s=1080x1920:d=${duration}" -i "${voicePath}" -c:v libx264 -c:a aac -t ${duration} -pix_fmt yuv420p "${outputPath}"`;
-    execSync(simpleCmd, { stdio: 'pipe', timeout: 300000 });
-    console.log('  ✓ Simple video created');
+    console.log('Complex FFmpeg failed, trying simple...');
+    // Simplest fallback - just voice over solid color
+    ffmpegCmd = 'ffmpeg -y -f lavfi -i "color=c=0x1a1a2e:s=1080x1920:d=' + duration + '" -i "' + voicePath + '" ' +
+      '-c:v libx264 -c:a aac -t ' + duration + ' -pix_fmt yuv420p "' + outputPath + '"';
+    execSync(ffmpegCmd, { stdio: 'inherit', timeout: 300000 });
+  }
+  
+  if (fs.existsSync(outputPath)) {
+    var size = fs.statSync(outputPath).size;
+    console.log('Video created:', outputPath, '(' + Math.round(size/1024) + 'KB)');
+  } else {
+    throw new Error('Video file not created');
   }
   
   // Cleanup
-  fs.rmSync(dir, { recursive: true, force: true });
+  try {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  } catch (e) {}
   
-  return { path: outputPath, title: content.title, type: content.type };
+  return { path: outputPath, title: content.title };
 }
 
-/**
- * Main
- */
+// Main
 async function main() {
-  console.log('\n' + '='.repeat(50));
-  console.log('  TechGig Radar - Video Generator');
-  console.log('  100% FREE: FFmpeg + Edge TTS');
-  console.log('='.repeat(50));
-  console.log(`Started: ${new Date().toISOString()}\n`);
+  var results = [];
   
-  const results = [];
-  
-  for (let i = 0; i < CONTENT.length; i++) {
+  for (var i = 0; i < CONTENT.length; i++) {
     try {
-      const reel = await createReel(CONTENT[i], i);
+      var reel = await createVideo(CONTENT[i], i);
       results.push(reel);
     } catch (e) {
-      console.error(`\n✗ Reel ${i + 1} failed: ${e.message}`);
+      console.error('Reel', i, 'failed:', e.message);
     }
   }
   
   // Save manifest
-  fs.writeFileSync(
-    path.join(OUTPUT_DIR, 'manifest.json'),
-    JSON.stringify({ time: new Date().toISOString(), reels: results }, null, 2)
-  );
+  var manifest = {
+    time: new Date().toISOString(),
+    reels: results
+  };
+  fs.writeFileSync(path.join(OUTPUT_DIR, 'manifest.json'), JSON.stringify(manifest, null, 2));
   
-  console.log('\n' + '='.repeat(50));
-  console.log(`  Done! Generated ${results.length}/${CONTENT.length} reels`);
-  console.log('='.repeat(50) + '\n');
+  console.log('\n='.repeat(50));
+  console.log('Done! Generated', results.length, 'of', CONTENT.length, 'reels');
+  console.log('='.repeat(50));
   
   // List files
-  fs.readdirSync(OUTPUT_DIR).forEach(f => {
-    const s = fs.statSync(path.join(OUTPUT_DIR, f));
-    console.log(`  ${f} (${(s.size/1024).toFixed(0)}KB)`);
+  console.log('\nOutput files:');
+  fs.readdirSync(OUTPUT_DIR).forEach(function(f) {
+    var s = fs.statSync(path.join(OUTPUT_DIR, f));
+    console.log(' -', f, '(' + Math.round(s.size/1024) + 'KB)');
   });
 }
 
-main().catch(e => {
-  console.error('\nFATAL:', e.message);
+main().catch(function(e) {
+  console.error('FATAL:', e.message);
+  console.error(e.stack);
   process.exit(1);
 });

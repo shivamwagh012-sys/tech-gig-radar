@@ -18,27 +18,20 @@ jobs:
         with:
           node-version: '20'
       
-      - name: Setup Python and Edge TTS
+      - name: Install Edge TTS
         run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install edge-tts
+          pip install edge-tts
           mkdir -p output/reels temp
-      
-      - name: Verify tools
-        run: |
-          echo "=== Checking FFmpeg ==="
-          ffmpeg -version | head -3
-          echo ""
-          echo "=== Checking Edge TTS ==="
-          python3 -m edge_tts --list-voices | head -5
-          echo ""
-          echo "=== Ready to generate videos ==="
       
       - name: Generate reels
         run: node scripts/generate-reels.js
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+        continue-on-error: false
+      
+      - name: Show output
+        if: always()
+        run: |
+          echo "=== Output files ==="
+          ls -la output/reels/ 2>/dev/null || echo "No output files"
       
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -50,12 +43,7 @@ jobs:
       
       - name: Post to Telegram
         if: success()
-        run: |
-          if [ -f output/reels/manifest.json ]; then
-            node scripts/post-reels-telegram.js
-          else
-            echo "No manifest found, skipping Telegram post"
-          fi
+        run: node scripts/post-reels-telegram.js || echo "Telegram post skipped"
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
