@@ -36,6 +36,12 @@ const TECH_JOB_TITLES = [
   'trainee', 'intern', 'apprentice',
   'entry level', 'entry-level', 'graduate developer', 'graduate engineer',
   'fresher', 'new grad',
+  // HR/Recruitment titles (now included)
+  'recruiter', 'recruiting', 'talent acquisition', 'talent sourcer',
+  'hr manager', 'hr executive', 'hr coordinator', 'hr analyst',
+  'human resources', 'hr business partner', 'people operations',
+  'recruitment specialist', 'recruitment consultant', 'hr generalist',
+  'technical recruiter', 'tech recruiter', 'it recruiter',
 ];
 
 // Job descriptions MUST contain multiple tech skills to qualify
@@ -146,9 +152,9 @@ const EXCLUSION_PATTERNS = [
   /\b(est|pst|cst|mst)\s+(time\s*zone\s*)?(only|required|hours)\b/i,
 ];
 
-// Non-tech jobs to explicitly exclude
+// Non-tech jobs to explicitly exclude (but allow HR/Recruitment)
 const NON_TECH_EXCLUSIONS = [
-  'accountant', 'accounting', 'hr ', 'human resources', 'recruiter', 'recruiting',
+  'accountant', 'accounting',
   'sales', 'marketing', 'customer service', 'customer support', 'call center',
   'nurse', 'nursing', 'medical', 'healthcare', 'doctor', 'physician',
   'teacher', 'teaching', 'education', 'professor', 'course director', 'course writer',
@@ -160,7 +166,7 @@ const NON_TECH_EXCLUSIONS = [
   'insurance', 'financial advisor', 'bank teller',
   'equity', 'general application', 'gtm leader', 'operations center',
   'content writer', 'copywriter', 'editor',
-  'product manager', 'project manager', 'program manager', // Keep tech titles only
+  // Note: HR/Recruitment jobs are now ALLOWED - removed from exclusions
 ];
 
 /**
