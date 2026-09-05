@@ -24,7 +24,7 @@ jobs:
           mkdir -p output/reels temp
       
       - name: Generate reels
-        run: node scripts/generate-reels.js
+        run: node scripts/generate-reels.cjs
         continue-on-error: false
       
       - name: Show output
@@ -43,7 +43,7 @@ jobs:
       
       - name: Post to Telegram
         if: success()
-        run: node scripts/post-reels-telegram.js || echo "Telegram post skipped"
+        run: node scripts/post-reels-telegram.cjs || echo "Telegram post skipped"
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
