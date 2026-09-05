@@ -29,9 +29,6 @@ jobs:
       - name: Run jobs discovery
         run: node scripts/discover-jobs.cjs
       
-      - name: Export data to JSON
-        run: node scripts/export-data.cjs
-      
       - name: Commit updated data
         run: |
           git config --local user.email "action@github.com"
