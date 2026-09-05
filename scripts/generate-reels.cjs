@@ -24,27 +24,42 @@ console.log('='.repeat(50));
 console.log('TechGig Radar - Video Generator');
 console.log('='.repeat(50));
 
-// Fetch JSON from URL
-function fetchJSON(url, headers = {}) {
+// Fetch JSON from URL (GET or POST)
+function fetchJSON(url, headers = {}, body = null) {
   return new Promise((resolve, reject) => {
     const urlObj = new URL(url);
+    const method = headers.method || 'GET';
+    delete headers.method;
+    
     const options = {
       hostname: urlObj.hostname,
       path: urlObj.pathname + urlObj.search,
+      method: method,
       headers: { 'User-Agent': 'TechGigRadar/1.0', ...headers }
     };
     
-    https.get(options, (res) => {
+    const req = https.request(options, (res) => {
       let data = '';
       res.on('data', chunk => data += chunk);
       res.on('end', () => {
-        try {
-          resolve(JSON.parse(data));
-        } catch (e) {
-          reject(new Error('JSON parse error: ' + data.slice(0, 100)));
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          try {
+            resolve(data ? JSON.parse(data) : {});
+          } catch (e) {
+            resolve({});
+          }
+        } else {
+          reject(new Error(`HTTP ${res.statusCode}: ${data.slice(0, 100)}`));
         }
       });
-    }).on('error', reject);
+    });
+    
+    req.on('error', reject);
+    
+    if (body) {
+      req.write(body);
+    }
+    req.end();
   });
 }
 
@@ -294,6 +309,38 @@ async function main() {
       results.push(reel);
     } catch (e) {
       console.error('Reel', i, 'failed:', e.message);
+    }
+  }
+  
+  // Save reels to Supabase
+  if (SUPABASE_URL && SUPABASE_KEY && results.length > 0) {
+    console.log('\nSaving reels to Supabase...');
+    for (const reel of results) {
+      const reelData = {
+        id: 'reel_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+        title: reel.title,
+        type: reel.type || 'news',
+        category: reel.type === 'jobs' ? 'jobs' : 'news',
+        video_url: null, // Video stored as GitHub artifact
+        thumbnail_url: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=700&fit=crop',
+        duration: '0:30',
+        views: 0,
+        badge: 'new',
+        created_at: new Date().toISOString()
+      };
+      
+      try {
+        const response = await fetchJSON(`${SUPABASE_URL}/rest/v1/reels`, {
+          method: 'POST',
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        }, JSON.stringify(reelData));
+        console.log(`  Saved: ${reel.title}`);
+      } catch (e) {
+        console.log(`  Failed to save ${reel.title}: ${e.message}`);
+      }
     }
   }
   
