@@ -996,14 +996,39 @@
             <p>Remote tech jobs hiring from India</p>
           </div>
         </div>
-        <div class="job-filters">
-          <button class="job-filter active" data-level="all">All Levels</button>
-          <button class="job-filter" data-level="fresher">🌱 Freshers</button>
-          <button class="job-filter" data-level="junior">💼 Junior</button>
-          <button class="job-filter" data-level="mid">🎯 Mid</button>
-          <button class="job-filter" data-level="senior">🚀 Senior</button>
+        
+        <!-- Job Category Tabs -->
+        <div class="job-category-tabs" style="display: flex; gap: 10px; margin-bottom: 20px;">
+          <button class="job-category-tab active" data-category="tech" onclick="switchJobCategory('tech')" style="padding: 12px 24px; background: var(--accent-cyan); color: var(--bg-dark); border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+            <span>💻</span> Tech Jobs
+          </button>
+          <button class="job-category-tab" data-category="hr" onclick="switchJobCategory('hr')" style="padding: 12px 24px; background: var(--bg-card); color: var(--text); border: 1px solid var(--border); border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+            <span>👥</span> HR & Recruitment
+          </button>
         </div>
-        <div class="job-grid" id="jobs-grid"></div>
+        
+        <!-- Tech Jobs Section -->
+        <div id="tech-jobs-section">
+          <div class="job-filters">
+            <button class="job-filter active" data-level="all">All Levels</button>
+            <button class="job-filter" data-level="fresher">🌱 Freshers</button>
+            <button class="job-filter" data-level="junior">💼 Junior</button>
+            <button class="job-filter" data-level="mid">🎯 Mid</button>
+            <button class="job-filter" data-level="senior">🚀 Senior</button>
+          </div>
+          <div class="job-grid" id="jobs-grid"></div>
+        </div>
+        
+        <!-- HR Jobs Section -->
+        <div id="hr-jobs-section" style="display: none;">
+          <div class="job-filters">
+            <button class="job-filter active" data-hr-level="all">All HR Jobs</button>
+            <button class="job-filter" data-hr-level="recruiter">🎯 Recruiters</button>
+            <button class="job-filter" data-hr-level="talent">🔍 Talent Acquisition</button>
+            <button class="job-filter" data-hr-level="manager">👔 HR Managers</button>
+          </div>
+          <div class="job-grid" id="hr-jobs-grid"></div>
+        </div>
       </div>
       
       <!-- Queue View -->
@@ -1166,6 +1191,20 @@
       { id: 4, title: "Associate Data Engineer", company: "DataFlow Inc", location: "Remote", level: "fresher", type: "Full-time", salary: "$60K-$80K", skills: ["Python", "SQL", "dbt", "AWS"], url: "https://dataflow.io/careers/associate-data-engineer", email: "jobs@dataflow.io", logo: "D" },
       { id: 5, title: "Junior Full Stack Dev", company: "TechNova", location: "India", level: "junior", type: "Full-time", salary: "$40K-$60K", skills: ["JavaScript", "React", "Node.js"], url: "https://technova.com/careers", email: "hiring@technova.com", logo: "T" },
       { id: 6, title: "Senior AI Engineer", company: "Lemon.io", location: "Remote", level: "senior", type: "Contract", salary: "$140K-$180K", skills: ["Python", "PyTorch", "LLMs", "MLOps"], url: "https://lemon.io/for-developers", email: "developers@lemon.io", logo: "L" },
+    ];
+    
+    // HR & Recruitment Jobs Data
+    const hrJobsData = [
+      { id: 101, title: "Technical Recruiter", company: "Google", location: "Remote (India OK)", hrLevel: "recruiter", type: "Full-time", salary: "$80K-$120K", skills: ["Tech Recruiting", "LinkedIn", "ATS", "Sourcing"], url: "https://careers.google.com/jobs/technical-recruiter", email: "recruiting@google.com", logo: "G" },
+      { id: 102, title: "Senior Talent Acquisition", company: "Microsoft", location: "Remote", hrLevel: "talent", type: "Full-time", salary: "$100K-$140K", skills: ["Talent Acquisition", "Employer Branding", "Campus Hiring", "Leadership"], url: "https://careers.microsoft.com/talent-acquisition", email: "talent@microsoft.com", logo: "M" },
+      { id: 103, title: "HR Business Partner", company: "Amazon", location: "India", hrLevel: "manager", type: "Full-time", salary: "$90K-$130K", skills: ["HRBP", "Employee Relations", "Performance Mgmt", "Strategy"], url: "https://amazon.jobs/hr-business-partner", email: "hr-careers@amazon.com", logo: "A" },
+      { id: 104, title: "IT Recruiter - Entry Level", company: "Infosys", location: "Bangalore", hrLevel: "recruiter", type: "Full-time", salary: "$25K-$40K", skills: ["IT Recruiting", "Campus Drives", "Interview Scheduling", "MS Office"], url: "https://careers.infosys.com/recruiter", email: "careers@infosys.com", logo: "I" },
+      { id: 105, title: "Talent Sourcer", company: "Meta", location: "Remote", hrLevel: "talent", type: "Contract", salary: "$60K-$90K", skills: ["Boolean Search", "LinkedIn Recruiter", "Sourcing Tools", "Outreach"], url: "https://metacareers.com/talent-sourcer", email: "sourcing@meta.com", logo: "M" },
+      { id: 106, title: "People Operations Manager", company: "Stripe", location: "Remote (India OK)", hrLevel: "manager", type: "Full-time", salary: "$120K-$160K", skills: ["People Ops", "HRIS", "Compensation", "Benefits"], url: "https://stripe.com/jobs/people-ops", email: "people@stripe.com", logo: "S" },
+      { id: 107, title: "Technical Sourcer", company: "Netflix", location: "Remote", hrLevel: "talent", type: "Full-time", salary: "$70K-$100K", skills: ["Technical Sourcing", "Engineering Hiring", "Talent Mapping", "Diversity"], url: "https://jobs.netflix.com/technical-sourcer", email: "recruiting@netflix.com", logo: "N" },
+      { id: 108, title: "Campus Recruiter", company: "TCS", location: "India", hrLevel: "recruiter", type: "Full-time", salary: "$30K-$50K", skills: ["Campus Recruitment", "University Relations", "Fresher Hiring", "Events"], url: "https://careers.tcs.com/campus-recruiter", email: "campushiring@tcs.com", logo: "T" },
+      { id: 109, title: "HR Manager - Tech", company: "Flipkart", location: "Bangalore", hrLevel: "manager", type: "Full-time", salary: "$70K-$100K", skills: ["HR Management", "Tech Teams", "Policy", "Employee Engagement"], url: "https://careers.flipkart.com/hr-manager", email: "hr@flipkart.com", logo: "F" },
+      { id: 110, title: "Recruitment Coordinator", company: "Accenture", location: "India", hrLevel: "recruiter", type: "Full-time", salary: "$20K-$35K", skills: ["Coordination", "Scheduling", "Onboarding", "Documentation"], url: "https://accenture.com/careers/recruiter", email: "talent.acquisition@accenture.com", logo: "A" },
     ];
     
     // Queue Data - Posts pending/scheduled for publishing
@@ -1439,6 +1478,95 @@
           </div>
         </div>
       `).join('');
+    }
+    
+    // ==================== HR JOBS ====================
+    
+    let currentJobCategory = 'tech';
+    
+    function switchJobCategory(category) {
+      currentJobCategory = category;
+      
+      // Update tab styles
+      document.querySelectorAll('.job-category-tab').forEach(tab => {
+        if (tab.dataset.category === category) {
+          tab.style.background = 'var(--accent-cyan)';
+          tab.style.color = 'var(--bg-dark)';
+          tab.style.border = 'none';
+          tab.classList.add('active');
+        } else {
+          tab.style.background = 'var(--bg-card)';
+          tab.style.color = 'var(--text)';
+          tab.style.border = '1px solid var(--border)';
+          tab.classList.remove('active');
+        }
+      });
+      
+      // Toggle sections
+      const techSection = document.getElementById('tech-jobs-section');
+      const hrSection = document.getElementById('hr-jobs-section');
+      
+      if (category === 'tech') {
+        techSection.style.display = 'block';
+        hrSection.style.display = 'none';
+        loadJobs();
+      } else {
+        techSection.style.display = 'none';
+        hrSection.style.display = 'block';
+        loadHRJobs();
+      }
+      
+      showToast(`Showing ${category === 'tech' ? 'Tech' : 'HR & Recruitment'} jobs`);
+    }
+    
+    function loadHRJobs(level = 'all') {
+      const grid = document.getElementById('hr-jobs-grid');
+      let jobs = level === 'all' ? hrJobsData : hrJobsData.filter(j => j.hrLevel === level);
+      
+      grid.innerHTML = jobs.map(job => `
+        <div class="job-card" style="border-left: 3px solid var(--accent-purple);">
+          <div class="job-header">
+            <div class="job-company-logo" style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));">${job.logo}</div>
+            <div class="job-badges">
+              <span class="job-badge" style="background: var(--accent-purple); color: white;">${job.hrLevel === 'recruiter' ? '🎯 Recruiter' : job.hrLevel === 'talent' ? '🔍 TA' : '👔 Manager'}</span>
+              <span class="job-badge" style="background:var(--accent-cyan);color:black">${job.type}</span>
+            </div>
+          </div>
+          <h3 class="job-title">${job.title}</h3>
+          <p class="job-company">${job.company} · ${job.location}</p>
+          <div class="job-skills">${job.skills.map(s => `<span class="job-skill">${s}</span>`).join('')}</div>
+          
+          <div class="job-contact" style="margin: 12px 0; padding: 12px; background: var(--bg-hover); border-radius: 8px; border-left: 3px solid var(--accent-purple);">
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">📬 HOW TO APPLY:</div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <a href="${job.url}" target="_blank" style="color: var(--accent-cyan); font-size: 13px; text-decoration: none; word-break: break-all;">
+                🔗 ${job.url}
+              </a>
+              <a href="mailto:${job.email}?subject=Application for ${job.title}" style="color: var(--accent-green); font-size: 13px; text-decoration: none;">
+                📧 ${job.email}
+              </a>
+            </div>
+          </div>
+          
+          <div class="job-footer">
+            <span class="job-salary">${job.salary}</span>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <button onclick="event.stopPropagation(); quickSave('hr-job', ${job.id})" style="background: none; border: none; cursor: pointer; font-size: 18px; padding: 5px;">🔖</button>
+              <button class="job-apply" style="background: var(--accent-purple);" onclick="event.stopPropagation(); window.location.href='mailto:${job.email}?subject=Application for ${job.title}&body=Hi,%0A%0AI am interested in the ${job.title} position at ${job.company}.%0A%0APlease find my resume attached.%0A%0ABest regards'">📧 Email</button>
+              <button class="job-apply" onclick="event.stopPropagation(); openUrl('${job.url}')">🔗 Apply</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      
+      // Setup HR filters
+      document.querySelectorAll('[data-hr-level]').forEach(f => {
+        f.onclick = () => {
+          document.querySelectorAll('[data-hr-level]').forEach(x => x.classList.remove('active'));
+          f.classList.add('active');
+          loadHRJobs(f.dataset.hrLevel);
+        };
+      });
     }
     
     // ==================== EVENT LISTENERS ====================
