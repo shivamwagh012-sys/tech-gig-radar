@@ -40,6 +40,10 @@
       "dest": "/api/jobs.js"
     },
     {
+      "src": "/api/content",
+      "dest": "/api/content.js"
+    },
+    {
       "src": "/(.*)",
       "dest": "/public/$1"
     }
