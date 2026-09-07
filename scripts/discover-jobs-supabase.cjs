@@ -54,22 +54,23 @@ const HR_KEYWORDS = [
 
 // BLOCKED keywords - jobs containing these are excluded
 const BLOCKED_KEYWORDS = [
-  'sales', 'salesperson', 'account executive', 'business development', 'bdr', 'sdr',
+  'sales', 'salesperson', 'account executive', 'business development', 'bdr', 'sdr', 'jedi',
   'writer', 'copywriter', 'content writer', 'freelance writer', 'blog writer',
-  'marketing', 'social media', 'seo specialist', 'growth hacker',
+  'marketing', 'social media', 'seo specialist', 'growth hacker', 'gtm',
   'customer support', 'customer service', 'support specialist', 'help desk',
-  'driver', 'delivery', 'warehouse', 'cleaner', 'maid', 'janitor',
-  'cook', 'chef', 'waiter', 'bartender', 'cashier', 'retail',
-  'nurse', 'doctor', 'medical', 'healthcare', 'dental',
-  'teacher', 'tutor', 'instructor', 'professor',
+  'driver', 'delivery', 'warehouse', 'cleaner', 'maid', 'janitor', 'detailer',
+  'cook', 'chef', 'waiter', 'bartender', 'cashier', 'retail', 'store manager',
+  'nurse', 'doctor', 'medical', 'healthcare', 'dental', 'police', 'officer',
+  'teacher', 'tutor', 'instructor', 'professor', 'walker',
   'accountant', 'bookkeeper', 'financial analyst',
   'lawyer', 'legal', 'paralegal', 'attorney',
   'real estate', 'property', 'mortgage',
   'insurance', 'claims', 'underwriter',
-  'administrative assistant', 'receptionist', 'office manager',
+  'administrative assistant', 'receptionist', 'office manager', 'office maid',
   'data entry', 'virtual assistant', 'executive assistant',
-  'construction', 'electrician', 'plumber', 'mechanic', 'technician',
-  'crypto', 'trader', 'forex', 'bitcoin', 'blockchain' // Often scams
+  'construction', 'electrician', 'plumber', 'mechanic', 'technician', 'irrigation',
+  'crypto', 'trader', 'forex', 'bitcoin', 'blockchain', // Often scams
+  'grades person', 'public area', 'roupeiro', 'camp boss', 'field officer'
 ];
 
 // Check if job is valid tech or HR job
