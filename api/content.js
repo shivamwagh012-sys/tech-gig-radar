@@ -1,4 +1,4 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createClient } from '@supabase/supabase-js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   const supabaseKey = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_KEY;
   
   if (!supabaseUrl || !supabaseKey) {
-    return res.status(500).json({ error: 'Supabase not configured' });
+    return res.status(500).json({ error: 'Supabase not configured', hint: 'Add SUPABASE_URL and SUPABASE_ANON_KEY to Vercel env vars' });
   }
   
   const supabase = createClient(supabaseUrl, supabaseKey);
