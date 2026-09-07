@@ -2,7 +2,7 @@ name: Publish to Telegram
 
 on:
   schedule:
-    - cron: '30 */4 * * *'  # Every 4 hours, 30 min after discovery
+    - cron: '30 */12 * * *'  # Every 12 hours (30 min after discovery)
   workflow_dispatch:
 
 jobs:
@@ -16,10 +16,15 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
       
-      - name: Publish top news to Telegram
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Publish to Telegram
         run: node scripts/publish-telegram.cjs
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}

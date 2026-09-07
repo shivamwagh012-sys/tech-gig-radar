@@ -1,19 +1,25 @@
-// Publish top news/jobs to Telegram
-// Runs on GitHub Actions every 4 hours
+// Publish top news/jobs to Telegram from Supabase
+// Runs on GitHub Actions every 12 hours
 
 const https = require('https');
-const fs = require('fs');
-const path = require('path');
+const { createClient } = require('@supabase/supabase-js');
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID || '@TechGigRadar';
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_KEY;
 
 if (!BOT_TOKEN) {
   console.log('No TELEGRAM_BOT_TOKEN set, skipping publish');
   process.exit(0);
 }
 
-const DATA_DIR = path.join(__dirname, '..', 'public', 'data');
+if (!SUPABASE_URL || !SUPABASE_KEY) {
+  console.log('No SUPABASE credentials set, skipping publish');
+  process.exit(0);
+}
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 function sendMessage(text) {
   return new Promise((resolve, reject) => {
@@ -53,28 +59,30 @@ function sendMessage(text) {
 }
 
 function formatNewsPost(news) {
+  const summary = (news.summary || '').replace(/<[^>]+>/g, '').slice(0, 200);
   return `📰 <b>${escapeHtml(news.title)}</b>
 
-${escapeHtml(news.summary.slice(0, 200))}...
+${escapeHtml(summary)}...
 
 📍 Source: ${news.source}
 🔗 <a href="${news.url}">Read more</a>
 
-#TechNews #${news.category.replace(/\s/g, '')} #TechGigRadar`;
+#TechNews #${(news.category || 'Tech').replace(/\s/g, '')} #TechGigRadar`;
 }
 
 function formatJobPost(job) {
   const skills = (job.skills || []).slice(0, 4).join(' • ');
+  const category = (job.category || 'Tech').replace(/[\s&]/g, '');
   return `💼 <b>${escapeHtml(job.title)}</b>
 
 🏢 ${escapeHtml(job.company)}
 📍 ${job.location}
-💰 ${job.salary}
-🛠 ${skills}
+💰 ${job.salary || 'Competitive'}
+🛠 ${skills || 'Various'}
 
-🔗 <a href="${job.applyUrl}">Apply Now</a>
+🔗 <a href="${job.apply_url}">Apply Now</a>
 
-#RemoteJobs #${job.experience.replace(/[\s\-\+]/g, '')} #TechGigRadar`;
+#RemoteJobs #${category} #TechGigRadar`;
 }
 
 function escapeHtml(text) {
@@ -86,49 +94,89 @@ async function main() {
   console.log('TechGig Radar - Telegram Publisher');
   console.log('='.repeat(50));
   console.log('Time:', new Date().toISOString());
+  console.log('Channel:', CHANNEL_ID);
   
-  // Read news
-  const newsFile = path.join(DATA_DIR, 'news.json');
-  let news = [];
-  if (fs.existsSync(newsFile)) {
-    news = JSON.parse(fs.readFileSync(newsFile, 'utf8'));
+  // Fetch latest news from Supabase
+  const { data: news, error: newsError } = await supabase
+    .from('news')
+    .select('*')
+    .order('published_at', { ascending: false })
+    .limit(5);
+  
+  if (newsError) {
+    console.log('Error fetching news:', newsError.message);
   }
   
-  // Read jobs
-  const jobsFile = path.join(DATA_DIR, 'jobs.json');
-  let jobs = [];
-  if (fs.existsSync(jobsFile)) {
-    jobs = JSON.parse(fs.readFileSync(jobsFile, 'utf8'));
+  // Fetch latest tech jobs from Supabase
+  const { data: techJobs, error: techError } = await supabase
+    .from('jobs')
+    .select('*')
+    .neq('category', 'HR & Recruitment')
+    .order('posted_at', { ascending: false })
+    .limit(5);
+  
+  if (techError) {
+    console.log('Error fetching tech jobs:', techError.message);
   }
   
-  console.log(`Found ${news.length} news, ${jobs.length} jobs`);
+  // Fetch latest HR jobs from Supabase
+  const { data: hrJobs, error: hrError } = await supabase
+    .from('jobs')
+    .select('*')
+    .eq('category', 'HR & Recruitment')
+    .order('posted_at', { ascending: false })
+    .limit(2);
   
-  // Post top 2 news
-  for (let i = 0; i < Math.min(2, news.length); i++) {
+  if (hrError) {
+    console.log('Error fetching HR jobs:', hrError.message);
+  }
+  
+  console.log(`Found ${(news || []).length} news, ${(techJobs || []).length} tech jobs, ${(hrJobs || []).length} HR jobs`);
+  
+  let posted = 0;
+  
+  // Post top 3 news
+  for (let i = 0; i < Math.min(3, (news || []).length); i++) {
     try {
       console.log(`\nPosting news: ${news[i].title.slice(0, 50)}...`);
       await sendMessage(formatNewsPost(news[i]));
       console.log('✓ Posted!');
-      await new Promise(r => setTimeout(r, 2000)); // Rate limit
+      posted++;
+      await new Promise(r => setTimeout(r, 3000)); // Rate limit
     } catch (e) {
       console.log('✗ Error:', e.message);
     }
   }
   
-  // Post top 2 jobs
-  for (let i = 0; i < Math.min(2, jobs.length); i++) {
+  // Post top 3 tech jobs
+  for (let i = 0; i < Math.min(3, (techJobs || []).length); i++) {
     try {
-      console.log(`\nPosting job: ${jobs[i].title} at ${jobs[i].company}...`);
-      await sendMessage(formatJobPost(jobs[i]));
+      console.log(`\nPosting tech job: ${techJobs[i].title} at ${techJobs[i].company}...`);
+      await sendMessage(formatJobPost(techJobs[i]));
       console.log('✓ Posted!');
-      await new Promise(r => setTimeout(r, 2000)); // Rate limit
+      posted++;
+      await new Promise(r => setTimeout(r, 3000)); // Rate limit
+    } catch (e) {
+      console.log('✗ Error:', e.message);
+    }
+  }
+  
+  // Post 1 HR job
+  for (let i = 0; i < Math.min(1, (hrJobs || []).length); i++) {
+    try {
+      console.log(`\nPosting HR job: ${hrJobs[i].title} at ${hrJobs[i].company}...`);
+      await sendMessage(formatJobPost(hrJobs[i]));
+      console.log('✓ Posted!');
+      posted++;
+      await new Promise(r => setTimeout(r, 3000)); // Rate limit
     } catch (e) {
       console.log('✗ Error:', e.message);
     }
   }
   
   console.log('\n' + '='.repeat(50));
-  console.log('Publishing complete!');
+  console.log(`✅ Published ${posted} items to Telegram`);
+  console.log('='.repeat(50));
 }
 
 main().catch(e => {

@@ -2,7 +2,7 @@ name: Discover News & Jobs (Supabase)
 
 on:
   schedule:
-    - cron: '0 */4 * * *'  # Every 4 hours
+    - cron: '0 */12 * * *'  # Every 12 hours
   workflow_dispatch:
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      - name: Run news discovery
+      - name: Run news discovery (DEEP)
         id: news
         run: |
           OUTPUT=$(node scripts/discover-news-supabase.cjs 2>&1)
@@ -32,14 +32,14 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
       
-      - name: Run jobs discovery
+      - name: Run jobs discovery (DEEP)
         id: jobs
         run: |
           OUTPUT=$(node scripts/discover-jobs-supabase.cjs 2>&1)
           echo "$OUTPUT"
           JOBS_COUNT=$(echo "$OUTPUT" | grep -oP '✅ Saved \K[0-9]+' || echo "0")
-          TECH_COUNT=$(echo "$OUTPUT" | grep -oP 'Breakdown: \K[0-9]+' || echo "0")
-          HR_COUNT=$(echo "$OUTPUT" | grep -oP 'Technical, \K[0-9]+' || echo "0")
+          TECH_COUNT=$(echo "$OUTPUT" | grep -oP '💻 Technical Jobs: \K[0-9]+' || echo "0")
+          HR_COUNT=$(echo "$OUTPUT" | grep -oP '👔 HR/Recruitment: \K[0-9]+' || echo "0")
           echo "count=$JOBS_COUNT" >> $GITHUB_OUTPUT
           echo "tech=$TECH_COUNT" >> $GITHUB_OUTPUT
           echo "hr=$HR_COUNT" >> $GITHUB_OUTPUT

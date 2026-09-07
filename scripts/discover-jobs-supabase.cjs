@@ -1,5 +1,5 @@
 // Discover jobs and save to Supabase
-// Runs on GitHub Actions every 4 hours
+// Runs on GitHub Actions every 12 hours - DEEP RESEARCH
 
 const https = require('https');
 const { createClient } = require('@supabase/supabase-js');
@@ -18,7 +18,7 @@ function fetch(url) {
   return new Promise((resolve, reject) => {
     https.get(url, { 
       headers: { 'User-Agent': 'TechGigRadar/1.0', 'Accept': 'application/json' }, 
-      timeout: 20000 
+      timeout: 30000 
     }, (res) => {
       if (res.statusCode === 301 || res.statusCode === 302) {
         return fetch(res.headers.location).then(resolve).catch(reject);
@@ -30,39 +30,105 @@ function fetch(url) {
   });
 }
 
-// Categorize job by title/tags
-function categorizeJob(title, tags = []) {
+// STRICT Tech job keywords - must match at least one
+const TECH_KEYWORDS = [
+  'developer', 'engineer', 'programmer', 'software', 'frontend', 'backend', 'fullstack', 'full-stack',
+  'devops', 'sre', 'cloud', 'aws', 'azure', 'gcp', 'kubernetes', 'docker',
+  'data scientist', 'data engineer', 'machine learning', 'ml engineer', 'ai engineer', 'deep learning',
+  'python', 'javascript', 'typescript', 'react', 'node', 'java', 'golang', 'rust', 'c++',
+  'ios', 'android', 'mobile developer', 'flutter', 'react native', 'swift', 'kotlin',
+  'qa engineer', 'test engineer', 'automation engineer', 'sdet',
+  'security engineer', 'cybersecurity', 'infosec', 'penetration tester',
+  'database', 'dba', 'sql', 'mongodb', 'postgresql',
+  'system administrator', 'sysadmin', 'linux', 'network engineer',
+  'tech lead', 'engineering manager', 'cto', 'vp engineering',
+  'ui/ux', 'ux designer', 'ui designer', 'product designer'
+];
+
+// HR/Recruitment keywords
+const HR_KEYWORDS = [
+  'recruiter', 'recruiting', 'talent acquisition', 'talent sourcer', 'technical recruiter',
+  'hr manager', 'human resources', 'people operations', 'people ops', 'hrbp',
+  'staffing', 'hiring manager', 'recruitment coordinator'
+];
+
+// BLOCKED keywords - jobs containing these are excluded
+const BLOCKED_KEYWORDS = [
+  'sales', 'salesperson', 'account executive', 'business development', 'bdr', 'sdr',
+  'writer', 'copywriter', 'content writer', 'freelance writer', 'blog writer',
+  'marketing', 'social media', 'seo specialist', 'growth hacker',
+  'customer support', 'customer service', 'support specialist', 'help desk',
+  'driver', 'delivery', 'warehouse', 'cleaner', 'maid', 'janitor',
+  'cook', 'chef', 'waiter', 'bartender', 'cashier', 'retail',
+  'nurse', 'doctor', 'medical', 'healthcare', 'dental',
+  'teacher', 'tutor', 'instructor', 'professor',
+  'accountant', 'bookkeeper', 'financial analyst',
+  'lawyer', 'legal', 'paralegal', 'attorney',
+  'real estate', 'property', 'mortgage',
+  'insurance', 'claims', 'underwriter',
+  'administrative assistant', 'receptionist', 'office manager',
+  'data entry', 'virtual assistant', 'executive assistant',
+  'construction', 'electrician', 'plumber', 'mechanic', 'technician',
+  'crypto', 'trader', 'forex', 'bitcoin', 'blockchain' // Often scams
+];
+
+// Check if job is valid tech or HR job
+function isValidJob(title, tags = []) {
   const titleLower = title.toLowerCase();
   const allTags = tags.map(t => t.toLowerCase()).join(' ');
   const combined = titleLower + ' ' + allTags;
   
-  // HR & Recruitment
-  if (combined.match(/\b(hr|human resource|recruiter|recruiting|talent|people ops|people operation|hiring|staffing)\b/)) {
-    return 'HR & Recruitment';
+  // First check if blocked
+  for (const blocked of BLOCKED_KEYWORDS) {
+    if (combined.includes(blocked)) {
+      return { valid: false, category: null };
+    }
   }
-  // DevOps & Cloud
+  
+  // Check if HR job
+  for (const hr of HR_KEYWORDS) {
+    if (combined.includes(hr)) {
+      return { valid: true, category: 'HR & Recruitment' };
+    }
+  }
+  
+  // Check if tech job
+  for (const tech of TECH_KEYWORDS) {
+    if (combined.includes(tech)) {
+      return { valid: true, category: categorizeJob(titleLower, allTags) };
+    }
+  }
+  
+  return { valid: false, category: null };
+}
+
+// Categorize tech job
+function categorizeJob(title, tags) {
+  const combined = title + ' ' + tags;
+  
   if (combined.match(/\b(devops|sre|cloud|aws|azure|gcp|kubernetes|docker|infrastructure)\b/)) {
     return 'DevOps & Cloud';
   }
-  // AI/ML
   if (combined.match(/\b(ai|ml|machine learning|data scien|deep learning|nlp|computer vision)\b/)) {
     return 'AI & ML';
   }
-  // Mobile
   if (combined.match(/\b(ios|android|mobile|react native|flutter|swift|kotlin)\b/)) {
     return 'Mobile';
   }
-  // Frontend
-  if (combined.match(/\b(frontend|front-end|react|vue|angular|ui|ux|css|javascript)\b/) && !combined.match(/full.?stack/)) {
+  if (combined.match(/\b(frontend|front-end|react|vue|angular|ui|ux|css)\b/) && !combined.match(/full.?stack/)) {
     return 'Frontend';
   }
-  // Backend
   if (combined.match(/\b(backend|back-end|node|python|java|golang|ruby|php|api)\b/) && !combined.match(/full.?stack/)) {
     return 'Backend';
   }
-  // Full-stack
   if (combined.match(/\b(full.?stack|fullstack)\b/)) {
     return 'Full-stack';
+  }
+  if (combined.match(/\b(security|infosec|penetration|cybersecurity)\b/)) {
+    return 'Security';
+  }
+  if (combined.match(/\b(qa|test|quality|sdet|automation)\b/)) {
+    return 'QA & Testing';
   }
   
   return 'Software Engineering';
@@ -74,9 +140,12 @@ async function fetchRemoteOK() {
     const json = await fetch('https://remoteok.com/api');
     const data = JSON.parse(json);
     
-    const jobs = data.slice(1, 30).map(job => {
-      const category = categorizeJob(job.position || '', job.tags || []);
-      return {
+    const jobs = [];
+    for (const job of data.slice(1, 100)) { // Check more jobs for better filtering
+      const { valid, category } = isValidJob(job.position || '', job.tags || []);
+      if (!valid) continue;
+      
+      jobs.push({
         id: 'job_remoteok_' + job.id,
         title: job.position || 'Unknown',
         company: job.company || 'Company',
@@ -94,10 +163,10 @@ async function fetchRemoteOK() {
         source: 'RemoteOK',
         posted_at: job.date ? new Date(job.date).toISOString() : new Date().toISOString(),
         is_verified: true
-      };
-    });
+      });
+    }
     
-    console.log(`  Found ${jobs.length} jobs`);
+    console.log(`  Found ${jobs.length} valid tech/HR jobs (filtered from ${data.length - 1})`);
     return jobs;
   } catch (e) {
     console.log('  RemoteOK error:', e.message);
@@ -107,13 +176,16 @@ async function fetchRemoteOK() {
 
 async function fetchRemotive() {
   try {
-    console.log('Fetching: Remotive...');
-    const json = await fetch('https://remotive.com/api/remote-jobs?limit=30');
+    console.log('Fetching: Remotive Software Dev...');
+    const json = await fetch('https://remotive.com/api/remote-jobs?category=software-dev&limit=50');
     const data = JSON.parse(json);
     
-    const jobs = (data.jobs || []).map(job => {
-      const category = categorizeJob(job.title || '', job.tags || []);
-      return {
+    const jobs = [];
+    for (const job of (data.jobs || [])) {
+      const { valid, category } = isValidJob(job.title || '', job.tags || []);
+      if (!valid) continue;
+      
+      jobs.push({
         id: 'job_remotive_' + job.id,
         title: job.title || 'Unknown',
         company: job.company_name || 'Company',
@@ -128,10 +200,10 @@ async function fetchRemotive() {
         source: 'Remotive',
         posted_at: job.publication_date || new Date().toISOString(),
         is_verified: true
-      };
-    });
+      });
+    }
     
-    console.log(`  Found ${jobs.length} jobs`);
+    console.log(`  Found ${jobs.length} valid jobs`);
     return jobs;
   } catch (e) {
     console.log('  Remotive error:', e.message);
@@ -139,21 +211,20 @@ async function fetchRemotive() {
   }
 }
 
-// Fetch HR-specific jobs from Remotive
-async function fetchRemotiveHR() {
+async function fetchRemotiveDevOps() {
   try {
-    console.log('Fetching: Remotive HR/Recruitment...');
-    const json = await fetch('https://remotive.com/api/remote-jobs?category=hr&limit=15');
+    console.log('Fetching: Remotive DevOps...');
+    const json = await fetch('https://remotive.com/api/remote-jobs?category=devops&limit=30');
     const data = JSON.parse(json);
     
     const jobs = (data.jobs || []).map(job => ({
-      id: 'job_remotive_hr_' + job.id,
+      id: 'job_remotive_devops_' + job.id,
       title: job.title || 'Unknown',
       company: job.company_name || 'Company',
       location: job.candidate_required_location || 'Remote',
       salary: job.salary || 'Competitive',
       job_type: job.job_type || 'Full-time',
-      category: 'HR & Recruitment',
+      category: 'DevOps & Cloud',
       experience: 'Mid-level',
       skills: (job.tags || []).slice(0, 6),
       description: (job.description || '').replace(/<[^>]+>/g, '').slice(0, 500),
@@ -163,7 +234,78 @@ async function fetchRemotiveHR() {
       is_verified: true
     }));
     
-    console.log(`  Found ${jobs.length} HR jobs`);
+    console.log(`  Found ${jobs.length} DevOps jobs`);
+    return jobs;
+  } catch (e) {
+    console.log('  Remotive DevOps error:', e.message);
+    return [];
+  }
+}
+
+async function fetchRemotiveData() {
+  try {
+    console.log('Fetching: Remotive Data/AI...');
+    const json = await fetch('https://remotive.com/api/remote-jobs?category=data&limit=30');
+    const data = JSON.parse(json);
+    
+    const jobs = (data.jobs || []).map(job => ({
+      id: 'job_remotive_data_' + job.id,
+      title: job.title || 'Unknown',
+      company: job.company_name || 'Company',
+      location: job.candidate_required_location || 'Remote',
+      salary: job.salary || 'Competitive',
+      job_type: job.job_type || 'Full-time',
+      category: 'AI & ML',
+      experience: 'Mid-level',
+      skills: (job.tags || []).slice(0, 6),
+      description: (job.description || '').replace(/<[^>]+>/g, '').slice(0, 500),
+      apply_url: job.url,
+      source: 'Remotive',
+      posted_at: job.publication_date || new Date().toISOString(),
+      is_verified: true
+    }));
+    
+    console.log(`  Found ${jobs.length} Data/AI jobs`);
+    return jobs;
+  } catch (e) {
+    console.log('  Remotive Data error:', e.message);
+    return [];
+  }
+}
+
+async function fetchRemotiveHR() {
+  try {
+    console.log('Fetching: Remotive HR/Recruitment...');
+    const json = await fetch('https://remotive.com/api/remote-jobs?category=hr&limit=20');
+    const data = JSON.parse(json);
+    
+    const jobs = [];
+    for (const job of (data.jobs || [])) {
+      // Only include actual recruiting/HR roles, not random HR-adjacent roles
+      const titleLower = (job.title || '').toLowerCase();
+      if (!titleLower.match(/recruiter|recruiting|talent|hr |human resource|people ops/)) {
+        continue;
+      }
+      
+      jobs.push({
+        id: 'job_remotive_hr_' + job.id,
+        title: job.title || 'Unknown',
+        company: job.company_name || 'Company',
+        location: job.candidate_required_location || 'Remote',
+        salary: job.salary || 'Competitive',
+        job_type: job.job_type || 'Full-time',
+        category: 'HR & Recruitment',
+        experience: 'Mid-level',
+        skills: (job.tags || []).slice(0, 6),
+        description: (job.description || '').replace(/<[^>]+>/g, '').slice(0, 500),
+        apply_url: job.url,
+        source: 'Remotive',
+        posted_at: job.publication_date || new Date().toISOString(),
+        is_verified: true
+      });
+    }
+    
+    console.log(`  Found ${jobs.length} HR/Recruitment jobs`);
     return jobs;
   } catch (e) {
     console.log('  Remotive HR error:', e.message);
@@ -173,17 +315,22 @@ async function fetchRemotiveHR() {
 
 async function main() {
   console.log('='.repeat(50));
-  console.log('TechGig Radar - Jobs Discovery (Supabase)');
+  console.log('TechGig Radar - DEEP Jobs Discovery');
   console.log('='.repeat(50));
   console.log('Time:', new Date().toISOString());
+  console.log('Mode: Tech & HR Recruitment ONLY (strict filtering)');
+  console.log('');
   
+  // Fetch from multiple sources
   const remoteOKJobs = await fetchRemoteOK();
   const remotiveJobs = await fetchRemotive();
+  const devopsJobs = await fetchRemotiveDevOps();
+  const dataJobs = await fetchRemotiveData();
   const hrJobs = await fetchRemotiveHR();
   
-  const allJobs = [...remoteOKJobs, ...remotiveJobs, ...hrJobs];
+  const allJobs = [...remoteOKJobs, ...remotiveJobs, ...devopsJobs, ...dataJobs, ...hrJobs];
   
-  // Dedupe by ID
+  // Dedupe by ID and company+title
   const seenIds = new Set();
   const seenKeys = new Set();
   const uniqueJobs = allJobs.filter(job => {
@@ -193,9 +340,9 @@ async function main() {
     seenIds.add(job.id);
     seenKeys.add(key);
     return true;
-  }).slice(0, 60);
+  });
   
-  // Upsert to Supabase one by one
+  // Upsert to Supabase
   console.log(`\nUpserting ${uniqueJobs.length} jobs to Supabase...`);
   
   let successCount = 0;
@@ -211,17 +358,16 @@ async function main() {
     }
   }
   
-  console.log('\n' + '='.repeat(50));
-  console.log(`✅ Saved ${successCount} jobs to Supabase`);
-  console.log('Latest:', uniqueJobs[0]?.title, 'at', uniqueJobs[0]?.company);
-  
   // Count by category
   const techCount = uniqueJobs.filter(j => j.category !== 'HR & Recruitment').length;
   const hrCount = uniqueJobs.filter(j => j.category === 'HR & Recruitment').length;
   
+  console.log('\n' + '='.repeat(50));
+  console.log(`✅ Saved ${successCount} jobs to Supabase`);
   console.log(`\n📊 Breakdown:`);
   console.log(`   💻 Technical Jobs: ${techCount}`);
   console.log(`   👔 HR/Recruitment: ${hrCount}`);
+  console.log('='.repeat(50));
   
   // Output for GitHub Actions
   console.log(`\n::set-output name=jobs_count::${successCount}`);
