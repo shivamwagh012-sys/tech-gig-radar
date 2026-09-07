@@ -99,16 +99,18 @@ export default async function handler(req, res) {
     const transformedJobs = jobs.map(transformJob);
     const transformedHRJobs = hrJobs.map(transformJob);
     
-    const transformedReels = reels.map(r => ({
-      id: r.id,
-      title: r.title,
-      category: r.category || 'tech',
-      duration: r.duration || '0:30',
-      views: r.views || 0,
-      badge: r.badge || 'new',
-      thumbnail: r.thumbnail_url || 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=700&fit=crop',
-      videoUrl: r.video_url
-    }));
+    const transformedReels = reels
+      .filter(r => r.video_url) // Only show reels with actual videos
+      .map(r => ({
+        id: r.id,
+        title: r.title,
+        category: r.category || 'tech',
+        duration: r.duration || '0:30',
+        views: r.views || 0,
+        badge: r.badge || 'new',
+        thumbnail: r.thumbnail_url || 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=700&fit=crop',
+        videoUrl: r.video_url
+      }));
     
     // Build response based on type
     const response = {
